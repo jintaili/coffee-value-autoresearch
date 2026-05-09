@@ -42,9 +42,9 @@ TEXT_FIELDS = ["sensory_text", "producer_text"]
 MAX_FEATURES = 2000
 MIN_DF = 5
 MAX_DF = 0.85
-RIDGE_ALPHA = 5.0
-RUN_NAME = "exp02_alpha5"
-RUN_DESCRIPTION = "ridge alpha 10 -> 5; same features as exp01 (continue decompressing tails)"
+RIDGE_ALPHA = 2.0
+RUN_NAME = "exp03_alpha2"
+RUN_DESCRIPTION = "ridge alpha 5 -> 2; continue probing how far we can lower regularization"
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:

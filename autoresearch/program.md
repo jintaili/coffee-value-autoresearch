@@ -1,6 +1,6 @@
 # Coffee Rating Autoresearch Program
 
-You are improving a coffee rating predictor. Work like an autoresearch agent: make one focused change, run the fixed validation, read the diagnostics, record the result, and repeat.
+You are improving a coffee rating predictor. Work like the following: make one focused change, run the fixed validation, read the diagnostics, record the result, and repeat.
 
 ## Goal
 
@@ -56,8 +56,6 @@ Repeat this loop:
 8. If the result is worse or suspicious, revert or revise the change before continuing.
 9. Leave `autoresearch/results.tsv` as the running experiment ledger.
 
-Prefer small, attributable changes over broad rewrites.
-
 ## Editable Surface
 
 Allowed to edit:
@@ -89,30 +87,29 @@ Tier 2 text fields:
 - `sensory_text`
 - `producer_text`
 
-Hold off on sensory buckets and LLM extraction until deterministic extraction and the baseline loop are stable.
-
 ## Candidate Experiments
 
-Good first experiments:
+The following are example experiments. But you should not limit yourself to only these:
 
-- improve country alias extraction
-- improve roaster-country normalization
 - improve process-method extraction
 - improve variety extraction
-- test excluding high-cardinality `origin_region`
-- test using `origin_region` only when frequent enough
+- test ways to incorporate information from high-cardinality `origin_region` without overfitting
 - test text source choices: `sensory_text` only vs `sensory_text + producer_text`
 - tune TF-IDF `max_features`, `min_df`, `max_df`, and unigram/bigram settings
-- tune Ridge `alpha`
-- add concordance-by-rating-gap diagnostics
+- test sentence embeddings for `sensory_text` and `producer_text`, separately and concatenated with Tier 1 features
+- test compressed text representations such as TF-IDF followed by SVD before Ridge or gradient boosting
+- test word-vector mean embeddings such as GloVe/FastText as a compact baseline if local vectors are available
+- compare text representations under the same fixed validation split: TF-IDF vs sentence embeddings vs compressed TF-IDF
+- other (hyper)parameter tuning
 
 Avoid for now:
 
-- reviewer component score inputs
 - price inputs
 - LLM extraction
 - neural fine-tuning
 - changing the validation split to improve score
+
+For any embedding experiment, preserve offline/online parity: the exact embedding model, preprocessing, text fields, vector dimensions, and artifact version must be recorded and reusable at inference time.
 
 ## Required Run Outputs
 
@@ -132,7 +129,7 @@ The report must include:
 - within-1 and within-2 accuracy
 - feature coverage
 - rating-bucket bias table
-- top positive and negative coefficients when available
+- top impact features when available
 - worst false-high predictions
 - worst false-low predictions
 
@@ -145,5 +142,6 @@ Tie-breakers:
 1. Lower absolute bucket bias, especially in `<=89`, `95`, and `>=96`.
 2. Lower MAE.
 3. Simpler feature processing.
+4. Lower overfitting.
 
 Flag any candidate that raises concordance by compressing all predictions toward the center. A useful ranking model still needs plausible displayed ratings.

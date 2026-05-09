@@ -46,8 +46,8 @@ MAX_DF = 0.85
 NGRAM_MAX = 2
 RIDGE_ALPHA = 1.0
 
-# Encoder dispatch. Supported values: "tfidf", "embed".
-ENCODER_NAME = "tfidf"
+# Encoder dispatch. Supported values: "tfidf", "embed", "tfidf_embed".
+ENCODER_NAME = "tfidf_embed"
 EMBED_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 EMBED_TEXT_FIELDS = ["sensory_text", "producer_text"]
 EMBED_BATCH = 64
@@ -66,8 +66,8 @@ HGBT_PARAMS = {
     "random_state": 0,
 }
 
-RUN_NAME = "exp09_alpha1_bigrams"
-RUN_DESCRIPTION = "alpha 2 -> 1 with bigrams+max_features=6000 (re-sweep alpha at new feature set)"
+RUN_NAME = "exp13_tfidf_plus_embed_ridge"
+RUN_DESCRIPTION = "TF-IDF (6000) + MiniLM embeddings hstacked, ridge alpha=1"
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
@@ -260,6 +260,37 @@ class EmbeddingFeatureEncoder:
             out[:, start : start + self.embed_dim] = vecs
         self._save_cache()
         return out
+
+
+class HybridEncoder:
+    """TF-IDF sparse block (with structured one-hots) hstacked with sentence embeddings.
+
+    Structured one-hots live inside the FeatureEncoder block to keep their
+    learned weights compatible with the existing ridge baseline. The
+    embedding block adds dense semantic features alongside.
+    """
+
+    def __init__(self):
+        self.tfidf = FeatureEncoder()
+        self.embed = EmbeddingFeatureEncoder()
+        self.feature_names: list[str] = []
+        self.embed_dim: int = 0
+
+    def fit(self, rows: list[dict[str, str]]) -> None:
+        self.tfidf.fit(rows)
+        self.embed.fit(rows)
+        self.embed_dim = self.embed.embed_dim
+        self.feature_names = list(self.tfidf.feature_names)
+        for field in self.embed.text_fields:
+            for d in range(self.embed_dim):
+                self.feature_names.append(f"emb:{field}:{d}")
+
+    def transform(self, rows: list[dict[str, str]]) -> sparse.csr_matrix:
+        x_tfidf = self.tfidf.transform(rows)
+        x_embed_dense = self.embed.transform(rows)
+        n_struct = len(self.embed.structured_vocab)
+        embed_only = x_embed_dense[:, n_struct:]
+        return sparse.hstack([x_tfidf, sparse.csr_matrix(embed_only.astype(np.float64))], format="csr")
 
 
 def fit_ridge(x_train, y_train: np.ndarray, alpha: float) -> tuple[np.ndarray, float]:
@@ -498,6 +529,8 @@ def main() -> None:
         encoder = FeatureEncoder()
     elif ENCODER_NAME == "embed":
         encoder = EmbeddingFeatureEncoder()
+    elif ENCODER_NAME == "tfidf_embed":
+        encoder = HybridEncoder()
     else:
         raise ValueError(f"unknown ENCODER_NAME: {ENCODER_NAME}")
     encoder.fit(train_rows)
@@ -526,13 +559,13 @@ def main() -> None:
         "train_rows": len(train_rows),
         "validation_rows": len(validation_rows),
     }
-    if ENCODER_NAME == "tfidf":
+    if ENCODER_NAME in ("tfidf", "tfidf_embed"):
         config["max_features"] = MAX_FEATURES
         config["min_df"] = MIN_DF
         config["max_df"] = MAX_DF
         config["ngram_max"] = NGRAM_MAX
         config["text_fields"] = TEXT_FIELDS
-    elif ENCODER_NAME == "embed":
+    if ENCODER_NAME in ("embed", "tfidf_embed"):
         config["embed_model"] = EMBED_MODEL
         config["embed_text_fields"] = EMBED_TEXT_FIELDS
         config["embed_dim"] = getattr(encoder, "embed_dim", None)

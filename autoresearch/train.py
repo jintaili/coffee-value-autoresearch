@@ -50,10 +50,15 @@ RIDGE_ALPHA = 1.0
 
 # Encoder dispatch. Supported values: "tfidf", "embed", "tfidf_embed".
 ENCODER_NAME = "tfidf_embed"
-EMBED_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+EMBED_MODEL = "sentence-transformers/all-mpnet-base-v2"
 EMBED_TEXT_FIELDS = ["sensory_text", "producer_text"]
-EMBED_BATCH = 64
-EMBED_CACHE = ROOT / "artifacts" / "rating_baseline" / "embedding_cache.pkl"
+EMBED_BATCH = 32
+EMBED_CACHE_DIR = ROOT / "artifacts" / "rating_baseline"
+
+
+def embed_cache_path(model_name: str) -> Path:
+    safe = re.sub(r"[^a-zA-Z0-9]+", "_", model_name)
+    return EMBED_CACHE_DIR / f"embedding_cache_{safe}.pkl"
 
 # Model dispatch. Supported values: "ridge", "elasticnet", "hgbt".
 MODEL_NAME = "ridge"
@@ -68,8 +73,8 @@ HGBT_PARAMS = {
     "random_state": 0,
 }
 
-RUN_NAME = "exp14_add_roaster"
-RUN_DESCRIPTION = "hybrid + add roaster (clipped, min_df=10) to STRUCTURED_FIELDS; ridge alpha=1"
+RUN_NAME = "exp15_mpnet"
+RUN_DESCRIPTION = "swap embedding model MiniLM-L6 -> mpnet-base-v2 (768-dim, higher STS quality)"
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
@@ -213,15 +218,17 @@ class EmbeddingFeatureEncoder:
         return self._model
 
     def _load_cache(self):
-        if not self._cache and EMBED_CACHE.exists():
-            with EMBED_CACHE.open("rb") as f:
+        path = embed_cache_path(self.model_name)
+        if not self._cache and path.exists():
+            with path.open("rb") as f:
                 cache = pickle.load(f)
             if cache.get("model") == self.model_name:
                 self._cache = cache.get("vectors", {})
 
     def _save_cache(self):
-        EMBED_CACHE.parent.mkdir(parents=True, exist_ok=True)
-        with EMBED_CACHE.open("wb") as f:
+        path = embed_cache_path(self.model_name)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open("wb") as f:
             pickle.dump({"model": self.model_name, "vectors": self._cache}, f)
 
     def _embed_texts(self, texts: list[str]) -> np.ndarray:

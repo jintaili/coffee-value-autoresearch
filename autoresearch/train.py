@@ -42,9 +42,9 @@ TEXT_FIELDS = ["sensory_text", "producer_text"]
 MAX_FEATURES = 2000
 MIN_DF = 5
 MAX_DF = 0.85
-RIDGE_ALPHA = 10.0
-RUN_NAME = "exp01_alpha10"
-RUN_DESCRIPTION = "ridge alpha 25 -> 10; same features as baseline (decompress tail predictions)"
+RIDGE_ALPHA = 5.0
+RUN_NAME = "exp02_alpha5"
+RUN_DESCRIPTION = "ridge alpha 10 -> 5; same features as exp01 (continue decompressing tails)"
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:

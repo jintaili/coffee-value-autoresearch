@@ -25,9 +25,7 @@ exp15_alpha_half	[reset, gap > 0.050] hybrid + roaster + alpha 1 -> 0.5	0.948081
 exp15_mpnet	swap embedding model MiniLM-L6 -> mpnet-base-v2 (768-dim, higher STS quality)	0.942793	0.894922	0.047871	0.876211	1.030286	1.516715	0.623785	0.876589
 exp16_trigrams	[reset, val regressed] NGRAM_MAX 2 -> 3 (trigrams crowd out useful bigrams in 6000 vocab budget)	0.937998	0.891928	0.046070	0.872250	1.051479	1.537743	0.610322	0.869110
 exp17_embed_coffee_name	[reset, val regressed] add coffee_name to EMBED_TEXT_FIELDS	0.945264	0.892984	0.052280	0.873642	1.043050	1.519326	0.611818	0.875093
-exp18_alpha_1p5	mpnet hybrid + alpha 1 -> 1.5 (re-sweep with mpnet block)	0.937430	0.894373	0.043057	0.875391	1.030106	1.519798	0.624533	0.878833
 exp18_alpha_1p5	[reset, val regressed marginally] mpnet hybrid + alpha 1 -> 1.5	0.937430	0.894373	0.043057	0.875242	1.030106	1.516717	0.624533	0.878833
 exp19_embed_sensory_only	drop producer_text from EMBED_TEXT_FIELDS (focus mpnet on sensory)	0.940764	0.896230	0.044534	0.877929	1.024724	1.526205	0.628272	0.875841
-exp20_alpha2_lean	exp19 + alpha 1 -> 2 (re-sweep alpha after dropping producer_text from embeddings)	0.931561	0.894299	0.037262	0.875166	1.033892	1.546630	0.623037	0.875841
 exp20_alpha2_lean	[reset, val regressed] exp19 + alpha 1 -> 2	0.931561	0.894299	0.037262	0.873475	1.033892	1.523554	0.623037	0.875841
 exp21_multihot_variety_process	split variety/process_method on '|' into multi-hot booleans	0.940494	0.896442	0.044052	0.878433	1.023973	1.525796	0.627524	0.878085

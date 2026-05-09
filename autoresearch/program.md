@@ -68,6 +68,16 @@ Repeat this loop:
 10. If the result is worse or suspicious, reset the branch back to where it started before that experiment.
 11. Push the run branch periodically so the remote history reflects the kept experiment sequence.
 
+To determine overfitting, use these thresholds for concordance_gap = train_concordance - val_concordance:
+
+- <= 0.030: acceptable
+- 0.030 to 0.050: suspicious; keep only with clear validation improvement and sane diagnostics
+- \> 0.050: reject/reset unless explicitly justified
+
+## Stopping Criteria
+
+Stop the autonomous run when 9 consecutive experiments fail to produce a new best `val_concordance`.
+
 ## Editable Surface
 
 Allowed to edit:

@@ -40,6 +40,7 @@ STRUCTURED_FIELDS = [
     "roaster",
 ]
 STRUCTURED_MIN_DF = 10  # Clip values appearing fewer than this many train rows to "unknown".
+MULTIHOT_FIELDS = {"variety", "process_method"}
 
 TEXT_FIELDS = ["sensory_text", "producer_text"]
 MAX_FEATURES = 6000
@@ -73,8 +74,8 @@ HGBT_PARAMS = {
     "random_state": 0,
 }
 
-RUN_NAME = "exp19_embed_sensory_only"
-RUN_DESCRIPTION = "drop producer_text from EMBED_TEXT_FIELDS (focus mpnet on sensory)"
+RUN_NAME = "exp21_multihot_variety_process"
+RUN_DESCRIPTION = "split variety/process_method on '|' into multi-hot booleans"
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
@@ -100,12 +101,33 @@ def ngrams(text: str, n_max: int = NGRAM_MAX) -> list[str]:
     return grams
 
 
+def field_values(field: str, raw: str | None) -> list[str]:
+    """Yield the categorical labels emitted by `field` for one row.
+
+    For multi-hot fields, the "|"-joined output is split so each component
+    becomes a separate one-hot. Other fields emit a single value.
+    """
+    value = raw or "unknown"
+    if field not in MULTIHOT_FIELDS:
+        return [value]
+    if value == "unknown":
+        return ["unknown"]
+    parts = [p for p in value.split("|") if p]
+    return parts or ["unknown"]
+
+
 def build_structured_vocab(rows: list[dict[str, str]]) -> dict[tuple[str, str], int]:
-    """One-hot vocab over STRUCTURED_FIELDS, clipping rare values to "unknown"."""
+    """One-hot vocab over STRUCTURED_FIELDS, clipping rare values to "unknown".
+
+    Multi-hot fields (variety, process_method) are split on "|" so each
+    component label gets its own one-hot, matching how it would be parsed
+    at inference time from a roaster product page.
+    """
     counts: dict[str, Counter] = {f: Counter() for f in STRUCTURED_FIELDS}
     for row in rows:
         for field in STRUCTURED_FIELDS:
-            counts[field][row.get(field) or "unknown"] += 1
+            for v in field_values(field, row.get(field)):
+                counts[field][v] += 1
     vocab: dict[tuple[str, str], int] = {}
     for field in STRUCTURED_FIELDS:
         kept = {value for value, c in counts[field].items() if c >= STRUCTURED_MIN_DF}
@@ -115,11 +137,17 @@ def build_structured_vocab(rows: list[dict[str, str]]) -> dict[tuple[str, str], 
     return vocab
 
 
-def clip_value(vocab: dict[tuple[str, str], int], field: str, raw: str | None) -> str:
-    value = raw or "unknown"
-    if (field, value) in vocab:
-        return value
-    return "unknown"
+def emit_indices(vocab: dict[tuple[str, str], int], field: str, raw: str | None) -> list[int]:
+    indices = []
+    seen = set()
+    for v in field_values(field, raw):
+        idx = vocab.get((field, v))
+        if idx is None:
+            idx = vocab.get((field, "unknown"))
+        if idx is not None and idx not in seen:
+            indices.append(idx)
+            seen.add(idx)
+    return indices
 
 
 def rating_bucket(rating: float) -> str:
@@ -174,9 +202,7 @@ class FeatureEncoder:
         data = []
         for row in rows:
             for field in STRUCTURED_FIELDS:
-                value = clip_value(self.structured_vocab, field, row.get(field))
-                idx = self.structured_vocab.get((field, value))
-                if idx is not None:
+                for idx in emit_indices(self.structured_vocab, field, row.get(field)):
                     indices.append(idx)
                     data.append(1.0)
 
@@ -270,9 +296,7 @@ class EmbeddingFeatureEncoder:
         out = np.zeros((n, n_struct + n_emb), dtype=np.float32)
         for i, row in enumerate(rows):
             for field in STRUCTURED_FIELDS:
-                value = clip_value(self.structured_vocab, field, row.get(field))
-                idx = self.structured_vocab.get((field, value))
-                if idx is not None:
+                for idx in emit_indices(self.structured_vocab, field, row.get(field)):
                     out[i, idx] = 1.0
         for fi, field in enumerate(self.text_fields):
             texts = [(row.get(field) or " ") for row in rows]

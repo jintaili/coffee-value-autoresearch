@@ -44,6 +44,20 @@ MIN_DF = 5
 MAX_DF = 0.85
 NGRAM_MAX = 2
 RIDGE_ALPHA = 1.0
+
+# Model dispatch. Supported values: "ridge", "elasticnet", "hgbt".
+MODEL_NAME = "ridge"
+ELASTICNET_ALPHA = 1e-4
+ELASTICNET_L1_RATIO = 0.1
+HGBT_PARAMS = {
+    "max_iter": 600,
+    "learning_rate": 0.05,
+    "max_depth": 6,
+    "min_samples_leaf": 30,
+    "l2_regularization": 1.0,
+    "random_state": 0,
+}
+
 RUN_NAME = "exp09_alpha1_bigrams"
 RUN_DESCRIPTION = "alpha 2 -> 1 with bigrams+max_features=6000 (re-sweep alpha at new feature set)"
 
@@ -163,6 +177,53 @@ def fit_ridge(x_train: sparse.csr_matrix, y_train: np.ndarray, alpha: float) -> 
 
 def predict(x: sparse.csr_matrix, weights: np.ndarray, intercept: float) -> np.ndarray:
     return np.asarray(x @ weights + intercept).reshape(-1)
+
+
+class LinearModel:
+    def __init__(self, weights: np.ndarray, intercept: float):
+        self.weights = np.asarray(weights)
+        self.intercept = float(intercept)
+
+    def predict(self, x: sparse.csr_matrix) -> np.ndarray:
+        return predict(x, self.weights, self.intercept)
+
+
+class HGBTModel:
+    def __init__(self, est):
+        self.est = est
+        self.weights = np.zeros(0)
+        self.intercept = 0.0
+
+    def predict(self, x) -> np.ndarray:
+        if sparse.issparse(x):
+            x = x.toarray()
+        return np.asarray(self.est.predict(x))
+
+
+def fit_model(name: str, x_train: sparse.csr_matrix, y_train: np.ndarray):
+    if name == "ridge":
+        w, b = fit_ridge(x_train, y_train, RIDGE_ALPHA)
+        return LinearModel(w, b)
+    if name == "elasticnet":
+        from sklearn.linear_model import ElasticNet
+
+        est = ElasticNet(
+            alpha=ELASTICNET_ALPHA,
+            l1_ratio=ELASTICNET_L1_RATIO,
+            max_iter=10000,
+            tol=1e-4,
+            random_state=0,
+            selection="random",
+        )
+        est.fit(x_train, y_train)
+        return LinearModel(est.coef_, est.intercept_)
+    if name == "hgbt":
+        from sklearn.ensemble import HistGradientBoostingRegressor
+
+        est = HistGradientBoostingRegressor(**HGBT_PARAMS)
+        est.fit(x_train.toarray(), y_train)
+        return HGBTModel(est)
+    raise ValueError(f"unknown MODEL_NAME: {name}")
 
 
 def rankdata(values: np.ndarray) -> np.ndarray:
@@ -334,9 +395,11 @@ def main() -> None:
     encoder.fit(train_rows)
     x_train = encoder.transform(train_rows)
     x_validation = encoder.transform(validation_rows)
-    weights, intercept = fit_ridge(x_train, y_train, RIDGE_ALPHA)
-    y_train_pred = predict(x_train, weights, intercept)
-    y_pred = predict(x_validation, weights, intercept)
+    model = fit_model(MODEL_NAME, x_train, y_train)
+    y_train_pred = model.predict(x_train)
+    y_pred = model.predict(x_validation)
+    weights = model.weights
+    intercept = model.intercept
 
     train_metric_values = metrics(y_train, y_train_pred, prefix="train")
     validation_metric_values = metrics(y_validation, y_pred, prefix="val")
@@ -348,19 +411,26 @@ def main() -> None:
 
     ARTIFACT_DIR.mkdir(parents=True, exist_ok=True)
     write_predictions(validation_rows, y_validation, y_pred)
+    config: dict[str, object] = {
+        "model": MODEL_NAME,
+        "max_features": MAX_FEATURES,
+        "min_df": MIN_DF,
+        "max_df": MAX_DF,
+        "ngram_max": NGRAM_MAX,
+        "structured_fields": STRUCTURED_FIELDS,
+        "text_fields": TEXT_FIELDS,
+        "train_rows": len(train_rows),
+        "validation_rows": len(validation_rows),
+    }
+    if MODEL_NAME == "ridge":
+        config["alpha"] = RIDGE_ALPHA
+    elif MODEL_NAME == "elasticnet":
+        config["alpha"] = ELASTICNET_ALPHA
+        config["l1_ratio"] = ELASTICNET_L1_RATIO
+    elif MODEL_NAME == "hgbt":
+        config["hgbt"] = HGBT_PARAMS
     report = {
-        "config": {
-            "model": "ridge",
-            "alpha": RIDGE_ALPHA,
-            "max_features": MAX_FEATURES,
-            "min_df": MIN_DF,
-            "max_df": MAX_DF,
-            "ngram_max": NGRAM_MAX,
-            "structured_fields": STRUCTURED_FIELDS,
-            "text_fields": TEXT_FIELDS,
-            "train_rows": len(train_rows),
-            "validation_rows": len(validation_rows),
-        },
+        "config": config,
         "metrics": validation_metric_values,
         "train_metrics": train_metric_values,
         "overfitting": {
@@ -374,7 +444,16 @@ def main() -> None:
     }
     REPORT.write_text(json.dumps(report, indent=2), encoding="utf-8")
     with MODEL.open("wb") as f:
-        pickle.dump({"encoder": encoder, "weights": weights, "intercept": intercept, "config": report["config"]}, f)
+        pickle.dump(
+            {
+                "encoder": encoder,
+                "weights": weights,
+                "intercept": intercept,
+                "model": model,
+                "config": report["config"],
+            },
+            f,
+        )
     write_results(metric_values)
 
     print(json.dumps({"metrics": metric_values, "report": str(REPORT.relative_to(ROOT))}, indent=2))

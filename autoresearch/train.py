@@ -43,6 +43,8 @@ MAX_FEATURES = 2000
 MIN_DF = 5
 MAX_DF = 0.85
 RIDGE_ALPHA = 25.0
+RUN_NAME = "main"
+RUN_DESCRIPTION = "baseline: ridge with tier1 deterministic features, no origin_region, unigram tfidf over sensory_text+producer_text"
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
@@ -190,15 +192,15 @@ def pairwise_concordance(y_true: np.ndarray, y_pred: np.ndarray) -> float:
     return correct / total if total else float("nan")
 
 
-def metrics(y_true: np.ndarray, y_pred: np.ndarray) -> dict[str, float]:
+def metrics(y_true: np.ndarray, y_pred: np.ndarray, prefix: str = "val") -> dict[str, float]:
     err = y_pred - y_true
     return {
-        "val_concordance": pairwise_concordance(y_true, y_pred),
-        "spearman": spearman(y_true, y_pred),
-        "mae": float(np.mean(np.abs(err))),
-        "rmse": float(np.sqrt(np.mean(err * err))),
-        "within_1": float(np.mean(np.abs(err) <= 1.0)),
-        "within_2": float(np.mean(np.abs(err) <= 2.0)),
+        f"{prefix}_concordance": pairwise_concordance(y_true, y_pred),
+        f"{prefix}_spearman": spearman(y_true, y_pred),
+        f"{prefix}_mae": float(np.mean(np.abs(err))),
+        f"{prefix}_rmse": float(np.sqrt(np.mean(err * err))),
+        f"{prefix}_within_1": float(np.mean(np.abs(err) <= 1.0)),
+        f"{prefix}_within_2": float(np.mean(np.abs(err) <= 2.0)),
     }
 
 
@@ -255,25 +257,31 @@ def write_predictions(rows: list[dict[str, str]], y_true: np.ndarray, y_pred: np
             writer.writerow(out)
 
 
-def append_results(metric_values: dict[str, float]) -> None:
-    exists = RESULTS.exists()
-    with RESULTS.open("a", newline="", encoding="utf-8") as f:
+def write_results(metric_values: dict[str, float]) -> None:
+    fieldnames = [
+        "run",
+        "description",
+        "train_concordance",
+        "val_concordance",
+        "concordance_gap",
+        "val_spearman",
+        "val_mae",
+        "val_rmse",
+        "val_within_1",
+        "val_within_2",
+    ]
+    with RESULTS.open("w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(
             f,
             delimiter="\t",
-            fieldnames=["run", "model", "text", "alpha", "max_features", "min_df"] + list(metric_values.keys()),
+            fieldnames=fieldnames,
         )
-        if not exists:
-            writer.writeheader()
+        writer.writeheader()
         writer.writerow(
             {
-                "run": "rating_baseline",
-                "model": "ridge",
-                "text": "+".join(TEXT_FIELDS),
-                "alpha": RIDGE_ALPHA,
-                "max_features": MAX_FEATURES,
-                "min_df": MIN_DF,
-                **{k: f"{v:.6f}" for k, v in metric_values.items()},
+                "run": RUN_NAME,
+                "description": RUN_DESCRIPTION,
+                **{k: f"{metric_values[k]:.6f}" for k in fieldnames if k in metric_values},
             }
         )
 
@@ -320,9 +328,13 @@ def main() -> None:
     x_train = encoder.transform(train_rows)
     x_validation = encoder.transform(validation_rows)
     weights, intercept = fit_ridge(x_train, y_train, RIDGE_ALPHA)
+    y_train_pred = predict(x_train, weights, intercept)
     y_pred = predict(x_validation, weights, intercept)
 
-    metric_values = metrics(y_validation, y_pred)
+    train_metric_values = metrics(y_train, y_train_pred, prefix="train")
+    validation_metric_values = metrics(y_validation, y_pred, prefix="val")
+    metric_values = {**train_metric_values, **validation_metric_values}
+    metric_values["concordance_gap"] = metric_values["train_concordance"] - metric_values["val_concordance"]
     bucket_rows = bucket_analysis(validation_rows, y_validation, y_pred)
     coef_rows = top_coefficients(encoder, weights)
     error_rows = worst_errors(validation_rows, y_validation, y_pred)
@@ -341,7 +353,11 @@ def main() -> None:
             "train_rows": len(train_rows),
             "validation_rows": len(validation_rows),
         },
-        "metrics": metric_values,
+        "metrics": validation_metric_values,
+        "train_metrics": train_metric_values,
+        "overfitting": {
+            "concordance_gap": metric_values["concordance_gap"],
+        },
         "feature_coverage_train": coverage(train_rows),
         "feature_coverage_validation": coverage(validation_rows),
         "bucket_analysis": bucket_rows,
@@ -351,7 +367,7 @@ def main() -> None:
     REPORT.write_text(json.dumps(report, indent=2), encoding="utf-8")
     with MODEL.open("wb") as f:
         pickle.dump({"encoder": encoder, "weights": weights, "intercept": intercept, "config": report["config"]}, f)
-    append_results(metric_values)
+    write_results(metric_values)
 
     print(json.dumps({"metrics": metric_values, "report": str(REPORT.relative_to(ROOT))}, indent=2))
 

@@ -1,2 +1,2 @@
-run	model	text	alpha	max_features	min_df	val_concordance	spearman	mae	rmse	within_1	within_2
-rating_baseline	ridge	sensory_text+producer_text	25.0	2000	5	0.848158	0.805264	1.392207	2.249024	0.511593	0.801047
+run	description	train_concordance	val_concordance	concordance_gap	val_spearman	val_mae	val_rmse	val_within_1	val_within_2
+main	baseline: ridge with tier1 deterministic features, no origin_region, unigram tfidf over sensory_text+producer_text	0.861465	0.848158	0.013307	0.805264	1.392207	2.249024	0.511593	0.801047

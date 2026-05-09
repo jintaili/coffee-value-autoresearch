@@ -39,12 +39,13 @@ STRUCTURED_FIELDS = [
 ]
 
 TEXT_FIELDS = ["sensory_text", "producer_text"]
-MAX_FEATURES = 2000
+MAX_FEATURES = 4000
 MIN_DF = 5
 MAX_DF = 0.85
+NGRAM_MAX = 2
 RIDGE_ALPHA = 2.0
-RUN_NAME = "exp03_alpha2"
-RUN_DESCRIPTION = "ridge alpha 5 -> 2; continue probing how far we can lower regularization"
+RUN_NAME = "exp04_bigrams"
+RUN_DESCRIPTION = "add bigrams (ngram 1-2), max_features 2000 -> 4000; alpha=2"
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
@@ -59,6 +60,15 @@ def read_ids(path: Path) -> set[str]:
 def tokenize(text: str) -> list[str]:
     text = (text or "").lower().replace("’", "'")
     return re.findall(r"[a-z0-9][a-z0-9'\-]*", text)
+
+
+def ngrams(text: str, n_max: int = NGRAM_MAX) -> list[str]:
+    toks = tokenize(text)
+    grams = list(toks)
+    for n in range(2, n_max + 1):
+        for i in range(len(toks) - n + 1):
+            grams.append(" ".join(toks[i : i + n]))
+    return grams
 
 
 def rating_bucket(rating: float) -> str:
@@ -89,7 +99,7 @@ class FeatureEncoder:
 
         df = Counter()
         for row in rows:
-            terms = set(tokenize(" ".join(row.get(field, "") for field in TEXT_FIELDS)))
+            terms = set(ngrams(" ".join(row.get(field, "") for field in TEXT_FIELDS)))
             df.update(terms)
         n_docs = len(rows)
         max_doc_count = max(1, math.floor(self.max_df * n_docs))
@@ -124,7 +134,7 @@ class FeatureEncoder:
                     indices.append(idx)
                     data.append(1.0)
 
-            counts = Counter(tokenize(" ".join(row.get(field, "") for field in TEXT_FIELDS)))
+            counts = Counter(ngrams(" ".join(row.get(field, "") for field in TEXT_FIELDS)))
             norm = 0.0
             text_items = []
             for term, count in counts.items():
@@ -345,6 +355,7 @@ def main() -> None:
             "max_features": MAX_FEATURES,
             "min_df": MIN_DF,
             "max_df": MAX_DF,
+            "ngram_max": NGRAM_MAX,
             "structured_fields": STRUCTURED_FIELDS,
             "text_fields": TEXT_FIELDS,
             "train_rows": len(train_rows),

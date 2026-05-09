@@ -43,7 +43,7 @@ TEXT_FIELDS = ["sensory_text", "producer_text"]
 MAX_FEATURES = 2000
 MIN_DF = 5
 MAX_DF = 0.85
-RIDGE_ALPHA = 25.0
+RIDGE_ALPHA = 15.0
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:

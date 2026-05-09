@@ -25,3 +25,5 @@ exp15_alpha_half	[reset, gap > 0.050] hybrid + roaster + alpha 1 -> 0.5	0.948081
 exp15_mpnet	swap embedding model MiniLM-L6 -> mpnet-base-v2 (768-dim, higher STS quality)	0.942793	0.894922	0.047871	0.876211	1.030286	1.516715	0.623785	0.876589
 exp16_trigrams	[reset, val regressed] NGRAM_MAX 2 -> 3 (trigrams crowd out useful bigrams in 6000 vocab budget)	0.937998	0.891928	0.046070	0.872250	1.051479	1.537743	0.610322	0.869110
 exp17_embed_coffee_name	[reset, val regressed] add coffee_name to EMBED_TEXT_FIELDS	0.945264	0.892984	0.052280	0.873642	1.043050	1.519326	0.611818	0.875093
+exp18_alpha_1p5	mpnet hybrid + alpha 1 -> 1.5 (re-sweep with mpnet block)	0.937430	0.894373	0.043057	0.875391	1.030106	1.519798	0.624533	0.878833
+exp18_alpha_1p5	[reset, val regressed marginally] mpnet hybrid + alpha 1 -> 1.5	0.937430	0.894373	0.043057	0.875242	1.030106	1.516717	0.624533	0.878833

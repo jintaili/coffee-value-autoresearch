@@ -31,3 +31,4 @@ exp20_alpha2_lean	[reset, val regressed] exp19 + alpha 1 -> 2	0.931561	0.894299	
 exp21_multihot_variety_process	split variety/process_method on '|' into multi-hot booleans	0.940494	0.896442	0.044052	0.878433	1.023973	1.525796	0.627524	0.878085
 exp22_maxfeat4000	[reset, val regressed] max_features 6000 -> 4000 (semantic embeddings may cover low-rank TFIDF tail)	0.934286	0.893027	0.041258	0.873177	1.047251	1.558174	0.614809	0.867614
 exp23_embed_hgbt_mpnet	[reset, gap=0.124 severe overfit] mpnet embeddings (sensory) + structured (incl roaster, multihot) + HGBT	0.994091	0.870106	0.123985	0.839024	1.241260	1.919886	0.583396	0.824233
+exp24_embed_combined_text	[reset, val regressed] embed sensory+producer concatenated as one document (single 768-dim instead of two)	0.937439	0.893147	0.044291	0.873418	1.043558	1.571424	0.623037	0.871354

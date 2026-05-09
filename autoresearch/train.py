@@ -43,9 +43,9 @@ MAX_FEATURES = 6000
 MIN_DF = 5
 MAX_DF = 0.85
 NGRAM_MAX = 2
-RIDGE_ALPHA = 2.0
-RUN_NAME = "exp06_maxfeat6000"
-RUN_DESCRIPTION = "max_features 4000 -> 6000 (give bigrams more room), alpha=2"
+RIDGE_ALPHA = 1.0
+RUN_NAME = "exp09_alpha1_bigrams"
+RUN_DESCRIPTION = "alpha 2 -> 1 with bigrams+max_features=6000 (re-sweep alpha at new feature set)"
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:

@@ -44,7 +44,7 @@ Create one new branch for the whole autonomous run before starting the loop, for
 git checkout -b run/rating-autoresearch-YYYYMMDD
 ```
 
-Stay on that branch for all experiments in the run. Do not create a new branch for each individual experiment. Commit accepted iterations to the run branch and push it periodically so the run history is preserved.
+Stay on that branch for all experiments in the run. Do not create a new branch for each individual experiment. Each experiment should be committed before it is run; keep the commit if it improves, or reset it away if it does not.
 
 ## Main Loop
 
@@ -53,19 +53,20 @@ Repeat this loop:
 1. Inspect the previous report in `artifacts/rating_baseline/report.json` and prior runs in `autoresearch/results.tsv`.
 2. Choose one hypothesis to test.
 3. Edit only the files needed for that hypothesis.
-4. Run:
+4. Commit the experimental code before running it.
+5. Run:
 
    ```bash
    python3 autoresearch/prepare.py
    python3 autoresearch/train.py
    ```
 
-5. Compare the new `val_concordance` to the previous best.
-6. Inspect calibration diagnostics, especially rating-bucket mean error.
-7. Keep the change if it improves `val_concordance` without creating severe bucket bias.
-8. If the result is worse or suspicious, revert or revise the change before continuing.
-9. Leave `autoresearch/results.tsv` as the running experiment ledger.
-10. Commit after each accepted iteration and push the run branch periodically so the remote history reflects the experiment sequence.
+6. Compare the new `val_concordance` to the previous best.
+7. Inspect calibration diagnostics, especially rating-bucket mean error.
+8. Leave `autoresearch/results.tsv` as the running experiment ledger.
+9. If the change improves `val_concordance` without creating severe bucket bias or overfitting, keep the commit and continue from it.
+10. If the result is worse or suspicious, reset the branch back to where it started before that experiment.
+11. Push the run branch periodically so the remote history reflects the kept experiment sequence.
 
 ## Editable Surface
 

@@ -23,3 +23,4 @@ exp15_add_origin_region_w_roaster	[reset, val regressed] add origin_region (clip
 exp15_struct_mindf5	[reset, val flat] STRUCTURED_MIN_DF 10 -> 5	0.941459	0.892490	0.048969			1.042303		0.629768	0.873598
 exp15_alpha_half	[reset, gap > 0.050] hybrid + roaster + alpha 1 -> 0.5	0.948081	0.890397	0.057684			1.062001		0.604338	0.866866
 exp15_mpnet	swap embedding model MiniLM-L6 -> mpnet-base-v2 (768-dim, higher STS quality)	0.942793	0.894922	0.047871	0.876211	1.030286	1.516715	0.623785	0.876589
+exp16_trigrams	[reset, val regressed] NGRAM_MAX 2 -> 3 (trigrams crowd out useful bigrams in 6000 vocab budget)	0.937998	0.891928	0.046070	0.872250	1.051479	1.537743	0.610322	0.869110

@@ -51,7 +51,7 @@ RIDGE_ALPHA = 1.0
 # Encoder dispatch. Supported values: "tfidf", "embed", "tfidf_embed".
 ENCODER_NAME = "tfidf_embed"
 EMBED_MODEL = "sentence-transformers/all-mpnet-base-v2"
-EMBED_TEXT_FIELDS = ["sensory_text", "producer_text"]
+EMBED_TEXT_FIELDS = ["sensory_text"]
 EMBED_BATCH = 32
 EMBED_CACHE_DIR = ROOT / "artifacts" / "rating_baseline"
 
@@ -73,8 +73,8 @@ HGBT_PARAMS = {
     "random_state": 0,
 }
 
-RUN_NAME = "exp15_mpnet"
-RUN_DESCRIPTION = "swap embedding model MiniLM-L6 -> mpnet-base-v2 (768-dim, higher STS quality)"
+RUN_NAME = "exp19_embed_sensory_only"
+RUN_DESCRIPTION = "drop producer_text from EMBED_TEXT_FIELDS (focus mpnet on sensory)"
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:

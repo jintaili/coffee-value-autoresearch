@@ -28,6 +28,7 @@ RESULTS = ROOT / "autoresearch" / "results.tsv"
 
 STRUCTURED_FIELDS = [
     "origin_country",
+    "origin_region",
     "process_method",
     "variety",
     "is_blend",

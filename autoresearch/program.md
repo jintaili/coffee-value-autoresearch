@@ -55,6 +55,7 @@ Repeat this loop:
 7. Keep the change if it improves `val_concordance` without creating severe bucket bias.
 8. If the result is worse or suspicious, revert or revise the change before continuing.
 9. Leave `autoresearch/results.tsv` as the running experiment ledger.
+10. Commit and push after each accepted iteration so the remote history reflects the experiment sequence.
 
 ## Editable Surface
 
@@ -96,10 +97,10 @@ The following are example experiments. But you should not limit yourself to only
 - test ways to incorporate information from high-cardinality `origin_region` without overfitting
 - test text source choices: `sensory_text` only vs `sensory_text + producer_text`
 - tune TF-IDF `max_features`, `min_df`, `max_df`, and unigram/bigram settings
-- test sentence embeddings for `sensory_text` and `producer_text`, separately and concatenated with Tier 1 features
 - test compressed text representations such as TF-IDF followed by SVD before Ridge or gradient boosting
+- test sentence embeddings for `sensory_text` and `producer_text`
 - test word-vector mean embeddings such as GloVe/FastText as a compact baseline if local vectors are available
-- compare text representations under the same fixed validation split: TF-IDF vs sentence embeddings vs compressed TF-IDF
+- test different regression models
 - other (hyper)parameter tuning
 
 Avoid for now:
@@ -144,4 +145,4 @@ Tie-breakers:
 3. Simpler feature processing.
 4. Lower overfitting.
 
-Flag any candidate that raises concordance by compressing all predictions toward the center. A useful ranking model still needs plausible displayed ratings.
+Flag any candidate that raises concordance by compressing all predictions toward the center, exploiting unstable high-cardinality features, or otherwise showing signs of overfitting. A useful ranking model still needs plausible displayed ratings and robust generalization.

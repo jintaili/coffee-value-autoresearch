@@ -6,3 +6,4 @@ exp03_alpha2	ridge alpha 5 -> 2; continue probing how far we can lower regulariz
 exp04_bigrams	add bigrams (ngram 1-2), max_features 2000 -> 4000; alpha=2	0.919546	0.885467	0.034078	0.862089	1.097520	1.712047	0.600598	0.863126
 exp06_maxfeat6000	max_features 4000 -> 6000 (give bigrams more room), alpha=2	0.924977	0.888632	0.036345	0.866870	1.077894	1.680116	0.615557	0.869858
 exp09_alpha1_bigrams	alpha 2 -> 1 with bigrams+max_features=6000 (re-sweep alpha at new feature set)	0.934912	0.890335	0.044577	0.869489	1.073604	1.653714	0.606582	0.875093
+exp13_tfidf_plus_embed_ridge	TF-IDF (6000) + MiniLM embeddings hstacked, ridge alpha=1	0.939847	0.891369	0.048478	0.870548	1.047700	1.556474	0.623785	0.867614

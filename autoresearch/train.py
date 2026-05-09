@@ -37,7 +37,9 @@ STRUCTURED_FIELDS = [
     "producer_or_farm_present",
     "altitude_present",
     "roaster_country",
+    "roaster",
 ]
+STRUCTURED_MIN_DF = 10  # Clip values appearing fewer than this many train rows to "unknown".
 
 TEXT_FIELDS = ["sensory_text", "producer_text"]
 MAX_FEATURES = 6000
@@ -66,8 +68,8 @@ HGBT_PARAMS = {
     "random_state": 0,
 }
 
-RUN_NAME = "exp13_tfidf_plus_embed_ridge"
-RUN_DESCRIPTION = "TF-IDF (6000) + MiniLM embeddings hstacked, ridge alpha=1"
+RUN_NAME = "exp14_add_roaster"
+RUN_DESCRIPTION = "hybrid + add roaster (clipped, min_df=10) to STRUCTURED_FIELDS; ridge alpha=1"
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
@@ -93,6 +95,28 @@ def ngrams(text: str, n_max: int = NGRAM_MAX) -> list[str]:
     return grams
 
 
+def build_structured_vocab(rows: list[dict[str, str]]) -> dict[tuple[str, str], int]:
+    """One-hot vocab over STRUCTURED_FIELDS, clipping rare values to "unknown"."""
+    counts: dict[str, Counter] = {f: Counter() for f in STRUCTURED_FIELDS}
+    for row in rows:
+        for field in STRUCTURED_FIELDS:
+            counts[field][row.get(field) or "unknown"] += 1
+    vocab: dict[tuple[str, str], int] = {}
+    for field in STRUCTURED_FIELDS:
+        kept = {value for value, c in counts[field].items() if c >= STRUCTURED_MIN_DF}
+        kept.add("unknown")
+        for value in sorted(kept):
+            vocab[(field, value)] = len(vocab)
+    return vocab
+
+
+def clip_value(vocab: dict[tuple[str, str], int], field: str, raw: str | None) -> str:
+    value = raw or "unknown"
+    if (field, value) in vocab:
+        return value
+    return "unknown"
+
+
 def rating_bucket(rating: float) -> str:
     if rating <= 89:
         return "<=89"
@@ -112,12 +136,7 @@ class FeatureEncoder:
         self.feature_names: list[str] = []
 
     def fit(self, rows: list[dict[str, str]]) -> None:
-        structured = {}
-        for field in STRUCTURED_FIELDS:
-            values = sorted({(row.get(field) or "unknown") for row in rows})
-            for value in values:
-                structured[(field, value)] = len(structured)
-        self.structured_vocab = structured
+        self.structured_vocab = build_structured_vocab(rows)
 
         df = Counter()
         for row in rows:
@@ -150,8 +169,8 @@ class FeatureEncoder:
         data = []
         for row in rows:
             for field in STRUCTURED_FIELDS:
-                key = (field, row.get(field) or "unknown")
-                idx = self.structured_vocab.get(key)
+                value = clip_value(self.structured_vocab, field, row.get(field))
+                idx = self.structured_vocab.get((field, value))
                 if idx is not None:
                     indices.append(idx)
                     data.append(1.0)
@@ -224,12 +243,7 @@ class EmbeddingFeatureEncoder:
 
     def fit(self, rows: list[dict[str, str]]) -> None:
         self._load_cache()
-        structured = {}
-        for field in STRUCTURED_FIELDS:
-            values = sorted({(row.get(field) or "unknown") for row in rows})
-            for value in values:
-                structured[(field, value)] = len(structured)
-        self.structured_vocab = structured
+        self.structured_vocab = build_structured_vocab(rows)
 
         sample_vec = self._embed_texts([rows[0].get(self.text_fields[0], "") or " "])[0]
         self.embed_dim = int(sample_vec.shape[0])
@@ -249,8 +263,8 @@ class EmbeddingFeatureEncoder:
         out = np.zeros((n, n_struct + n_emb), dtype=np.float32)
         for i, row in enumerate(rows):
             for field in STRUCTURED_FIELDS:
-                key = (field, row.get(field) or "unknown")
-                idx = self.structured_vocab.get(key)
+                value = clip_value(self.structured_vocab, field, row.get(field))
+                idx = self.structured_vocab.get((field, value))
                 if idx is not None:
                     out[i, idx] = 1.0
         for fi, field in enumerate(self.text_fields):

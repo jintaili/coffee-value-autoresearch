@@ -39,13 +39,13 @@ STRUCTURED_FIELDS = [
 ]
 
 TEXT_FIELDS = ["sensory_text", "producer_text"]
-MAX_FEATURES = 4000
+MAX_FEATURES = 6000
 MIN_DF = 5
 MAX_DF = 0.85
 NGRAM_MAX = 2
 RIDGE_ALPHA = 2.0
-RUN_NAME = "exp04_bigrams"
-RUN_DESCRIPTION = "add bigrams (ngram 1-2), max_features 2000 -> 4000; alpha=2"
+RUN_NAME = "exp06_maxfeat6000"
+RUN_DESCRIPTION = "max_features 4000 -> 6000 (give bigrams more room), alpha=2"
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:

@@ -1,2 +1,12 @@
 run	model	text	alpha	max_features	min_df	val_concordance	spearman	mae	rmse	within_1	within_2
 rating_baseline	ridge	sensory_text+producer_text	25.0	2000	5	0.848158	0.805264	1.392207	2.249024	0.511593	0.801047
+rating_baseline	ridge	sensory_text+producer_text	25.0	2000	5	0.848158	0.805264	1.392207	2.249024	0.511593	0.801047
+rating_baseline	ridge	sensory_text+producer_text	25.0	5000	3	0.841409	0.794397	1.444525	2.317985	0.507853	0.783096
+rating_baseline	ridge	sensory_text+producer_text	25.0	2000	5	0.850662	0.808421	1.355314	2.194733	0.539267	0.803291
+rating_baseline	ridge	sensory_text+producer_text	25.0	2000	5	0.850549	0.808282	1.356293	2.199910	0.539267	0.804787
+rating_baseline	ridge	sensory_text+producer_text	15.0	2000	5	0.862866	0.828023	1.266231	2.033691	0.560957	0.821990
+rating_baseline	ridge	sensory_text+producer_text	10.0	2000	5	0.870269	0.839524	1.210992	1.920702	0.569933	0.833209
+rating_baseline	ridge	sensory_text+producer_text	5.0	2000	5	0.878895	0.852555	1.143582	1.777755	0.590127	0.850411
+rating_baseline	ridge	sensory_text+producer_text	2.0	2000	5	0.883198	0.858884	1.109484	1.697322	0.587883	0.861631
+rating_baseline	ridge	sensory_text+producer_text	1.0	2000	5	0.882233	0.857137	1.122964	1.701181	0.592371	0.856395
+rating_baseline	ridge	sensory_text+producer_text	2.0	2000	5	0.883198	0.858884	1.109484	1.697322	0.587883	0.861631

@@ -5,3 +5,4 @@ exp02_alpha5	ridge alpha 10 -> 5; same features as exp01 (continue decompressing
 exp03_alpha2	ridge alpha 5 -> 2; continue probing how far we can lower regularization	0.913417	0.882415	0.031003	0.858225	1.118557	1.726111	0.577412	0.863874
 exp04_bigrams	add bigrams (ngram 1-2), max_features 2000 -> 4000; alpha=2	0.919546	0.885467	0.034078	0.862089	1.097520	1.712047	0.600598	0.863126
 exp06_maxfeat6000	max_features 4000 -> 6000 (give bigrams more room), alpha=2	0.924977	0.888632	0.036345	0.866870	1.077894	1.680116	0.615557	0.869858
+exp09_alpha1_bigrams	alpha 2 -> 1 with bigrams+max_features=6000 (re-sweep alpha at new feature set)	0.934912	0.890335	0.044577	0.869489	1.073604	1.653714	0.606582	0.875093

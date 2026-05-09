@@ -42,20 +42,21 @@ Repeat this loop:
 
 1. Inspect the previous report in `artifacts/rating_baseline/report.json` and prior runs in `autoresearch/results.tsv`.
 2. Choose one hypothesis to test.
-3. Edit only the files needed for that hypothesis.
-4. Run:
+3. Create a new branch for the run, using a concise name such as `experiment/tfidf-min-df-10` or `experiment/process-extraction`.
+4. Edit only the files needed for that hypothesis.
+5. Run:
 
    ```bash
    python3 autoresearch/prepare.py
    python3 autoresearch/train.py
    ```
 
-5. Compare the new `val_concordance` to the previous best.
-6. Inspect calibration diagnostics, especially rating-bucket mean error.
-7. Keep the change if it improves `val_concordance` without creating severe bucket bias.
-8. If the result is worse or suspicious, revert or revise the change before continuing.
-9. Leave `autoresearch/results.tsv` as the running experiment ledger.
-10. Commit and push after each accepted iteration so the remote history reflects the experiment sequence.
+6. Compare the new `val_concordance` to the previous best.
+7. Inspect calibration diagnostics, especially rating-bucket mean error.
+8. Keep the change if it improves `val_concordance` without creating severe bucket bias.
+9. If the result is worse or suspicious, revert or revise the change before continuing.
+10. Leave `autoresearch/results.tsv` as the running experiment ledger.
+11. Commit and push the branch after each accepted iteration so the remote history reflects the experiment sequence.
 
 ## Editable Surface
 

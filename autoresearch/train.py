@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import csv
+import hashlib
 import json
 import math
 import pickle
@@ -44,6 +45,13 @@ MIN_DF = 5
 MAX_DF = 0.85
 NGRAM_MAX = 2
 RIDGE_ALPHA = 1.0
+
+# Encoder dispatch. Supported values: "tfidf", "embed".
+ENCODER_NAME = "tfidf"
+EMBED_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+EMBED_TEXT_FIELDS = ["sensory_text", "producer_text"]
+EMBED_BATCH = 64
+EMBED_CACHE = ROOT / "artifacts" / "rating_baseline" / "embedding_cache.pkl"
 
 # Model dispatch. Supported values: "ridge", "elasticnet", "hgbt".
 MODEL_NAME = "ridge"
@@ -166,16 +174,110 @@ class FeatureEncoder:
         return sparse.csr_matrix((data, indices, indptr), shape=(len(rows), n_struct + n_text))
 
 
-def fit_ridge(x_train: sparse.csr_matrix, y_train: np.ndarray, alpha: float) -> tuple[np.ndarray, float]:
+class EmbeddingFeatureEncoder:
+    """Dense encoder: structured one-hots + sentence embeddings of text fields."""
+
+    def __init__(self, model_name: str = EMBED_MODEL, text_fields: list[str] = EMBED_TEXT_FIELDS):
+        self.model_name = model_name
+        self.text_fields = list(text_fields)
+        self.structured_vocab: dict[tuple[str, str], int] = {}
+        self.feature_names: list[str] = []
+        self.embed_dim: int = 0
+        self._model = None
+        self._cache: dict[str, np.ndarray] = {}
+
+    def _load_model(self):
+        if self._model is None:
+            from sentence_transformers import SentenceTransformer
+
+            self._model = SentenceTransformer(self.model_name)
+        return self._model
+
+    def _load_cache(self):
+        if not self._cache and EMBED_CACHE.exists():
+            with EMBED_CACHE.open("rb") as f:
+                cache = pickle.load(f)
+            if cache.get("model") == self.model_name:
+                self._cache = cache.get("vectors", {})
+
+    def _save_cache(self):
+        EMBED_CACHE.parent.mkdir(parents=True, exist_ok=True)
+        with EMBED_CACHE.open("wb") as f:
+            pickle.dump({"model": self.model_name, "vectors": self._cache}, f)
+
+    def _embed_texts(self, texts: list[str]) -> np.ndarray:
+        keys = [hashlib.sha1(t.encode("utf-8")).hexdigest() for t in texts]
+        missing_idx = [i for i, k in enumerate(keys) if k not in self._cache]
+        if missing_idx:
+            model = self._load_model()
+            batch = [texts[i] for i in missing_idx]
+            vecs = model.encode(
+                batch,
+                batch_size=EMBED_BATCH,
+                convert_to_numpy=True,
+                show_progress_bar=False,
+                normalize_embeddings=True,
+            )
+            for j, i in enumerate(missing_idx):
+                self._cache[keys[i]] = vecs[j].astype(np.float32)
+        return np.stack([self._cache[k] for k in keys])
+
+    def fit(self, rows: list[dict[str, str]]) -> None:
+        self._load_cache()
+        structured = {}
+        for field in STRUCTURED_FIELDS:
+            values = sorted({(row.get(field) or "unknown") for row in rows})
+            for value in values:
+                structured[(field, value)] = len(structured)
+        self.structured_vocab = structured
+
+        sample_vec = self._embed_texts([rows[0].get(self.text_fields[0], "") or " "])[0]
+        self.embed_dim = int(sample_vec.shape[0])
+        self.feature_names = []
+        for (field, value), _ in sorted(self.structured_vocab.items(), key=lambda x: x[1]):
+            self.feature_names.append(f"{field}={value}")
+        for field in self.text_fields:
+            for d in range(self.embed_dim):
+                self.feature_names.append(f"emb:{field}:{d}")
+        self._save_cache()
+
+    def transform(self, rows: list[dict[str, str]]) -> np.ndarray:
+        self._load_cache()
+        n = len(rows)
+        n_struct = len(self.structured_vocab)
+        n_emb = self.embed_dim * len(self.text_fields)
+        out = np.zeros((n, n_struct + n_emb), dtype=np.float32)
+        for i, row in enumerate(rows):
+            for field in STRUCTURED_FIELDS:
+                key = (field, row.get(field) or "unknown")
+                idx = self.structured_vocab.get(key)
+                if idx is not None:
+                    out[i, idx] = 1.0
+        for fi, field in enumerate(self.text_fields):
+            texts = [(row.get(field) or " ") for row in rows]
+            vecs = self._embed_texts(texts)
+            start = n_struct + fi * self.embed_dim
+            out[:, start : start + self.embed_dim] = vecs
+        self._save_cache()
+        return out
+
+
+def fit_ridge(x_train, y_train: np.ndarray, alpha: float) -> tuple[np.ndarray, float]:
     y_mean = float(y_train.mean())
     centered = y_train - y_mean
-    xtx = x_train.T @ x_train
-    reg = sparse.eye(xtx.shape[0], format="csr") * alpha
-    weights = spsolve((xtx + reg).tocsc(), x_train.T @ centered)
+    if sparse.issparse(x_train):
+        xtx = x_train.T @ x_train
+        reg = sparse.eye(xtx.shape[0], format="csr") * alpha
+        weights = spsolve((xtx + reg).tocsc(), x_train.T @ centered)
+    else:
+        x = np.asarray(x_train, dtype=np.float64)
+        xtx = x.T @ x
+        reg = np.eye(xtx.shape[0]) * alpha
+        weights = np.linalg.solve(xtx + reg, x.T @ centered)
     return np.asarray(weights), y_mean
 
 
-def predict(x: sparse.csr_matrix, weights: np.ndarray, intercept: float) -> np.ndarray:
+def predict(x, weights: np.ndarray, intercept: float) -> np.ndarray:
     return np.asarray(x @ weights + intercept).reshape(-1)
 
 
@@ -221,7 +323,8 @@ def fit_model(name: str, x_train: sparse.csr_matrix, y_train: np.ndarray):
         from sklearn.ensemble import HistGradientBoostingRegressor
 
         est = HistGradientBoostingRegressor(**HGBT_PARAMS)
-        est.fit(x_train.toarray(), y_train)
+        x_dense = x_train.toarray() if sparse.issparse(x_train) else np.asarray(x_train)
+        est.fit(x_dense, y_train)
         return HGBTModel(est)
     raise ValueError(f"unknown MODEL_NAME: {name}")
 
@@ -391,7 +494,12 @@ def main() -> None:
     y_train = np.array([float(row["rating"]) for row in train_rows], dtype=float)
     y_validation = np.array([float(row["rating"]) for row in validation_rows], dtype=float)
 
-    encoder = FeatureEncoder()
+    if ENCODER_NAME == "tfidf":
+        encoder = FeatureEncoder()
+    elif ENCODER_NAME == "embed":
+        encoder = EmbeddingFeatureEncoder()
+    else:
+        raise ValueError(f"unknown ENCODER_NAME: {ENCODER_NAME}")
     encoder.fit(train_rows)
     x_train = encoder.transform(train_rows)
     x_validation = encoder.transform(validation_rows)
@@ -412,16 +520,22 @@ def main() -> None:
     ARTIFACT_DIR.mkdir(parents=True, exist_ok=True)
     write_predictions(validation_rows, y_validation, y_pred)
     config: dict[str, object] = {
+        "encoder": ENCODER_NAME,
         "model": MODEL_NAME,
-        "max_features": MAX_FEATURES,
-        "min_df": MIN_DF,
-        "max_df": MAX_DF,
-        "ngram_max": NGRAM_MAX,
         "structured_fields": STRUCTURED_FIELDS,
-        "text_fields": TEXT_FIELDS,
         "train_rows": len(train_rows),
         "validation_rows": len(validation_rows),
     }
+    if ENCODER_NAME == "tfidf":
+        config["max_features"] = MAX_FEATURES
+        config["min_df"] = MIN_DF
+        config["max_df"] = MAX_DF
+        config["ngram_max"] = NGRAM_MAX
+        config["text_fields"] = TEXT_FIELDS
+    elif ENCODER_NAME == "embed":
+        config["embed_model"] = EMBED_MODEL
+        config["embed_text_fields"] = EMBED_TEXT_FIELDS
+        config["embed_dim"] = getattr(encoder, "embed_dim", None)
     if MODEL_NAME == "ridge":
         config["alpha"] = RIDGE_ALPHA
     elif MODEL_NAME == "elasticnet":

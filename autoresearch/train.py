@@ -74,7 +74,7 @@ HGBT_PARAMS = {
     "random_state": 0,
 }
 
-RUN_NAME = "exp21_multihot_variety_process"
+RUN_NAME = "exp29_multihot_variety_process"
 RUN_DESCRIPTION = "split variety/process_method on '|' into multi-hot booleans"
 
 

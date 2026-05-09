@@ -10,25 +10,25 @@ exp07_maxfeat8000	[reset, val gain at noise floor] max_features 6000 -> 8000	0.9
 exp08_add_coffee_name	[reset, val regressed] add coffee_name to TEXT_FIELDS	0.924645	0.887093	0.037552			1.083355		0.610322	0.864622
 exp09_alpha1_bigrams	alpha 2 -> 1 with bigrams+max_features=6000 (re-sweep alpha at new feature set)	0.934912	0.890335	0.044577	0.869489	1.073604	1.653714	0.606582	0.875093
 exp10_elasticnet_l1_0p1	[reset, val flat] ElasticNet alpha=1e-4 l1_ratio=0.1 on bigrams+max_features=6000	0.938351	0.890075	0.048275	0.869152	1.081013	1.658887	0.599850	0.872850
-exp10_elasticnet_50_50	[reset, val regressed] ElasticNet alpha=2e-4 l1_ratio=0.5	0.926859	0.888585	0.038274			1.084813		0.608078	0.869858
-exp11_hgbt_raw	[reset, gap > 0.050] HistGradientBoosting on raw TF-IDF+structured (6000 vocab)	0.944030	0.885597	0.058433	0.863489	1.133033	1.744976	0.603590	0.839940
-exp12_embed_ridge	[reset, val far below tfidf] MiniLM embeddings + structured + ridge alpha=1	0.879290	0.854193	0.025097	0.812167	1.268747	1.843270	0.533283	0.814510
-exp12_embed_hgbt	[reset, gap=0.127, severe overfit] MiniLM embeddings + structured + HGBT	0.995616	0.868143	0.127473	0.834521	1.246640	1.932378	0.575916	0.821990
-exp13_tfidf_plus_embed_ridge	TF-IDF (6000) + MiniLM embeddings hstacked, ridge alpha=1	0.939847	0.891369	0.048478	0.870548	1.047700	1.556474	0.623785	0.867614
-exp14_add_origin_region_no_roaster	[reset, val regressed] hybrid + origin_region (clipped min_df=5), no roaster	0.941198	0.890832	0.050366			1.052327		0.620045	0.864622
-exp14_hybrid_alpha2	[reset, val regressed] hybrid + ridge alpha 1 -> 2	0.929818	0.890303	0.039515			1.048901		0.634256	0.864622
-exp14_hybrid_elasticnet	[reset, val regressed] hybrid + ElasticNet alpha=1e-4 l1_ratio=0.2	0.943143	0.891135	0.052008			1.051969		0.621541	0.870606
-exp14_add_roaster	hybrid + add roaster (clipped, min_df=10) to STRUCTURED_FIELDS; ridge alpha=1	0.939663	0.892607	0.047056	0.872421	1.045438	1.545401	0.626028	0.873598
-exp15_add_origin_region_w_roaster	[reset, val regressed] add origin_region (clipped min_df=10) on top of roaster	0.940617	0.891436	0.049181			1.052959		0.617053	0.872102
-exp15_struct_mindf5	[reset, val flat] STRUCTURED_MIN_DF 10 -> 5	0.941459	0.892490	0.048969			1.042303		0.629768	0.873598
-exp15_alpha_half	[reset, gap > 0.050] hybrid + roaster + alpha 1 -> 0.5	0.948081	0.890397	0.057684			1.062001		0.604338	0.866866
-exp15_mpnet	swap embedding model MiniLM-L6 -> mpnet-base-v2 (768-dim, higher STS quality)	0.942793	0.894922	0.047871	0.876211	1.030286	1.516715	0.623785	0.876589
-exp16_trigrams	[reset, val regressed] NGRAM_MAX 2 -> 3 (trigrams crowd out useful bigrams in 6000 vocab budget)	0.937998	0.891928	0.046070	0.872250	1.051479	1.537743	0.610322	0.869110
-exp17_embed_coffee_name	[reset, val regressed] add coffee_name to EMBED_TEXT_FIELDS	0.945264	0.892984	0.052280	0.873642	1.043050	1.519326	0.611818	0.875093
-exp18_alpha_1p5	[reset, val regressed marginally] mpnet hybrid + alpha 1 -> 1.5	0.937430	0.894373	0.043057	0.875242	1.030106	1.516717	0.624533	0.878833
-exp19_embed_sensory_only	drop producer_text from EMBED_TEXT_FIELDS (focus mpnet on sensory)	0.940764	0.896230	0.044534	0.877929	1.024724	1.526205	0.628272	0.875841
-exp20_alpha2_lean	[reset, val regressed] exp19 + alpha 1 -> 2	0.931561	0.894299	0.037262	0.873475	1.033892	1.523554	0.623037	0.875841
-exp21_multihot_variety_process	split variety/process_method on '|' into multi-hot booleans	0.940494	0.896442	0.044052	0.878433	1.023973	1.525796	0.627524	0.878085
-exp22_maxfeat4000	[reset, val regressed] max_features 6000 -> 4000 (semantic embeddings may cover low-rank TFIDF tail)	0.934286	0.893027	0.041258	0.873177	1.047251	1.558174	0.614809	0.867614
-exp23_embed_hgbt_mpnet	[reset, gap=0.124 severe overfit] mpnet embeddings (sensory) + structured (incl roaster, multihot) + HGBT	0.994091	0.870106	0.123985	0.839024	1.241260	1.919886	0.583396	0.824233
-exp24_embed_combined_text	[reset, val regressed] embed sensory+producer concatenated as one document (single 768-dim instead of two)	0.937439	0.893147	0.044291	0.873418	1.043558	1.571424	0.623037	0.871354
+exp11_elasticnet_50_50	[reset, val regressed] ElasticNet alpha=2e-4 l1_ratio=0.5	0.926859	0.888585	0.038274			1.084813		0.608078	0.869858
+exp12_hgbt_raw	[reset, gap > 0.050] HistGradientBoosting on raw TF-IDF+structured (6000 vocab)	0.944030	0.885597	0.058433	0.863489	1.133033	1.744976	0.603590	0.839940
+exp13_embed_ridge	[reset, val far below tfidf] MiniLM embeddings + structured + ridge alpha=1	0.879290	0.854193	0.025097	0.812167	1.268747	1.843270	0.533283	0.814510
+exp14_embed_hgbt	[reset, gap=0.127, severe overfit] MiniLM embeddings + structured + HGBT	0.995616	0.868143	0.127473	0.834521	1.246640	1.932378	0.575916	0.821990
+exp15_tfidf_plus_embed_ridge	TF-IDF (6000) + MiniLM embeddings hstacked, ridge alpha=1	0.939847	0.891369	0.048478	0.870548	1.047700	1.556474	0.623785	0.867614
+exp16_add_origin_region_no_roaster	[reset, val regressed] hybrid + origin_region (clipped min_df=5), no roaster	0.941198	0.890832	0.050366			1.052327		0.620045	0.864622
+exp17_hybrid_alpha2	[reset, val regressed] hybrid + ridge alpha 1 -> 2	0.929818	0.890303	0.039515			1.048901		0.634256	0.864622
+exp18_hybrid_elasticnet	[reset, val regressed] hybrid + ElasticNet alpha=1e-4 l1_ratio=0.2	0.943143	0.891135	0.052008			1.051969		0.621541	0.870606
+exp19_add_roaster	hybrid + add roaster (clipped, min_df=10) to STRUCTURED_FIELDS; ridge alpha=1	0.939663	0.892607	0.047056	0.872421	1.045438	1.545401	0.626028	0.873598
+exp20_add_origin_region_w_roaster	[reset, val regressed] add origin_region (clipped min_df=10) on top of roaster	0.940617	0.891436	0.049181			1.052959		0.617053	0.872102
+exp21_struct_mindf5	[reset, val flat] STRUCTURED_MIN_DF 10 -> 5	0.941459	0.892490	0.048969			1.042303		0.629768	0.873598
+exp22_alpha_half	[reset, gap > 0.050] hybrid + roaster + alpha 1 -> 0.5	0.948081	0.890397	0.057684			1.062001		0.604338	0.866866
+exp23_mpnet	swap embedding model MiniLM-L6 -> mpnet-base-v2 (768-dim, higher STS quality)	0.942793	0.894922	0.047871	0.876211	1.030286	1.516715	0.623785	0.876589
+exp24_trigrams	[reset, val regressed] NGRAM_MAX 2 -> 3 (trigrams crowd out useful bigrams in 6000 vocab budget)	0.937998	0.891928	0.046070	0.872250	1.051479	1.537743	0.610322	0.869110
+exp25_embed_coffee_name	[reset, val regressed] add coffee_name to EMBED_TEXT_FIELDS	0.945264	0.892984	0.052280	0.873642	1.043050	1.519326	0.611818	0.875093
+exp26_alpha_1p5	[reset, val regressed marginally] mpnet hybrid + alpha 1 -> 1.5	0.937430	0.894373	0.043057	0.875242	1.030106	1.516717	0.624533	0.878833
+exp27_embed_sensory_only	drop producer_text from EMBED_TEXT_FIELDS (focus mpnet on sensory)	0.940764	0.896230	0.044534	0.877929	1.024724	1.526205	0.628272	0.875841
+exp28_alpha2_lean	[reset, val regressed] exp27 + alpha 1 -> 2	0.931561	0.894299	0.037262	0.873475	1.033892	1.523554	0.623037	0.875841
+exp29_multihot_variety_process	split variety/process_method on '|' into multi-hot booleans	0.940494	0.896442	0.044052	0.878433	1.023973	1.525796	0.627524	0.878085
+exp30_maxfeat4000	[reset, val regressed] max_features 6000 -> 4000 (semantic embeddings may cover low-rank TFIDF tail)	0.934286	0.893027	0.041258	0.873177	1.047251	1.558174	0.614809	0.867614
+exp31_embed_hgbt_mpnet	[reset, gap=0.124 severe overfit] mpnet embeddings (sensory) + structured (incl roaster, multihot) + HGBT	0.994091	0.870106	0.123985	0.839024	1.241260	1.919886	0.583396	0.824233
+exp32_embed_combined_text	[reset, val regressed] embed sensory+producer concatenated as one document (single 768-dim instead of two)	0.937439	0.893147	0.044291	0.873418	1.043558	1.571424	0.623037	0.871354

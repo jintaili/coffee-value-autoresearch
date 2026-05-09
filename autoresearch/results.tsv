@@ -28,3 +28,5 @@ exp17_embed_coffee_name	[reset, val regressed] add coffee_name to EMBED_TEXT_FIE
 exp18_alpha_1p5	mpnet hybrid + alpha 1 -> 1.5 (re-sweep with mpnet block)	0.937430	0.894373	0.043057	0.875391	1.030106	1.519798	0.624533	0.878833
 exp18_alpha_1p5	[reset, val regressed marginally] mpnet hybrid + alpha 1 -> 1.5	0.937430	0.894373	0.043057	0.875242	1.030106	1.516717	0.624533	0.878833
 exp19_embed_sensory_only	drop producer_text from EMBED_TEXT_FIELDS (focus mpnet on sensory)	0.940764	0.896230	0.044534	0.877929	1.024724	1.526205	0.628272	0.875841
+exp20_alpha2_lean	exp19 + alpha 1 -> 2 (re-sweep alpha after dropping producer_text from embeddings)	0.931561	0.894299	0.037262	0.875166	1.033892	1.546630	0.623037	0.875841
+exp20_alpha2_lean	[reset, val regressed] exp19 + alpha 1 -> 2	0.931561	0.894299	0.037262	0.873475	1.033892	1.523554	0.623037	0.875841

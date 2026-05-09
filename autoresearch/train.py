@@ -270,20 +270,17 @@ def write_results(metric_values: dict[str, float]) -> None:
         "val_within_1",
         "val_within_2",
     ]
-    with RESULTS.open("w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(
-            f,
-            delimiter="\t",
-            fieldnames=fieldnames,
-        )
-        writer.writeheader()
-        writer.writerow(
-            {
-                "run": RUN_NAME,
-                "description": RUN_DESCRIPTION,
-                **{k: f"{metric_values[k]:.6f}" for k in fieldnames if k in metric_values},
-            }
-        )
+    row = {
+        "run": RUN_NAME,
+        "description": RUN_DESCRIPTION,
+        **{k: f"{metric_values[k]:.6f}" for k in fieldnames if k in metric_values},
+    }
+    write_header = not RESULTS.exists() or RESULTS.stat().st_size == 0
+    with RESULTS.open("a", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, delimiter="\t", fieldnames=fieldnames)
+        if write_header:
+            writer.writeheader()
+        writer.writerow(row)
 
 
 def top_coefficients(encoder: FeatureEncoder, weights: np.ndarray, n: int = 40) -> dict[str, list[dict[str, object]]]:

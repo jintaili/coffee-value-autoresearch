@@ -1,0 +1,2 @@
+commit	val_rmsle	overfit_gap	status	description
+65118f9	0.351530	0.016437	keep	baseline: exp15-aligned deterministic features + unigram/bigram tfidf + ridge on log1p real USD/100g

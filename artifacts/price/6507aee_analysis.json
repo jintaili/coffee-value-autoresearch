@@ -1,0 +1,2998 @@
+{
+  "ledger_commit": "6507aee",
+  "setup_commit": "6507aee",
+  "metrics": {
+    "train_mean_true": 11.684886364599894,
+    "train_mean_pred": 10.501573593229548,
+    "train_mean_error": -1.1833127713703464,
+    "train_mae": 2.4692275395951544,
+    "train_median_ae": 0.6758264507961487,
+    "train_p90_ae": 3.415803604979894,
+    "train_rmsle": 0.17304645437607943,
+    "val_mean_true": 12.185239853000002,
+    "val_mean_pred": 10.10592488001094,
+    "val_mean_error": -2.07931497298906,
+    "val_mae": 3.8750307247076763,
+    "val_median_ae": 0.9684717632957656,
+    "val_p90_ae": 5.098571704012126,
+    "val_rmsle": 0.25916607429018024,
+    "overfit_gap": 0.4976676362691502,
+    "val_spearman": 0.7878334763720073
+  },
+  "config": {
+    "target": "log(price_usd_per_100g_real)",
+    "model": "elasticnet",
+    "alpha": 0.0001,
+    "l1_ratio": 0.1,
+    "max_features": 24000,
+    "min_df": 5,
+    "max_df": 0.85,
+    "ngram_max": 2,
+    "structured_fields": [
+      "origin_country",
+      "process_method",
+      "variety",
+      "is_blend",
+      "is_espresso",
+      "is_decaf",
+      "producer_or_farm_present",
+      "altitude_present",
+      "roaster_country"
+    ],
+    "text_fields": [
+      "sensory_text",
+      "producer_text"
+    ],
+    "package_features": [
+      "package_grams_log_z",
+      "package_grams_missing",
+      "package_grams_le_20",
+      "package_grams_le_50",
+      "package_grams_le_100"
+    ],
+    "train_rows": 5661,
+    "validation_rows": 1000
+  },
+  "decile_stats": [
+    {
+      "count": 100,
+      "mean_true": 3.8242471099999995,
+      "mean_pred": 5.031682624255539,
+      "mean_error": 1.207435514255538,
+      "mae": 1.4141887030990272,
+      "median_ae": 0.9982079162948543,
+      "p90_ae": 2.9363330646711745,
+      "rmsle": 0.374266413629871,
+      "decile": 0,
+      "min_true": 0.16704,
+      "max_true": 4.770482
+    },
+    {
+      "count": 100,
+      "mean_true": 5.158223799999999,
+      "mean_pred": 5.760474338810579,
+      "mean_error": 0.6022505388105788,
+      "mae": 1.024349536000994,
+      "median_ae": 0.7066513894464963,
+      "p90_ae": 1.8984591543182243,
+      "rmsle": 0.21108724049790775,
+      "decile": 1,
+      "min_true": 4.780222,
+      "max_true": 5.473364
+    },
+    {
+      "count": 100,
+      "mean_true": 5.693446819999999,
+      "mean_pred": 6.185960968820408,
+      "mean_error": 0.49251414882040784,
+      "mae": 0.9204144102232044,
+      "median_ae": 0.6390885327990863,
+      "p90_ae": 2.1895467592661926,
+      "rmsle": 0.1687764332334061,
+      "decile": 2,
+      "min_true": 5.479389,
+      "max_true": 5.923112
+    },
+    {
+      "count": 100,
+      "mean_true": 6.153659990000001,
+      "mean_pred": 6.444217427803348,
+      "mean_error": 0.29055743780334886,
+      "mae": 0.8502396551960101,
+      "median_ae": 0.6205084246471242,
+      "p90_ae": 1.7781521569244214,
+      "rmsle": 0.15367648981921284,
+      "decile": 3,
+      "min_true": 5.936701,
+      "max_true": 6.40728
+    },
+    {
+      "count": 100,
+      "mean_true": 6.643782970000001,
+      "mean_pred": 6.725676798980299,
+      "mean_error": 0.08189382898029934,
+      "mae": 0.7224939936052962,
+      "median_ae": 0.5445830607666693,
+      "p90_ae": 1.6652602304371529,
+      "rmsle": 0.13120929642044094,
+      "decile": 4,
+      "min_true": 6.408196,
+      "max_true": 6.878452
+    },
+    {
+      "count": 100,
+      "mean_true": 7.168001239999999,
+      "mean_pred": 7.081003176439582,
+      "mean_error": -0.0869980635604184,
+      "mae": 0.8883699933941187,
+      "median_ae": 0.6982296425248351,
+      "p90_ae": 1.7042116808159977,
+      "rmsle": 0.14382212363589061,
+      "decile": 5,
+      "min_true": 6.896425,
+      "max_true": 7.44896
+    },
+    {
+      "count": 100,
+      "mean_true": 7.89641799,
+      "mean_pred": 7.543397692439535,
+      "mean_error": -0.35302029756046593,
+      "mae": 1.374209602163473,
+      "median_ae": 0.9473267429405152,
+      "p90_ae": 2.404964784557634,
+      "rmsle": 0.21972688478553115,
+      "decile": 6,
+      "min_true": 7.451466,
+      "max_true": 8.494795
+    },
+    {
+      "count": 100,
+      "mean_true": 9.51762218,
+      "mean_pred": 9.306282698873208,
+      "mean_error": -0.21133948112679224,
+      "mae": 1.8877119081261466,
+      "median_ae": 1.5667622595964925,
+      "p90_ae": 3.7476476079029752,
+      "rmsle": 0.22775935440505285,
+      "decile": 7,
+      "min_true": 8.544276,
+      "max_true": 10.88125
+    },
+    {
+      "count": 100,
+      "mean_true": 13.58803668,
+      "mean_pred": 12.725341081736236,
+      "mean_error": -0.8626955982637662,
+      "mae": 3.2589909448890317,
+      "median_ae": 3.300624934442286,
+      "p90_ae": 5.654777223923539,
+      "rmsle": 0.3021312959605309,
+      "decile": 8,
+      "min_true": 10.926728,
+      "max_true": 18.619802
+    },
+    {
+      "count": 100,
+      "mean_true": 56.208959750000005,
+      "mean_pred": 34.255211991950674,
+      "mean_error": -21.95374775804933,
+      "mae": 26.409338500379462,
+      "median_ae": 7.887187763603448,
+      "p90_ae": 23.682328176439402,
+      "rmsle": 0.4534282645465157,
+      "decile": 9,
+      "min_true": 18.713478,
+      "max_true": 2044.331439
+    }
+  ],
+  "slices": {
+    "origin_country": [
+      {
+        "field": "origin_country",
+        "value": "Panama",
+        "count": 48,
+        "mean_true": 74.68183495833334,
+        "mean_pred": 41.707603262847904,
+        "mean_error": -32.97423169548543,
+        "mae": 41.49717950798248,
+        "median_ae": 5.768265022765308,
+        "p90_ae": 24.350938024099868,
+        "rmsle": 0.4276499434089134
+      },
+      {
+        "field": "origin_country",
+        "value": "unknown",
+        "count": 87,
+        "mean_true": 14.929236252873569,
+        "mean_pred": 13.473195481757129,
+        "mean_error": -1.4560407711164312,
+        "mae": 3.5142088211198206,
+        "median_ae": 1.7433792735913674,
+        "p90_ae": 8.535835011520463,
+        "rmsle": 0.29780215831236223
+      },
+      {
+        "field": "origin_country",
+        "value": "blend_multi_origin",
+        "count": 87,
+        "mean_true": 5.903800942528736,
+        "mean_pred": 5.96033977116286,
+        "mean_error": 0.05653882863412495,
+        "mae": 1.245968581678613,
+        "median_ae": 0.7820040487876234,
+        "p90_ae": 2.881175881519223,
+        "rmsle": 0.2784340775484683
+      },
+      {
+        "field": "origin_country",
+        "value": "Brazil",
+        "count": 23,
+        "mean_true": 8.408730869565217,
+        "mean_pred": 7.847355268991382,
+        "mean_error": -0.5613756005738347,
+        "mae": 2.1112785617162215,
+        "median_ae": 1.169207694470515,
+        "p90_ae": 4.255800976783531,
+        "rmsle": 0.2686260278796796
+      },
+      {
+        "field": "origin_country",
+        "value": "Ethiopia",
+        "count": 235,
+        "mean_true": 8.604221472340425,
+        "mean_pred": 7.8845044131093465,
+        "mean_error": -0.7197170592310786,
+        "mae": 2.200252851946542,
+        "median_ae": 0.9071937655501454,
+        "p90_ae": 3.9077383422381256,
+        "rmsle": 0.26073828994054693
+      },
+      {
+        "field": "origin_country",
+        "value": "Colombia",
+        "count": 102,
+        "mean_true": 10.534760352941177,
+        "mean_pred": 9.717395571359013,
+        "mean_error": -0.8173647815821624,
+        "mae": 2.410558355367958,
+        "median_ae": 1.1691716761229158,
+        "p90_ae": 5.694601618120566,
+        "rmsle": 0.2526610535300511
+      },
+      {
+        "field": "origin_country",
+        "value": "Guatemala",
+        "count": 57,
+        "mean_true": 8.372735263157894,
+        "mean_pred": 7.630884199457339,
+        "mean_error": -0.7418510637005568,
+        "mae": 1.431220271699614,
+        "median_ae": 0.7459314042419969,
+        "p90_ae": 2.326781675340952,
+        "rmsle": 0.22875141828162454
+      },
+      {
+        "field": "origin_country",
+        "value": "El Salvador",
+        "count": 33,
+        "mean_true": 7.302796606060606,
+        "mean_pred": 7.3020050517885275,
+        "mean_error": -0.0007915542720789678,
+        "mae": 1.401645054887257,
+        "median_ae": 0.8617090155260856,
+        "p90_ae": 2.994583595712363,
+        "rmsle": 0.22786225426572465
+      },
+      {
+        "field": "origin_country",
+        "value": "Costa Rica",
+        "count": 47,
+        "mean_true": 8.482158617021277,
+        "mean_pred": 7.778610267536559,
+        "mean_error": -0.7035483494847181,
+        "mae": 1.4928547459504713,
+        "median_ae": 0.7462216882939314,
+        "p90_ae": 2.2846122699088367,
+        "rmsle": 0.18516770016672943
+      },
+      {
+        "field": "origin_country",
+        "value": "Indonesia",
+        "count": 42,
+        "mean_true": 6.360491976190476,
+        "mean_pred": 6.125235524443942,
+        "mean_error": -0.23525645174653328,
+        "mae": 0.9138809962178921,
+        "median_ae": 0.6956838671226895,
+        "p90_ae": 1.6839831012032522,
+        "rmsle": 0.1746267462269428
+      },
+      {
+        "field": "origin_country",
+        "value": "Kenya",
+        "count": 88,
+        "mean_true": 8.353012386363634,
+        "mean_pred": 8.065217134817532,
+        "mean_error": -0.28779525154610397,
+        "mae": 1.3264927160982454,
+        "median_ae": 0.6260961292431433,
+        "p90_ae": 2.507778079312891,
+        "rmsle": 0.16922814525827634
+      }
+    ],
+    "roaster_country": [
+      {
+        "field": "roaster_country",
+        "value": "Taiwan",
+        "count": 227,
+        "mean_true": 11.308666894273127,
+        "mean_pred": 10.984669776675842,
+        "mean_error": -0.3239971175972866,
+        "mae": 3.604461683071411,
+        "median_ae": 1.6447062287244663,
+        "p90_ae": 7.174770300204985,
+        "rmsle": 0.32342719808536863
+      },
+      {
+        "field": "roaster_country",
+        "value": "Canada",
+        "count": 30,
+        "mean_true": 5.687630866666668,
+        "mean_pred": 5.3611284334828735,
+        "mean_error": -0.32650243318379374,
+        "mae": 1.120615939318789,
+        "median_ae": 0.9127642789602046,
+        "p90_ae": 2.2223037609058034,
+        "rmsle": 0.2298393529488266
+      },
+      {
+        "field": "roaster_country",
+        "value": "United States",
+        "count": 688,
+        "mean_true": 12.785297614825582,
+        "mean_pred": 10.00832686836706,
+        "mean_error": -2.7769707464585203,
+        "mae": 4.102737067172597,
+        "median_ae": 0.7780372860848708,
+        "p90_ae": 4.502236975534768,
+        "rmsle": 0.21045423356777518
+      }
+    ],
+    "process_method": [
+      {
+        "field": "process_method",
+        "value": "natural|washed",
+        "count": 112,
+        "mean_true": 11.518218410714285,
+        "mean_pred": 10.653377272937762,
+        "mean_error": -0.8648411377765218,
+        "mae": 3.253869767713629,
+        "median_ae": 1.3940695755282735,
+        "p90_ae": 6.274784578264261,
+        "rmsle": 0.3344114041204199
+      },
+      {
+        "field": "process_method",
+        "value": "honey",
+        "count": 67,
+        "mean_true": 11.340978626865672,
+        "mean_pred": 10.159591010967185,
+        "mean_error": -1.181387615898487,
+        "mae": 2.8957837143235983,
+        "median_ae": 1.2213595276524014,
+        "p90_ae": 5.923230116200904,
+        "rmsle": 0.3004146251218833
+      },
+      {
+        "field": "process_method",
+        "value": "anaerobic|natural",
+        "count": 32,
+        "mean_true": 15.711362625,
+        "mean_pred": 14.246784936002038,
+        "mean_error": -1.4645776889979616,
+        "mae": 3.4140197066547424,
+        "median_ae": 2.433663265030744,
+        "p90_ae": 5.5700591025633654,
+        "rmsle": 0.26725400040353237
+      },
+      {
+        "field": "process_method",
+        "value": "honey|natural",
+        "count": 32,
+        "mean_true": 11.0672453125,
+        "mean_pred": 10.885581441305748,
+        "mean_error": -0.18166387119425204,
+        "mae": 2.306217833987771,
+        "median_ae": 1.1342141393396954,
+        "p90_ae": 4.238549771723689,
+        "rmsle": 0.24421192613589898
+      },
+      {
+        "field": "process_method",
+        "value": "washed",
+        "count": 271,
+        "mean_true": 16.669312911439118,
+        "mean_pred": 10.730412575801846,
+        "mean_error": -5.93890033563727,
+        "mae": 7.429874940350662,
+        "median_ae": 0.8617090155260856,
+        "p90_ae": 4.887608610920887,
+        "rmsle": 0.24249810834787788
+      },
+      {
+        "field": "process_method",
+        "value": "unknown",
+        "count": 254,
+        "mean_true": 7.692086287401574,
+        "mean_pred": 7.207623552846205,
+        "mean_error": -0.48446273455537,
+        "mae": 1.6600793332907242,
+        "median_ae": 0.7910673562735391,
+        "p90_ae": 3.0450041075083476,
+        "rmsle": 0.2405418014701419
+      },
+      {
+        "field": "process_method",
+        "value": "natural",
+        "count": 118,
+        "mean_true": 14.17247316101695,
+        "mean_pred": 13.086940022854522,
+        "mean_error": -1.085533138162425,
+        "mae": 3.864765159161521,
+        "median_ae": 1.3009839060443822,
+        "p90_ae": 7.477041708068101,
+        "rmsle": 0.23871677031917102
+      },
+      {
+        "field": "process_method",
+        "value": "honey|washed",
+        "count": 45,
+        "mean_true": 8.24593171111111,
+        "mean_pred": 8.349940310414652,
+        "mean_error": 0.10400859930354105,
+        "mae": 1.3820164677787536,
+        "median_ae": 0.8683630425941002,
+        "p90_ae": 3.693147355733108,
+        "rmsle": 0.19886798021417998
+      }
+    ],
+    "variety": [
+      {
+        "field": "variety",
+        "value": "gesha",
+        "count": 82,
+        "mean_true": 51.2514642195122,
+        "mean_pred": 31.13665663808863,
+        "mean_error": -20.114807581423563,
+        "mae": 27.084727225948633,
+        "median_ae": 5.321561094993415,
+        "p90_ae": 20.704442713442123,
+        "rmsle": 0.4461753569965796
+      },
+      {
+        "field": "variety",
+        "value": "unknown",
+        "count": 592,
+        "mean_true": 7.724866886824324,
+        "mean_pred": 7.368521555668797,
+        "mean_error": -0.3563453311555277,
+        "mae": 1.6514925968709397,
+        "median_ae": 0.8665323578088397,
+        "p90_ae": 3.454868163934903,
+        "rmsle": 0.24266115646455239
+      },
+      {
+        "field": "variety",
+        "value": "bourbon",
+        "count": 89,
+        "mean_true": 9.633958370786516,
+        "mean_pred": 9.009397192825356,
+        "mean_error": -0.6245611779611604,
+        "mae": 1.572741411202152,
+        "median_ae": 0.7787772262961568,
+        "p90_ae": 3.673893776746645,
+        "rmsle": 0.2260038313722758
+      },
+      {
+        "field": "variety",
+        "value": "caturra",
+        "count": 29,
+        "mean_true": 7.946673172413794,
+        "mean_pred": 8.001746857877134,
+        "mean_error": 0.055073685463339024,
+        "mae": 1.3605775477460058,
+        "median_ae": 0.9556938781467457,
+        "p90_ae": 3.6413885502862087,
+        "rmsle": 0.1877363497218452
+      }
+    ],
+    "is_espresso": [
+      {
+        "field": "is_espresso",
+        "value": "1",
+        "count": 164,
+        "mean_true": 7.498493554878048,
+        "mean_pred": 7.210274201535618,
+        "mean_error": -0.2882193533424313,
+        "mae": 1.8900437274133435,
+        "median_ae": 1.0015746597241653,
+        "p90_ae": 4.341085337974791,
+        "rmsle": 0.3155988703158818
+      },
+      {
+        "field": "is_espresso",
+        "value": "0",
+        "count": 836,
+        "mean_true": 13.104649413875597,
+        "mean_pred": 10.673971185357775,
+        "mean_error": -2.4306782285178246,
+        "mae": 4.264430087813263,
+        "median_ae": 0.9627618949970866,
+        "p90_ae": 5.350650585462332,
+        "rmsle": 0.2465848553056313
+      }
+    ],
+    "is_blend": [
+      {
+        "field": "is_blend",
+        "value": "0",
+        "count": 840,
+        "mean_true": 13.271448370238096,
+        "mean_pred": 10.805695876700067,
+        "mean_error": -2.465752493538028,
+        "mae": 4.356416216547705,
+        "median_ae": 1.0384899688081743,
+        "p90_ae": 5.589808959500804,
+        "rmsle": 0.2600726339511177
+      },
+      {
+        "field": "is_blend",
+        "value": "1",
+        "count": 160,
+        "mean_true": 6.4826451375000005,
+        "mean_pred": 6.4321271473930235,
+        "mean_error": -0.050517990106976066,
+        "mae": 1.3477568925475198,
+        "median_ae": 0.8517578244169903,
+        "p90_ae": 3.153934219611152,
+        "rmsle": 0.25435363081685486
+      }
+    ]
+  },
+  "worst_cases": {
+    "largest_abs_error": [
+      {
+        "row_id": "562",
+        "coffee_name": "Panama Kaizen Lot GW-01",
+        "roaster": "Paradise Roasters",
+        "review_date": "2025-01-01",
+        "price_raw": "$400.00/20 grams",
+        "true": 2044.331439,
+        "pred": 529.1223476797809,
+        "error": -1515.2090913202192,
+        "abs_error": 1515.2090913202192,
+        "log_error": -1.3502073036206843
+      },
+      {
+        "row_id": "31",
+        "coffee_name": "Panama Boquete El Trompo Geisha Natural (Sky Project 2000+)",
+        "roaster": "Dou Zhai Coffee & Roastery",
+        "review_date": "2026-03-01",
+        "price_raw": "NT $1,000/20 grams",
+        "true": 155.220894,
+        "pred": 229.07078620741802,
+        "error": 73.84989220741804,
+        "abs_error": 73.84989220741804,
+        "log_error": 0.38711603482759216
+      },
+      {
+        "row_id": "3369",
+        "coffee_name": "Civet Yirgacheffe Sisota",
+        "roaster": "Good Chance Biotechnology, Ltd.",
+        "review_date": "2018-01-01",
+        "price_raw": "$206.00/8 ounces",
+        "true": 118.997276,
+        "pred": 57.29833998124474,
+        "error": -61.69893601875526,
+        "abs_error": 61.69893601875526,
+        "log_error": -0.7218954233084167
+      },
+      {
+        "row_id": "8399",
+        "coffee_name": "Mama Cata Mokkita",
+        "roaster": "Paradise Roasters",
+        "review_date": "2021-11-01",
+        "price_raw": "$150.00/4 ounces",
+        "true": 154.620227,
+        "pred": 99.1228426410911,
+        "error": -55.4973843589089,
+        "abs_error": 55.4973843589089,
+        "log_error": -0.4410207383685023
+      },
+      {
+        "row_id": "3299",
+        "coffee_name": "Lotus by Ninety Plus",
+        "roaster": "Dragonfly Coffee Roasters",
+        "review_date": "2018-04-01",
+        "price_raw": "$145.00/8 ounces",
+        "true": 83.302298,
+        "pred": 31.56853557176086,
+        "error": -51.73376242823913,
+        "abs_error": 51.73376242823913,
+        "log_error": -0.9510624686335993
+      },
+      {
+        "row_id": "8498",
+        "coffee_name": "Taiwan Natural Alishan Zhuo-Wu Geisha",
+        "roaster": "Kakalove Cafe",
+        "review_date": "2022-10-01",
+        "price_raw": "NT $600/50 grams",
+        "true": 41.09207,
+        "pred": 85.96671707537715,
+        "error": 44.87464707537715,
+        "abs_error": 44.87464707537715,
+        "log_error": 0.7256661212059168
+      },
+      {
+        "row_id": "3574",
+        "coffee_name": "Gesha, Gesha Village 1931",
+        "roaster": "Mudhouse Coffee Roasters",
+        "review_date": "2017-04-01",
+        "price_raw": "$88.00/8 ounces",
+        "true": 51.805112,
+        "pred": 11.417070324044145,
+        "error": -40.388041675955854,
+        "abs_error": 40.388041675955854,
+        "log_error": -1.4475358392594226
+      },
+      {
+        "row_id": "1095",
+        "coffee_name": "Kona Mokka Champagne Natural",
+        "roaster": "Paradise Roasters",
+        "review_date": "2023-12-01",
+        "price_raw": "$100.00/4 ounces",
+        "true": 93.123404,
+        "pred": 63.59852751466877,
+        "error": -29.524876485331227,
+        "abs_error": 29.524876485331227,
+        "log_error": -0.37641511316280596
+      },
+      {
+        "row_id": "3533",
+        "coffee_name": "Ninety Plus Gesha Estates Limited Batch #227",
+        "roaster": "JBC Coffee Roasters",
+        "review_date": "2017-07-01",
+        "price_raw": "$68.50/4 ounces",
+        "true": 80.634629,
+        "pred": 55.68405243752264,
+        "error": -24.950576562477366,
+        "abs_error": 24.950576562477366,
+        "log_error": -0.36476063790118385
+      },
+      {
+        "row_id": "8287",
+        "coffee_name": "Panama Abu Natural ASD Geisha BOP GN11",
+        "roaster": "Kakalove Cafe",
+        "review_date": "2020-11-01",
+        "price_raw": "NT $1200/4 ounces",
+        "true": 46.202439,
+        "pred": 22.10848892091906,
+        "error": -24.093950079080937,
+        "abs_error": 24.093950079080937,
+        "log_error": -0.7142455292098142
+      },
+      {
+        "row_id": "8179",
+        "coffee_name": "Coffea Diversa Cioiccie",
+        "roaster": "Paradise Roasters",
+        "review_date": "2019-08-01",
+        "price_raw": "$39.95/4 ounces",
+        "true": 44.860994,
+        "pred": 21.22440159052077,
+        "error": -23.636592409479228,
+        "abs_error": 23.636592409479228,
+        "log_error": -0.7244240958803316
+      },
+      {
+        "row_id": "1559",
+        "coffee_name": "Single-Origin Ethiopia Espresso",
+        "roaster": "Cafe330",
+        "review_date": "2022-12-01",
+        "price_raw": "HKD $428/150 grams",
+        "true": 39.934041,
+        "pred": 16.459538774553042,
+        "error": -23.474502225446958,
+        "abs_error": 23.474502225446958,
+        "log_error": -0.8520758812260909
+      },
+      {
+        "row_id": "3499",
+        "coffee_name": "Gesha Village Natural Oma Block Lot 72",
+        "roaster": "Kakalove Cafe",
+        "review_date": "2017-09-01",
+        "price_raw": "NT $3200/16 ounces",
+        "true": 30.98695,
+        "pred": 9.345806713694577,
+        "error": -21.64114328630542,
+        "abs_error": 21.64114328630542,
+        "log_error": -1.128746717940324
+      },
+      {
+        "row_id": "4576",
+        "coffee_name": "Colombia Valle del Cauca Cerro Azul Geisha AAA",
+        "roaster": "Victrola Coffee Roasters",
+        "review_date": "2013-08-01",
+        "price_raw": "$59.75/8 ounces",
+        "true": 36.792222,
+        "pred": 15.934588594655848,
+        "error": -20.857633405344153,
+        "abs_error": 20.857633405344153,
+        "log_error": -0.8027451214822774
+      },
+      {
+        "row_id": "8457",
+        "coffee_name": "Panama Finca Deborah Afterglow Geisha Natural",
+        "roaster": "Mute Roaster",
+        "review_date": "2022-05-01",
+        "price_raw": "HKD $498/105 grams",
+        "true": 67.543739,
+        "pred": 48.21801251367622,
+        "error": -19.32572648632378,
+        "abs_error": 19.32572648632378,
+        "log_error": -0.3312124025462948
+      },
+      {
+        "row_id": "4937",
+        "coffee_name": "Colombia La Esperanza Cerro Azul Geisha",
+        "roaster": "Cafe de Impression",
+        "review_date": "2012-06-01",
+        "price_raw": "NT $1500/8 ounces",
+        "true": 31.619647,
+        "pred": 14.556409340406216,
+        "error": -17.063237659593785,
+        "abs_error": 17.063237659593785,
+        "log_error": -0.7404420456165974
+      },
+      {
+        "row_id": "7685",
+        "coffee_name": "Hawaii Ka\u2019u Rusty\u2019s Typica Washed",
+        "roaster": "Bacca Cafe",
+        "review_date": "2012-06-01",
+        "price_raw": "NT $2500/16 ounces",
+        "true": 26.349706,
+        "pred": 9.406306173926998,
+        "error": -16.943399826073005,
+        "abs_error": 16.943399826073005,
+        "log_error": -0.9662937940060172
+      },
+      {
+        "row_id": "8519",
+        "coffee_name": "Panama Geisha Finca Debra Echo",
+        "roaster": "Theory Coffee Roasters",
+        "review_date": "2022-11-01",
+        "price_raw": "$40.00/200 grams",
+        "true": 21.823713,
+        "pred": 37.24148698579513,
+        "error": 15.417773985795126,
+        "abs_error": 15.417773985795126,
+        "log_error": 0.5161209336898329
+      },
+      {
+        "row_id": "1899",
+        "coffee_name": "Panama Hacienda La Esmeralda Geisha Washed",
+        "roaster": "GK Coffee",
+        "review_date": "2022-04-01",
+        "price_raw": "NT $800/100 grams",
+        "true": 31.075428,
+        "pred": 46.22147162443839,
+        "error": 15.146043624438388,
+        "abs_error": 15.146043624438388,
+        "log_error": 0.386758442311661
+      },
+      {
+        "row_id": "2971",
+        "coffee_name": "Kauai Estate Reserve Sun-Dried Typica",
+        "roaster": "Kauai Coffee Company",
+        "review_date": "2019-08-01",
+        "price_raw": "$60.00/10 ounces",
+        "true": 26.950285,
+        "pred": 12.209887913023673,
+        "error": -14.740397086976328,
+        "abs_error": 14.740397086976328,
+        "log_error": -0.7494617628404128
+      },
+      {
+        "row_id": "2236",
+        "coffee_name": "Brazil Gauriroba Natural",
+        "roaster": "SOT Coffee Roaster",
+        "review_date": "2021-07-01",
+        "price_raw": "\u00a52980/100 grams",
+        "true": 32.373478,
+        "pred": 17.83426504156973,
+        "error": -14.53921295843027,
+        "abs_error": 14.53921295843027,
+        "log_error": -0.5720836931898949
+      },
+      {
+        "row_id": "3241",
+        "coffee_name": "Gesha Village Lot #25",
+        "roaster": "Small Eyes Cafe",
+        "review_date": "2018-08-01",
+        "price_raw": "NT $1500/8 ounces",
+        "true": 27.872704,
+        "pred": 13.95142333644384,
+        "error": -13.921280663556159,
+        "abs_error": 13.921280663556159,
+        "log_error": -0.6580901487730033
+      },
+      {
+        "row_id": "3366",
+        "coffee_name": "Ethiopia Dry-Processed Guji Mt. Kayon",
+        "roaster": "Black Coffee in Black Jar",
+        "review_date": "2018-01-01",
+        "price_raw": "$35.00/100 grams",
+        "true": 45.853616,
+        "pred": 32.151272606566856,
+        "error": -13.702343393433146,
+        "abs_error": 13.702343393433146,
+        "log_error": -0.3459470829699609
+      },
+      {
+        "row_id": "2834",
+        "coffee_name": "Kenya FSC AB",
+        "roaster": "Black Coffee In Black Jar",
+        "review_date": "2019-12-01",
+        "price_raw": "NT $1,000/100 grams",
+        "true": 41.650482,
+        "pred": 27.975280430664238,
+        "error": -13.675201569335758,
+        "abs_error": 13.675201569335758,
+        "log_error": -0.3865955076180909
+      },
+      {
+        "row_id": "4518",
+        "coffee_name": "Ethiopia Ninety Plus Nekisse Red",
+        "roaster": "Papa Lin's Coffee Roasting",
+        "review_date": "2013-11-01",
+        "price_raw": "$65.00/12 ounces",
+        "true": 26.609936,
+        "pred": 13.222388305010572,
+        "error": -13.38754769498943,
+        "abs_error": 13.38754769498943,
+        "log_error": -0.6633583437273822
+      },
+      {
+        "row_id": "2853",
+        "coffee_name": "Holiday Blend",
+        "roaster": "Plat Coffee Roastery",
+        "review_date": "2019-12-01",
+        "price_raw": "$8.00/100 grams",
+        "true": 10.084863,
+        "pred": 23.061535670564496,
+        "error": 12.976672670564495,
+        "abs_error": 12.976672670564495,
+        "log_error": 0.7750340512683009
+      },
+      {
+        "row_id": "1476",
+        "coffee_name": "Colombia Granja Para\u00edso-92- Papayo K\u014dji",
+        "roaster": "Paradise Roasters",
+        "review_date": "2023-03-01",
+        "price_raw": "$40.00/4 ounces",
+        "true": 38.103396,
+        "pred": 25.500312643379317,
+        "error": -12.60308335662068,
+        "abs_error": 12.60308335662068,
+        "log_error": -0.3890527866537066
+      },
+      {
+        "row_id": "7796",
+        "coffee_name": "San Formosan Estate",
+        "roaster": "Nantou Specialty",
+        "review_date": "2013-12-01",
+        "price_raw": "NTD $1800/16 ounces",
+        "true": 18.581303,
+        "pred": 6.8114718724616425,
+        "error": -11.769831127538357,
+        "abs_error": 11.769831127538357,
+        "log_error": -0.9189817763080965
+      },
+      {
+        "row_id": "393",
+        "coffee_name": "Malaysia Liberica Anaerobic Natural",
+        "roaster": "Ghost Bird Coffee",
+        "review_date": "2025-06-01",
+        "price_raw": "RM85/80 grams",
+        "true": 25.404434,
+        "pred": 36.808623359275906,
+        "error": 11.404189359275907,
+        "abs_error": 11.404189359275907,
+        "log_error": 0.3590052572104132
+      },
+      {
+        "row_id": "4010",
+        "coffee_name": "Panama Don Pepe Estate Geisha Single-Origin Espresso",
+        "roaster": "Temple Coffee and Tea",
+        "review_date": "2015-10-01",
+        "price_raw": "$19.50/12 ounces",
+        "true": 7.860986,
+        "pred": 18.58052905745272,
+        "error": 10.719543057452718,
+        "abs_error": 10.719543057452718,
+        "log_error": 0.7928776119294336
+      }
+    ],
+    "largest_overpredictions": [
+      {
+        "row_id": "31",
+        "coffee_name": "Panama Boquete El Trompo Geisha Natural (Sky Project 2000+)",
+        "roaster": "Dou Zhai Coffee & Roastery",
+        "review_date": "2026-03-01",
+        "price_raw": "NT $1,000/20 grams",
+        "true": 155.220894,
+        "pred": 229.07078620741802,
+        "error": 73.84989220741804,
+        "abs_error": 73.84989220741804,
+        "log_error": 0.38711603482759216
+      },
+      {
+        "row_id": "8498",
+        "coffee_name": "Taiwan Natural Alishan Zhuo-Wu Geisha",
+        "roaster": "Kakalove Cafe",
+        "review_date": "2022-10-01",
+        "price_raw": "NT $600/50 grams",
+        "true": 41.09207,
+        "pred": 85.96671707537715,
+        "error": 44.87464707537715,
+        "abs_error": 44.87464707537715,
+        "log_error": 0.7256661212059168
+      },
+      {
+        "row_id": "8519",
+        "coffee_name": "Panama Geisha Finca Debra Echo",
+        "roaster": "Theory Coffee Roasters",
+        "review_date": "2022-11-01",
+        "price_raw": "$40.00/200 grams",
+        "true": 21.823713,
+        "pred": 37.24148698579513,
+        "error": 15.417773985795126,
+        "abs_error": 15.417773985795126,
+        "log_error": 0.5161209336898329
+      },
+      {
+        "row_id": "1899",
+        "coffee_name": "Panama Hacienda La Esmeralda Geisha Washed",
+        "roaster": "GK Coffee",
+        "review_date": "2022-04-01",
+        "price_raw": "NT $800/100 grams",
+        "true": 31.075428,
+        "pred": 46.22147162443839,
+        "error": 15.146043624438388,
+        "abs_error": 15.146043624438388,
+        "log_error": 0.386758442311661
+      },
+      {
+        "row_id": "2853",
+        "coffee_name": "Holiday Blend",
+        "roaster": "Plat Coffee Roastery",
+        "review_date": "2019-12-01",
+        "price_raw": "$8.00/100 grams",
+        "true": 10.084863,
+        "pred": 23.061535670564496,
+        "error": 12.976672670564495,
+        "abs_error": 12.976672670564495,
+        "log_error": 0.7750340512683009
+      },
+      {
+        "row_id": "393",
+        "coffee_name": "Malaysia Liberica Anaerobic Natural",
+        "roaster": "Ghost Bird Coffee",
+        "review_date": "2025-06-01",
+        "price_raw": "RM85/80 grams",
+        "true": 25.404434,
+        "pred": 36.808623359275906,
+        "error": 11.404189359275907,
+        "abs_error": 11.404189359275907,
+        "log_error": 0.3590052572104132
+      },
+      {
+        "row_id": "4010",
+        "coffee_name": "Panama Don Pepe Estate Geisha Single-Origin Espresso",
+        "roaster": "Temple Coffee and Tea",
+        "review_date": "2015-10-01",
+        "price_raw": "$19.50/12 ounces",
+        "true": 7.860986,
+        "pred": 18.58052905745272,
+        "error": 10.719543057452718,
+        "abs_error": 10.719543057452718,
+        "log_error": 0.7928776119294336
+      },
+      {
+        "row_id": "8518",
+        "coffee_name": "Panama Geisha Finca Debra Vivid",
+        "roaster": "Theory Coffee Roasters",
+        "review_date": "2022-11-01",
+        "price_raw": "$43.00/200 grams",
+        "true": 23.460492,
+        "pred": 33.78666262624388,
+        "error": 10.326170626243883,
+        "abs_error": 10.326170626243883,
+        "log_error": 0.35217481092246583
+      },
+      {
+        "row_id": "1665",
+        "coffee_name": "Ethiopia Bekele Heto Natural",
+        "roaster": "Bassline Coffee",
+        "review_date": "2022-10-01",
+        "price_raw": "$8.40/4 ounces",
+        "true": 8.104122,
+        "pred": 18.07889669592708,
+        "error": 9.974774695927081,
+        "abs_error": 9.974774695927081,
+        "log_error": 0.7398555611899726
+      },
+      {
+        "row_id": "51",
+        "coffee_name": "Finca Santa Elena Bourbon Honey",
+        "roaster": "Caoban Coffee",
+        "review_date": "2026-01-01",
+        "price_raw": "NT $170/100 grams",
+        "true": 5.395083,
+        "pred": 15.176431453058148,
+        "error": 9.781348453058149,
+        "abs_error": 9.781348453058149,
+        "log_error": 0.9280259205055941
+      },
+      {
+        "row_id": "2290",
+        "coffee_name": "Elida Natural ASD (Panama)",
+        "roaster": "Geisha Coffee Roaster",
+        "review_date": "2021-05-01",
+        "price_raw": "$14.74/16 ounces",
+        "true": 3.947623,
+        "pred": 13.202207259268008,
+        "error": 9.254584259268007,
+        "abs_error": 9.254584259268007,
+        "log_error": 1.0544901340945851
+      },
+      {
+        "row_id": "8654",
+        "coffee_name": "100% Kona Typica",
+        "roaster": "Kona Farm Direct",
+        "review_date": "2024-02-01",
+        "price_raw": "$27.95/7 ounces",
+        "true": 14.766671,
+        "pred": 23.83918672230429,
+        "error": 9.07251572230429,
+        "abs_error": 9.07251572230429,
+        "log_error": 0.45452423421013854
+      },
+      {
+        "row_id": "1862",
+        "coffee_name": "Kona SL34 Champagne Natural Uluwehi Farm",
+        "roaster": "Paradise Roasters",
+        "review_date": "2022-05-01",
+        "price_raw": "$30.00/4 ounces",
+        "true": 29.609897,
+        "pred": 37.981023249558845,
+        "error": 8.371126249558845,
+        "abs_error": 8.371126249558845,
+        "log_error": 0.24175155632667744
+      },
+      {
+        "row_id": "496",
+        "coffee_name": "Yemen Ismaili",
+        "roaster": "Lin Jen-Wei's Black Jar Coffee",
+        "review_date": "2025-03-01",
+        "price_raw": "NT $1200/227 grams",
+        "true": 16.378982,
+        "pred": 23.580462871143936,
+        "error": 7.201480871143936,
+        "abs_error": 7.201480871143936,
+        "log_error": 0.3466903901213909
+      },
+      {
+        "row_id": "1328",
+        "coffee_name": "Panama Hacienda La Esmeralda Diamond Mountain Catuai Washed",
+        "roaster": "Buon Caffe",
+        "review_date": "2023-07-01",
+        "price_raw": "NT $325/8 ounces",
+        "true": 4.928043,
+        "pred": 12.08500625291235,
+        "error": 7.156963252912351,
+        "abs_error": 7.156963252912351,
+        "log_error": 0.7917728721720478
+      },
+      {
+        "row_id": "195",
+        "coffee_name": "Wilton Benitez Geisha",
+        "roaster": "JBC Coffee Roasters",
+        "review_date": "2025-10-01",
+        "price_raw": "$30.00/8 ounces",
+        "true": 13.300596,
+        "pred": 20.029915439148674,
+        "error": 6.729319439148673,
+        "abs_error": 6.729319439148673,
+        "log_error": 0.38564475402452825
+      },
+      {
+        "row_id": "2483",
+        "coffee_name": "Taiwan Alishan Zhou-Zhu-Yuan Farm Estate Reserve Washed",
+        "roaster": "Simon Hsieh Aroma Roast Coffees",
+        "review_date": "2020-12-01",
+        "price_raw": "NT $1100/8 ounces",
+        "true": 21.295685,
+        "pred": 27.693880688970793,
+        "error": 6.3981956889707945,
+        "abs_error": 6.3981956889707945,
+        "log_error": 0.25229072163443833
+      },
+      {
+        "row_id": "4092",
+        "coffee_name": "Yemen Haraaz Red A+",
+        "roaster": "Dragonfly Coffee Roasters",
+        "review_date": "2015-06-01",
+        "price_raw": "$19.00/8 ounces",
+        "true": 11.492808,
+        "pred": 17.792438576156044,
+        "error": 6.299630576156044,
+        "abs_error": 6.299630576156044,
+        "log_error": 0.4083014668092937
+      },
+      {
+        "row_id": "1886",
+        "coffee_name": "Taiwan Washed Alishan Ching-Ye Farm SL34",
+        "roaster": "Kakalove Cafe",
+        "review_date": "2022-04-01",
+        "price_raw": "NT $400/4 ounces",
+        "true": 13.701918,
+        "pred": 19.735115742322606,
+        "error": 6.033197742322606,
+        "abs_error": 6.033197742322606,
+        "log_error": 0.34385071419729973
+      },
+      {
+        "row_id": "7540",
+        "coffee_name": "Roses Espresso",
+        "roaster": "Roses Coffee Corner",
+        "review_date": "2010-04-01",
+        "price_raw": "NT$200 / 8 oz.",
+        "true": 4.209439,
+        "pred": 10.024449401107866,
+        "error": 5.815010401107866,
+        "abs_error": 5.815010401107866,
+        "log_error": 0.7496433067187755
+      },
+      {
+        "row_id": "2317",
+        "coffee_name": "Panama Elida Estate Washed",
+        "roaster": "modcup coffee",
+        "review_date": "2021-05-01",
+        "price_raw": "$60.00/150 grams",
+        "true": 48.5919,
+        "pred": 54.37810352977532,
+        "error": 5.786203529775321,
+        "abs_error": 5.786203529775321,
+        "log_error": 0.11035675853591131
+      },
+      {
+        "row_id": "1943",
+        "coffee_name": "La Esmeralda Diamond Mountain Washed Coffee",
+        "roaster": "Satur Specialty Coffee",
+        "review_date": "2022-02-01",
+        "price_raw": "NT $470/225 grams",
+        "true": 8.577066,
+        "pred": 14.327392515755296,
+        "error": 5.750326515755296,
+        "abs_error": 5.750326515755296,
+        "log_error": 0.4702703060936222
+      },
+      {
+        "row_id": "8893",
+        "coffee_name": "Ethiopia Yirgacheffe Mystique Geisha Washed G1",
+        "roaster": "1980 CAFE",
+        "review_date": "2025-12-01",
+        "price_raw": "NT $580/227 grams",
+        "true": 8.163436,
+        "pred": 13.58743010775377,
+        "error": 5.423994107753769,
+        "abs_error": 5.423994107753769,
+        "log_error": 0.4649389888384641
+      },
+      {
+        "row_id": "3341",
+        "coffee_name": "Lekali (Nepal)",
+        "roaster": "Barrington Coffee Roasting",
+        "review_date": "2018-03-01",
+        "price_raw": "$9.94/4 ounces",
+        "true": 11.450777,
+        "pred": 16.74028911827874,
+        "error": 5.289512118278738,
+        "abs_error": 5.289512118278738,
+        "log_error": 0.3540552436822013
+      },
+      {
+        "row_id": "2803",
+        "coffee_name": "Hacienda La Esmeralda Geisha Panama",
+        "roaster": "Jackrabbit Java",
+        "review_date": "2020-02-01",
+        "price_raw": "$30.00/8 ounces",
+        "true": 16.635109,
+        "pred": 21.92109190087586,
+        "error": 5.285982900875862,
+        "abs_error": 5.285982900875862,
+        "log_error": 0.26216578580688754
+      },
+      {
+        "row_id": "3031",
+        "coffee_name": "Gesha Rebecca Natural",
+        "roaster": "Small Eyes Caf\u00e9",
+        "review_date": "2019-04-01",
+        "price_raw": "NT $350/8 ounces",
+        "true": 6.400835,
+        "pred": 11.619963082233062,
+        "error": 5.219128082233062,
+        "abs_error": 5.219128082233062,
+        "log_error": 0.5336871000884269
+      },
+      {
+        "row_id": "4403",
+        "coffee_name": "Colombia Cerro Azul Enano",
+        "roaster": "Equator Coffees & Teas",
+        "review_date": "2014-04-01",
+        "price_raw": "$15.35/12 ounces",
+        "true": 6.22111,
+        "pred": 11.306286550876463,
+        "error": 5.085176550876462,
+        "abs_error": 5.085176550876462,
+        "log_error": 0.5331015528074596
+      },
+      {
+        "row_id": "2404",
+        "coffee_name": "Ethiopia Guji Uraga Washed",
+        "roaster": "Coffee Please",
+        "review_date": "2021-03-01",
+        "price_raw": "NT $252/227 grams",
+        "true": 4.830186,
+        "pred": 9.780971249991548,
+        "error": 4.950785249991548,
+        "abs_error": 4.950785249991548,
+        "log_error": 0.6147337550255447
+      },
+      {
+        "row_id": "2894",
+        "coffee_name": "Cate Natural G5",
+        "roaster": "Small Eyes Cafe",
+        "review_date": "2019-11-01",
+        "price_raw": "NT $200/200 grams",
+        "true": 4.155685,
+        "pred": 9.025286760226457,
+        "error": 4.869601760226457,
+        "abs_error": 4.869601760226457,
+        "log_error": 0.6650105879554826
+      },
+      {
+        "row_id": "1554",
+        "coffee_name": "Ka\u2019u Tropical Punch",
+        "roaster": "Paradise Roasters",
+        "review_date": "2022-12-01",
+        "price_raw": "$25.00/4 ounces",
+        "true": 24.052823,
+        "pred": 28.827511483256803,
+        "error": 4.774688483256803,
+        "abs_error": 4.774688483256803,
+        "log_error": 0.1744446559645656
+      }
+    ],
+    "largest_underpredictions": [
+      {
+        "row_id": "562",
+        "coffee_name": "Panama Kaizen Lot GW-01",
+        "roaster": "Paradise Roasters",
+        "review_date": "2025-01-01",
+        "price_raw": "$400.00/20 grams",
+        "true": 2044.331439,
+        "pred": 529.1223476797809,
+        "error": -1515.2090913202192,
+        "abs_error": 1515.2090913202192,
+        "log_error": -1.3502073036206843
+      },
+      {
+        "row_id": "3369",
+        "coffee_name": "Civet Yirgacheffe Sisota",
+        "roaster": "Good Chance Biotechnology, Ltd.",
+        "review_date": "2018-01-01",
+        "price_raw": "$206.00/8 ounces",
+        "true": 118.997276,
+        "pred": 57.29833998124474,
+        "error": -61.69893601875526,
+        "abs_error": 61.69893601875526,
+        "log_error": -0.7218954233084167
+      },
+      {
+        "row_id": "8399",
+        "coffee_name": "Mama Cata Mokkita",
+        "roaster": "Paradise Roasters",
+        "review_date": "2021-11-01",
+        "price_raw": "$150.00/4 ounces",
+        "true": 154.620227,
+        "pred": 99.1228426410911,
+        "error": -55.4973843589089,
+        "abs_error": 55.4973843589089,
+        "log_error": -0.4410207383685023
+      },
+      {
+        "row_id": "3299",
+        "coffee_name": "Lotus by Ninety Plus",
+        "roaster": "Dragonfly Coffee Roasters",
+        "review_date": "2018-04-01",
+        "price_raw": "$145.00/8 ounces",
+        "true": 83.302298,
+        "pred": 31.56853557176086,
+        "error": -51.73376242823913,
+        "abs_error": 51.73376242823913,
+        "log_error": -0.9510624686335993
+      },
+      {
+        "row_id": "3574",
+        "coffee_name": "Gesha, Gesha Village 1931",
+        "roaster": "Mudhouse Coffee Roasters",
+        "review_date": "2017-04-01",
+        "price_raw": "$88.00/8 ounces",
+        "true": 51.805112,
+        "pred": 11.417070324044145,
+        "error": -40.388041675955854,
+        "abs_error": 40.388041675955854,
+        "log_error": -1.4475358392594226
+      },
+      {
+        "row_id": "1095",
+        "coffee_name": "Kona Mokka Champagne Natural",
+        "roaster": "Paradise Roasters",
+        "review_date": "2023-12-01",
+        "price_raw": "$100.00/4 ounces",
+        "true": 93.123404,
+        "pred": 63.59852751466877,
+        "error": -29.524876485331227,
+        "abs_error": 29.524876485331227,
+        "log_error": -0.37641511316280596
+      },
+      {
+        "row_id": "3533",
+        "coffee_name": "Ninety Plus Gesha Estates Limited Batch #227",
+        "roaster": "JBC Coffee Roasters",
+        "review_date": "2017-07-01",
+        "price_raw": "$68.50/4 ounces",
+        "true": 80.634629,
+        "pred": 55.68405243752264,
+        "error": -24.950576562477366,
+        "abs_error": 24.950576562477366,
+        "log_error": -0.36476063790118385
+      },
+      {
+        "row_id": "8287",
+        "coffee_name": "Panama Abu Natural ASD Geisha BOP GN11",
+        "roaster": "Kakalove Cafe",
+        "review_date": "2020-11-01",
+        "price_raw": "NT $1200/4 ounces",
+        "true": 46.202439,
+        "pred": 22.10848892091906,
+        "error": -24.093950079080937,
+        "abs_error": 24.093950079080937,
+        "log_error": -0.7142455292098142
+      },
+      {
+        "row_id": "8179",
+        "coffee_name": "Coffea Diversa Cioiccie",
+        "roaster": "Paradise Roasters",
+        "review_date": "2019-08-01",
+        "price_raw": "$39.95/4 ounces",
+        "true": 44.860994,
+        "pred": 21.22440159052077,
+        "error": -23.636592409479228,
+        "abs_error": 23.636592409479228,
+        "log_error": -0.7244240958803316
+      },
+      {
+        "row_id": "1559",
+        "coffee_name": "Single-Origin Ethiopia Espresso",
+        "roaster": "Cafe330",
+        "review_date": "2022-12-01",
+        "price_raw": "HKD $428/150 grams",
+        "true": 39.934041,
+        "pred": 16.459538774553042,
+        "error": -23.474502225446958,
+        "abs_error": 23.474502225446958,
+        "log_error": -0.8520758812260909
+      },
+      {
+        "row_id": "3499",
+        "coffee_name": "Gesha Village Natural Oma Block Lot 72",
+        "roaster": "Kakalove Cafe",
+        "review_date": "2017-09-01",
+        "price_raw": "NT $3200/16 ounces",
+        "true": 30.98695,
+        "pred": 9.345806713694577,
+        "error": -21.64114328630542,
+        "abs_error": 21.64114328630542,
+        "log_error": -1.128746717940324
+      },
+      {
+        "row_id": "4576",
+        "coffee_name": "Colombia Valle del Cauca Cerro Azul Geisha AAA",
+        "roaster": "Victrola Coffee Roasters",
+        "review_date": "2013-08-01",
+        "price_raw": "$59.75/8 ounces",
+        "true": 36.792222,
+        "pred": 15.934588594655848,
+        "error": -20.857633405344153,
+        "abs_error": 20.857633405344153,
+        "log_error": -0.8027451214822774
+      },
+      {
+        "row_id": "8457",
+        "coffee_name": "Panama Finca Deborah Afterglow Geisha Natural",
+        "roaster": "Mute Roaster",
+        "review_date": "2022-05-01",
+        "price_raw": "HKD $498/105 grams",
+        "true": 67.543739,
+        "pred": 48.21801251367622,
+        "error": -19.32572648632378,
+        "abs_error": 19.32572648632378,
+        "log_error": -0.3312124025462948
+      },
+      {
+        "row_id": "4937",
+        "coffee_name": "Colombia La Esperanza Cerro Azul Geisha",
+        "roaster": "Cafe de Impression",
+        "review_date": "2012-06-01",
+        "price_raw": "NT $1500/8 ounces",
+        "true": 31.619647,
+        "pred": 14.556409340406216,
+        "error": -17.063237659593785,
+        "abs_error": 17.063237659593785,
+        "log_error": -0.7404420456165974
+      },
+      {
+        "row_id": "7685",
+        "coffee_name": "Hawaii Ka\u2019u Rusty\u2019s Typica Washed",
+        "roaster": "Bacca Cafe",
+        "review_date": "2012-06-01",
+        "price_raw": "NT $2500/16 ounces",
+        "true": 26.349706,
+        "pred": 9.406306173926998,
+        "error": -16.943399826073005,
+        "abs_error": 16.943399826073005,
+        "log_error": -0.9662937940060172
+      },
+      {
+        "row_id": "2971",
+        "coffee_name": "Kauai Estate Reserve Sun-Dried Typica",
+        "roaster": "Kauai Coffee Company",
+        "review_date": "2019-08-01",
+        "price_raw": "$60.00/10 ounces",
+        "true": 26.950285,
+        "pred": 12.209887913023673,
+        "error": -14.740397086976328,
+        "abs_error": 14.740397086976328,
+        "log_error": -0.7494617628404128
+      },
+      {
+        "row_id": "2236",
+        "coffee_name": "Brazil Gauriroba Natural",
+        "roaster": "SOT Coffee Roaster",
+        "review_date": "2021-07-01",
+        "price_raw": "\u00a52980/100 grams",
+        "true": 32.373478,
+        "pred": 17.83426504156973,
+        "error": -14.53921295843027,
+        "abs_error": 14.53921295843027,
+        "log_error": -0.5720836931898949
+      },
+      {
+        "row_id": "3241",
+        "coffee_name": "Gesha Village Lot #25",
+        "roaster": "Small Eyes Cafe",
+        "review_date": "2018-08-01",
+        "price_raw": "NT $1500/8 ounces",
+        "true": 27.872704,
+        "pred": 13.95142333644384,
+        "error": -13.921280663556159,
+        "abs_error": 13.921280663556159,
+        "log_error": -0.6580901487730033
+      },
+      {
+        "row_id": "3366",
+        "coffee_name": "Ethiopia Dry-Processed Guji Mt. Kayon",
+        "roaster": "Black Coffee in Black Jar",
+        "review_date": "2018-01-01",
+        "price_raw": "$35.00/100 grams",
+        "true": 45.853616,
+        "pred": 32.151272606566856,
+        "error": -13.702343393433146,
+        "abs_error": 13.702343393433146,
+        "log_error": -0.3459470829699609
+      },
+      {
+        "row_id": "2834",
+        "coffee_name": "Kenya FSC AB",
+        "roaster": "Black Coffee In Black Jar",
+        "review_date": "2019-12-01",
+        "price_raw": "NT $1,000/100 grams",
+        "true": 41.650482,
+        "pred": 27.975280430664238,
+        "error": -13.675201569335758,
+        "abs_error": 13.675201569335758,
+        "log_error": -0.3865955076180909
+      },
+      {
+        "row_id": "4518",
+        "coffee_name": "Ethiopia Ninety Plus Nekisse Red",
+        "roaster": "Papa Lin's Coffee Roasting",
+        "review_date": "2013-11-01",
+        "price_raw": "$65.00/12 ounces",
+        "true": 26.609936,
+        "pred": 13.222388305010572,
+        "error": -13.38754769498943,
+        "abs_error": 13.38754769498943,
+        "log_error": -0.6633583437273822
+      },
+      {
+        "row_id": "1476",
+        "coffee_name": "Colombia Granja Para\u00edso-92- Papayo K\u014dji",
+        "roaster": "Paradise Roasters",
+        "review_date": "2023-03-01",
+        "price_raw": "$40.00/4 ounces",
+        "true": 38.103396,
+        "pred": 25.500312643379317,
+        "error": -12.60308335662068,
+        "abs_error": 12.60308335662068,
+        "log_error": -0.3890527866537066
+      },
+      {
+        "row_id": "7796",
+        "coffee_name": "San Formosan Estate",
+        "roaster": "Nantou Specialty",
+        "review_date": "2013-12-01",
+        "price_raw": "NTD $1800/16 ounces",
+        "true": 18.581303,
+        "pred": 6.8114718724616425,
+        "error": -11.769831127538357,
+        "abs_error": 11.769831127538357,
+        "log_error": -0.9189817763080965
+      },
+      {
+        "row_id": "683",
+        "coffee_name": "Kahiko Orange",
+        "roaster": "Hula Daddy Kona Coffee",
+        "review_date": "2024-11-01",
+        "price_raw": "$99.95/8 ounces",
+        "true": 45.393515,
+        "pred": 34.72644248996207,
+        "error": -10.667072510037933,
+        "abs_error": 10.667072510037933,
+        "log_error": -0.261268585926993
+      },
+      {
+        "row_id": "1337",
+        "coffee_name": "Panama HWC Coffee Estate Natural",
+        "roaster": "HWC Coffee",
+        "review_date": "2023-07-01",
+        "price_raw": "$80.00/8 ounces",
+        "true": 37.754646,
+        "pred": 27.359182419507718,
+        "error": -10.395463580492283,
+        "abs_error": 10.395463580492283,
+        "log_error": -0.31229977278736687
+      },
+      {
+        "row_id": "1224",
+        "coffee_name": "HWC Holy Melody Espresso Blend",
+        "roaster": "HWC Coffee",
+        "review_date": "2023-09-01",
+        "price_raw": "$40.00/8 ounces",
+        "true": 18.713478,
+        "pred": 8.392119399397679,
+        "error": -10.32135860060232,
+        "abs_error": 10.32135860060232,
+        "log_error": -0.7414315883600735
+      },
+      {
+        "row_id": "903",
+        "coffee_name": "Colombia Wilton Benitez Orange Bourbon",
+        "roaster": "Big Shoulders Coffee",
+        "review_date": "2024-05-01",
+        "price_raw": "$51.00/8 ounces",
+        "true": 23.41026,
+        "pred": 13.103111142744202,
+        "error": -10.307148857255799,
+        "abs_error": 10.307148857255799,
+        "log_error": -0.5486081142541175
+      },
+      {
+        "row_id": "3155",
+        "coffee_name": "Hacienda La Esmeralda Cabana Geisha Natural",
+        "roaster": "Dragonfly Coffee Roasters",
+        "review_date": "2018-10-01",
+        "price_raw": "$75.00/8 ounces",
+        "true": 42.653576,
+        "pred": 32.39442337459165,
+        "error": -10.259152625408348,
+        "abs_error": 10.259152625408348,
+        "log_error": -0.26789628211872607
+      },
+      {
+        "row_id": "1577",
+        "coffee_name": "Brazil Santos #2 Amber-Based Multi-Roasting",
+        "roaster": "BEI Coffee Roasters",
+        "review_date": "2022-12-01",
+        "price_raw": "HKD $250/150 grams",
+        "true": 23.325958,
+        "pred": 13.154226681929424,
+        "error": -10.171731318070576,
+        "abs_error": 10.171731318070576,
+        "log_error": -0.5415307257246593
+      },
+      {
+        "row_id": "2466",
+        "coffee_name": "Rum Barrel Aged Kauai Coffee",
+        "roaster": "Kauai Coffee Company",
+        "review_date": "2020-12-01",
+        "price_raw": "$50.00/10 ounces",
+        "true": 21.943569,
+        "pred": 11.799636415983535,
+        "error": -10.143932584016465,
+        "abs_error": 10.143932584016465,
+        "log_error": -0.5836209138524131
+      }
+    ],
+    "largest_log_error": [
+      {
+        "row_id": "1352",
+        "coffee_name": "Koffee Kool 002 (KK002)",
+        "roaster": "Yum China",
+        "review_date": "2023-06-01",
+        "price_raw": "110 CN\u00a5/500 grams",
+        "true": 0.16704,
+        "pred": 4.511120043674471,
+        "error": 4.344080043674471,
+        "abs_error": 4.344080043674471,
+        "log_error": 1.5522972485831996
+      },
+      {
+        "row_id": "3574",
+        "coffee_name": "Gesha, Gesha Village 1931",
+        "roaster": "Mudhouse Coffee Roasters",
+        "review_date": "2017-04-01",
+        "price_raw": "$88.00/8 ounces",
+        "true": 51.805112,
+        "pred": 11.417070324044145,
+        "error": -40.388041675955854,
+        "abs_error": 40.388041675955854,
+        "log_error": -1.4475358392594226
+      },
+      {
+        "row_id": "2084",
+        "coffee_name": "Honey-Processed Yunnan Espresso",
+        "roaster": "Chu Bei",
+        "review_date": "2021-11-01",
+        "price_raw": "\u00a588/16 ounces",
+        "true": 0.198656,
+        "pred": 3.655906911428436,
+        "error": 3.457250911428436,
+        "abs_error": 3.457250911428436,
+        "log_error": 1.356935787854111
+      },
+      {
+        "row_id": "562",
+        "coffee_name": "Panama Kaizen Lot GW-01",
+        "roaster": "Paradise Roasters",
+        "review_date": "2025-01-01",
+        "price_raw": "$400.00/20 grams",
+        "true": 2044.331439,
+        "pred": 529.1223476797809,
+        "error": -1515.2090913202192,
+        "abs_error": 1515.2090913202192,
+        "log_error": -1.3502073036206843
+      },
+      {
+        "row_id": "3499",
+        "coffee_name": "Gesha Village Natural Oma Block Lot 72",
+        "roaster": "Kakalove Cafe",
+        "review_date": "2017-09-01",
+        "price_raw": "NT $3200/16 ounces",
+        "true": 30.98695,
+        "pred": 9.345806713694577,
+        "error": -21.64114328630542,
+        "abs_error": 21.64114328630542,
+        "log_error": -1.128746717940324
+      },
+      {
+        "row_id": "2290",
+        "coffee_name": "Elida Natural ASD (Panama)",
+        "roaster": "Geisha Coffee Roaster",
+        "review_date": "2021-05-01",
+        "price_raw": "$14.74/16 ounces",
+        "true": 3.947623,
+        "pred": 13.202207259268008,
+        "error": 9.254584259268007,
+        "abs_error": 9.254584259268007,
+        "log_error": 1.0544901340945851
+      },
+      {
+        "row_id": "2437",
+        "coffee_name": "Honduras Catuai/Bourbon",
+        "roaster": "Spirit Animal Coffee",
+        "review_date": "2021-01-01",
+        "price_raw": "$39.00/12 ounces",
+        "true": 14.228461,
+        "pred": 4.758596141466463,
+        "error": -9.469864858533537,
+        "abs_error": 9.469864858533537,
+        "log_error": -0.9724723916809319
+      },
+      {
+        "row_id": "7685",
+        "coffee_name": "Hawaii Ka\u2019u Rusty\u2019s Typica Washed",
+        "roaster": "Bacca Cafe",
+        "review_date": "2012-06-01",
+        "price_raw": "NT $2500/16 ounces",
+        "true": 26.349706,
+        "pred": 9.406306173926998,
+        "error": -16.943399826073005,
+        "abs_error": 16.943399826073005,
+        "log_error": -0.9662937940060172
+      },
+      {
+        "row_id": "3299",
+        "coffee_name": "Lotus by Ninety Plus",
+        "roaster": "Dragonfly Coffee Roasters",
+        "review_date": "2018-04-01",
+        "price_raw": "$145.00/8 ounces",
+        "true": 83.302298,
+        "pred": 31.56853557176086,
+        "error": -51.73376242823913,
+        "abs_error": 51.73376242823913,
+        "log_error": -0.9510624686335993
+      },
+      {
+        "row_id": "51",
+        "coffee_name": "Finca Santa Elena Bourbon Honey",
+        "roaster": "Caoban Coffee",
+        "review_date": "2026-01-01",
+        "price_raw": "NT $170/100 grams",
+        "true": 5.395083,
+        "pred": 15.176431453058148,
+        "error": 9.781348453058149,
+        "abs_error": 9.781348453058149,
+        "log_error": 0.9280259205055941
+      },
+      {
+        "row_id": "7796",
+        "coffee_name": "San Formosan Estate",
+        "roaster": "Nantou Specialty",
+        "review_date": "2013-12-01",
+        "price_raw": "NTD $1800/16 ounces",
+        "true": 18.581303,
+        "pred": 6.8114718724616425,
+        "error": -11.769831127538357,
+        "abs_error": 11.769831127538357,
+        "log_error": -0.9189817763080965
+      },
+      {
+        "row_id": "186",
+        "coffee_name": "Finca El Diamante Borb\u00f3n COE",
+        "roaster": "El Gran Cafe",
+        "review_date": "2025-10-01",
+        "price_raw": "$47.00/12 ounces",
+        "true": 13.891734,
+        "pred": 5.056600765981416,
+        "error": -8.835133234018585,
+        "abs_error": 8.835133234018585,
+        "log_error": -0.8996575809163849
+      },
+      {
+        "row_id": "1559",
+        "coffee_name": "Single-Origin Ethiopia Espresso",
+        "roaster": "Cafe330",
+        "review_date": "2022-12-01",
+        "price_raw": "HKD $428/150 grams",
+        "true": 39.934041,
+        "pred": 16.459538774553042,
+        "error": -23.474502225446958,
+        "abs_error": 23.474502225446958,
+        "log_error": -0.8520758812260909
+      },
+      {
+        "row_id": "5080",
+        "coffee_name": "100% Arabica 100% Italiano",
+        "roaster": "Caffe Bomrad",
+        "review_date": "2011-11-01",
+        "price_raw": "$54.00/1 Kilogram",
+        "true": 7.750034,
+        "pred": 2.8555232807341087,
+        "error": -4.894510719265892,
+        "abs_error": 4.894510719265892,
+        "log_error": -0.8195508474858557
+      },
+      {
+        "row_id": "4576",
+        "coffee_name": "Colombia Valle del Cauca Cerro Azul Geisha AAA",
+        "roaster": "Victrola Coffee Roasters",
+        "review_date": "2013-08-01",
+        "price_raw": "$59.75/8 ounces",
+        "true": 36.792222,
+        "pred": 15.934588594655848,
+        "error": -20.857633405344153,
+        "abs_error": 20.857633405344153,
+        "log_error": -0.8027451214822774
+      },
+      {
+        "row_id": "4010",
+        "coffee_name": "Panama Don Pepe Estate Geisha Single-Origin Espresso",
+        "roaster": "Temple Coffee and Tea",
+        "review_date": "2015-10-01",
+        "price_raw": "$19.50/12 ounces",
+        "true": 7.860986,
+        "pred": 18.58052905745272,
+        "error": 10.719543057452718,
+        "abs_error": 10.719543057452718,
+        "log_error": 0.7928776119294336
+      },
+      {
+        "row_id": "1328",
+        "coffee_name": "Panama Hacienda La Esmeralda Diamond Mountain Catuai Washed",
+        "roaster": "Buon Caffe",
+        "review_date": "2023-07-01",
+        "price_raw": "NT $325/8 ounces",
+        "true": 4.928043,
+        "pred": 12.08500625291235,
+        "error": 7.156963252912351,
+        "abs_error": 7.156963252912351,
+        "log_error": 0.7917728721720478
+      },
+      {
+        "row_id": "2853",
+        "coffee_name": "Holiday Blend",
+        "roaster": "Plat Coffee Roastery",
+        "review_date": "2019-12-01",
+        "price_raw": "$8.00/100 grams",
+        "true": 10.084863,
+        "pred": 23.061535670564496,
+        "error": 12.976672670564495,
+        "abs_error": 12.976672670564495,
+        "log_error": 0.7750340512683009
+      },
+      {
+        "row_id": "3727",
+        "coffee_name": "Ipanema Special Reserve Pulped",
+        "roaster": "Creation Food Co.",
+        "review_date": "2016-10-01",
+        "price_raw": "NT $168/227 grams",
+        "true": 3.170097,
+        "pred": 7.8732367222519715,
+        "error": 4.703139722251971,
+        "abs_error": 4.703139722251971,
+        "log_error": 0.7551003395082241
+      },
+      {
+        "row_id": "7540",
+        "coffee_name": "Roses Espresso",
+        "roaster": "Roses Coffee Corner",
+        "review_date": "2010-04-01",
+        "price_raw": "NT$200 / 8 oz.",
+        "true": 4.209439,
+        "pred": 10.024449401107866,
+        "error": 5.815010401107866,
+        "abs_error": 5.815010401107866,
+        "log_error": 0.7496433067187755
+      },
+      {
+        "row_id": "2971",
+        "coffee_name": "Kauai Estate Reserve Sun-Dried Typica",
+        "roaster": "Kauai Coffee Company",
+        "review_date": "2019-08-01",
+        "price_raw": "$60.00/10 ounces",
+        "true": 26.950285,
+        "pred": 12.209887913023673,
+        "error": -14.740397086976328,
+        "abs_error": 14.740397086976328,
+        "log_error": -0.7494617628404128
+      },
+      {
+        "row_id": "1224",
+        "coffee_name": "HWC Holy Melody Espresso Blend",
+        "roaster": "HWC Coffee",
+        "review_date": "2023-09-01",
+        "price_raw": "$40.00/8 ounces",
+        "true": 18.713478,
+        "pred": 8.392119399397679,
+        "error": -10.32135860060232,
+        "abs_error": 10.32135860060232,
+        "log_error": -0.7414315883600735
+      },
+      {
+        "row_id": "4937",
+        "coffee_name": "Colombia La Esperanza Cerro Azul Geisha",
+        "roaster": "Cafe de Impression",
+        "review_date": "2012-06-01",
+        "price_raw": "NT $1500/8 ounces",
+        "true": 31.619647,
+        "pred": 14.556409340406216,
+        "error": -17.063237659593785,
+        "abs_error": 17.063237659593785,
+        "log_error": -0.7404420456165974
+      },
+      {
+        "row_id": "1665",
+        "coffee_name": "Ethiopia Bekele Heto Natural",
+        "roaster": "Bassline Coffee",
+        "review_date": "2022-10-01",
+        "price_raw": "$8.40/4 ounces",
+        "true": 8.104122,
+        "pred": 18.07889669592708,
+        "error": 9.974774695927081,
+        "abs_error": 9.974774695927081,
+        "log_error": 0.7398555611899726
+      },
+      {
+        "row_id": "8498",
+        "coffee_name": "Taiwan Natural Alishan Zhuo-Wu Geisha",
+        "roaster": "Kakalove Cafe",
+        "review_date": "2022-10-01",
+        "price_raw": "NT $600/50 grams",
+        "true": 41.09207,
+        "pred": 85.96671707537715,
+        "error": 44.87464707537715,
+        "abs_error": 44.87464707537715,
+        "log_error": 0.7256661212059168
+      },
+      {
+        "row_id": "8179",
+        "coffee_name": "Coffea Diversa Cioiccie",
+        "roaster": "Paradise Roasters",
+        "review_date": "2019-08-01",
+        "price_raw": "$39.95/4 ounces",
+        "true": 44.860994,
+        "pred": 21.22440159052077,
+        "error": -23.636592409479228,
+        "abs_error": 23.636592409479228,
+        "log_error": -0.7244240958803316
+      },
+      {
+        "row_id": "3369",
+        "coffee_name": "Civet Yirgacheffe Sisota",
+        "roaster": "Good Chance Biotechnology, Ltd.",
+        "review_date": "2018-01-01",
+        "price_raw": "$206.00/8 ounces",
+        "true": 118.997276,
+        "pred": 57.29833998124474,
+        "error": -61.69893601875526,
+        "abs_error": 61.69893601875526,
+        "log_error": -0.7218954233084167
+      },
+      {
+        "row_id": "8287",
+        "coffee_name": "Panama Abu Natural ASD Geisha BOP GN11",
+        "roaster": "Kakalove Cafe",
+        "review_date": "2020-11-01",
+        "price_raw": "NT $1200/4 ounces",
+        "true": 46.202439,
+        "pred": 22.10848892091906,
+        "error": -24.093950079080937,
+        "abs_error": 24.093950079080937,
+        "log_error": -0.7142455292098142
+      },
+      {
+        "row_id": "5157",
+        "coffee_name": "Organic Guatemalan Medium",
+        "roaster": "Equal Exchange",
+        "review_date": "2011-07-01",
+        "price_raw": "$57.00/5 pounds",
+        "true": 3.635413,
+        "pred": 1.3191050176018286,
+        "error": -2.316307982398171,
+        "abs_error": 2.316307982398171,
+        "log_error": -0.6925439567114333
+      },
+      {
+        "row_id": "2894",
+        "coffee_name": "Cate Natural G5",
+        "roaster": "Small Eyes Cafe",
+        "review_date": "2019-11-01",
+        "price_raw": "NT $200/200 grams",
+        "true": 4.155685,
+        "pred": 9.025286760226457,
+        "error": 4.869601760226457,
+        "abs_error": 4.869601760226457,
+        "log_error": 0.6650105879554826
+      }
+    ]
+  },
+  "feature_importance": {
+    "n_features": 21498,
+    "n_nonzero": 9310,
+    "nonzero_by_kind": {
+      "tfidf": 9097,
+      "variety": 79,
+      "roaster_country": 44,
+      "process_method": 40,
+      "origin_country": 36,
+      "is_blend": 2,
+      "is_espresso": 2,
+      "is_decaf": 2,
+      "producer_or_farm_present": 2,
+      "altitude_present": 2,
+      "package_grams_log_z": 1,
+      "package_grams_le_20": 1,
+      "package_grams_le_50": 1,
+      "package_grams_le_100": 1
+    },
+    "top_positive": [
+      {
+        "feature": "tfidf:kona",
+        "coef": 1.4444386464412104
+      },
+      {
+        "feature": "tfidf:civet",
+        "coef": 1.193688021148395
+      },
+      {
+        "feature": "tfidf:luwak",
+        "coef": 1.0387426951931145
+      },
+      {
+        "feature": "tfidf:rare",
+        "coef": 1.0111268976368926
+      },
+      {
+        "feature": "variety=mokkita",
+        "coef": 0.9315753457597382
+      },
+      {
+        "feature": "tfidf:kopi",
+        "coef": 0.7789768355598304
+      },
+      {
+        "feature": "tfidf:kopi luwak",
+        "coef": 0.7789768302598056
+      },
+      {
+        "feature": "tfidf:civet cat",
+        "coef": 0.7575788644914881
+      },
+      {
+        "feature": "tfidf:cat",
+        "coef": 0.7341302217344536
+      },
+      {
+        "feature": "origin_country=Jamaica",
+        "coef": 0.6384915570613103
+      },
+      {
+        "feature": "tfidf:kona coffee",
+        "coef": 0.6238732322732606
+      },
+      {
+        "feature": "tfidf:located the",
+        "coef": 0.5916856350778105
+      },
+      {
+        "feature": "tfidf:competition",
+        "coef": 0.5890612629737997
+      },
+      {
+        "feature": "tfidf:sidra",
+        "coef": 0.5781233997906675
+      },
+      {
+        "feature": "tfidf:ltd is",
+        "coef": 0.5751459882968475
+      },
+      {
+        "feature": "tfidf:finish carries",
+        "coef": 0.565194099341798
+      },
+      {
+        "feature": "tfidf:paradise prides",
+        "coef": 0.5649295089321225
+      },
+      {
+        "feature": "tfidf:first",
+        "coef": 0.5519423138775565
+      },
+      {
+        "feature": "tfidf:subtle",
+        "coef": 0.5512651799288056
+      },
+      {
+        "feature": "origin_country=Yemen",
+        "coef": 0.5446009880422621
+      },
+      {
+        "feature": "tfidf:808-498-4048",
+        "coef": 0.5393621000353693
+      },
+      {
+        "feature": "tfidf:808-498-4048 for",
+        "coef": 0.5393620662800168
+      },
+      {
+        "feature": "tfidf:call 808-498-4048",
+        "coef": 0.5393620264438667
+      },
+      {
+        "feature": "tfidf:island",
+        "coef": 0.5317007337609382
+      },
+      {
+        "feature": "tfidf:lab",
+        "coef": 0.5080416204835555
+      },
+      {
+        "feature": "tfidf:bacteria",
+        "coef": 0.5026420756333837
+      },
+      {
+        "feature": "origin_country=Taiwan",
+        "coef": 0.5021636294025319
+      },
+      {
+        "feature": "tfidf:sea island",
+        "coef": 0.49557160225372693
+      },
+      {
+        "feature": "tfidf:panama geisha",
+        "coef": 0.4916067596312481
+      },
+      {
+        "feature": "tfidf:it was",
+        "coef": 0.4799989507785995
+      },
+      {
+        "feature": "tfidf:and caf",
+        "coef": 0.4777435671152026
+      },
+      {
+        "feature": "tfidf:no 11",
+        "coef": 0.4730286095278815
+      },
+      {
+        "feature": "tfidf:sweet-tart balanced",
+        "coef": 0.46968043851482205
+      },
+      {
+        "feature": "tfidf:hong",
+        "coef": 0.4677658465457924
+      },
+      {
+        "feature": "tfidf:famous kopi",
+        "coef": 0.45387226661998964
+      },
+      {
+        "feature": "tfidf:visit seaislandcoffee",
+        "coef": 0.4532157421881914
+      },
+      {
+        "feature": "tfidf:seaislandcoffee com",
+        "coef": 0.4532157394836816
+      },
+      {
+        "feature": "tfidf:seaislandcoffee",
+        "coef": 0.4532157368374968
+      },
+      {
+        "feature": "tfidf:rare origins",
+        "coef": 0.4532157319373372
+      },
+      {
+        "feature": "tfidf:london-based roaster",
+        "coef": 0.4532157293213342
+      },
+      {
+        "feature": "tfidf:and varieties",
+        "coef": 0.4532157273741295
+      },
+      {
+        "feature": "tfidf:london-based",
+        "coef": 0.45321572674850713
+      },
+      {
+        "feature": "tfidf:a london-based",
+        "coef": 0.4532157248594308
+      },
+      {
+        "feature": "tfidf:operates",
+        "coef": 0.448385055911828
+      },
+      {
+        "feature": "tfidf:lyrically",
+        "coef": 0.44464320827949455
+      },
+      {
+        "feature": "tfidf:designed",
+        "coef": 0.4374702565399695
+      },
+      {
+        "feature": "tfidf:bergamot cocoa",
+        "coef": 0.43672134377349053
+      },
+      {
+        "feature": "tfidf:yellow pacamara",
+        "coef": 0.43486739504104094
+      },
+      {
+        "feature": "tfidf:roaster for",
+        "coef": 0.42888138120345914
+      },
+      {
+        "feature": "tfidf:farm",
+        "coef": 0.4279677390886328
+      },
+      {
+        "feature": "tfidf:boutique",
+        "coef": 0.4263912450973551
+      },
+      {
+        "feature": "tfidf:company for",
+        "coef": 0.4241202382155496
+      },
+      {
+        "feature": "tfidf:chocolate in",
+        "coef": 0.4240212784549221
+      },
+      {
+        "feature": "tfidf:lingering finish",
+        "coef": 0.4238445304293994
+      },
+      {
+        "feature": "tfidf:hula",
+        "coef": 0.42047927192235585
+      },
+      {
+        "feature": "tfidf:won",
+        "coef": 0.41783969692900264
+      },
+      {
+        "feature": "tfidf:coffees",
+        "coef": 0.41708531392723514
+      },
+      {
+        "feature": "tfidf:place in",
+        "coef": 0.40988979995461944
+      },
+      {
+        "feature": "tfidf:11 coffee",
+        "coef": 0.40936966014054627
+      },
+      {
+        "feature": "tfidf:coffea",
+        "coef": 0.40900829944380207
+      },
+      {
+        "feature": "tfidf:processing method",
+        "coef": 0.4089154716036833
+      },
+      {
+        "feature": "tfidf:through the",
+        "coef": 0.4066514843037522
+      },
+      {
+        "feature": "tfidf:neji in",
+        "coef": 0.40171938012127506
+      },
+      {
+        "feature": "tfidf:neji",
+        "coef": 0.4017193709234022
+      },
+      {
+        "feature": "tfidf:a rare",
+        "coef": 0.4016527497542202
+      },
+      {
+        "feature": "tfidf:farm entirely",
+        "coef": 0.4004793883962855
+      },
+      {
+        "feature": "tfidf:geisha variety",
+        "coef": 0.3978067154448257
+      },
+      {
+        "feature": "origin_country=Panama",
+        "coef": 0.39327445426167346
+      },
+      {
+        "feature": "tfidf:coffee produced",
+        "coef": 0.3927293099759804
+      },
+      {
+        "feature": "tfidf:tierra",
+        "coef": 0.39227843685620833
+      },
+      {
+        "feature": "tfidf:tadesse",
+        "coef": 0.391005227625611
+      },
+      {
+        "feature": "tfidf:nectarine almond",
+        "coef": 0.3908102306136461
+      },
+      {
+        "feature": "package_grams_le_50",
+        "coef": 0.390563508926005
+      },
+      {
+        "feature": "tfidf:ninety plus",
+        "coef": 0.3903953981519614
+      },
+      {
+        "feature": "tfidf:blanca",
+        "coef": 0.39011024294596314
+      },
+      {
+        "feature": "tfidf:lush silky",
+        "coef": 0.3861641639750456
+      },
+      {
+        "feature": "tfidf:which are",
+        "coef": 0.38475035556681186
+      },
+      {
+        "feature": "tfidf:passion",
+        "coef": 0.3838835618565532
+      },
+      {
+        "feature": "tfidf:yahoo",
+        "coef": 0.38178784707951274
+      },
+      {
+        "feature": "tfidf:yahoo com",
+        "coef": 0.38178780580016963
+      }
+    ],
+    "top_negative": [
+      {
+        "feature": "tfidf:roasting of",
+        "coef": -0.7500150834696263
+      },
+      {
+        "feature": "tfidf:tea visit",
+        "coef": -0.6988575947422143
+      },
+      {
+        "feature": "tfidf:and tea",
+        "coef": -0.6982520002722699
+      },
+      {
+        "feature": "tfidf:value",
+        "coef": -0.6907413539578269
+      },
+      {
+        "feature": "tfidf:ba",
+        "coef": -0.6827627230905897
+      },
+      {
+        "feature": "tfidf:and cafe",
+        "coef": -0.6584907536352725
+      },
+      {
+        "feature": "tfidf:robusta",
+        "coef": -0.6567374920053181
+      },
+      {
+        "feature": "tfidf:store",
+        "coef": -0.6211576525016445
+      },
+      {
+        "feature": "tfidf:euphora coffee",
+        "coef": -0.5942105987952516
+      },
+      {
+        "feature": "tfidf:nutella and",
+        "coef": -0.5926238606977678
+      },
+      {
+        "feature": "tfidf:ready-to-drink",
+        "coef": -0.5869680621251188
+      },
+      {
+        "feature": "tfidf:tested",
+        "coef": -0.5807589209691242
+      },
+      {
+        "feature": "tfidf:yang",
+        "coef": -0.5477746024510588
+      },
+      {
+        "feature": "tfidf:cacao and",
+        "coef": -0.5438176765107855
+      },
+      {
+        "feature": "tfidf:and roast",
+        "coef": -0.5421603192850601
+      },
+      {
+        "feature": "tfidf:coffee tested",
+        "coef": -0.5377175173825194
+      },
+      {
+        "feature": "roaster_country=Peru",
+        "coef": -0.5257411993924404
+      },
+      {
+        "feature": "tfidf:taiwan visit",
+        "coef": -0.5159922343857637
+      },
+      {
+        "feature": "tfidf:roastery is",
+        "coef": -0.507732383355554
+      },
+      {
+        "feature": "tfidf:at beneficio",
+        "coef": -0.5019724752316584
+      },
+      {
+        "feature": "tfidf:products",
+        "coef": -0.4946482884641518
+      },
+      {
+        "feature": "tfidf:roasted",
+        "coef": -0.48659872259426734
+      },
+      {
+        "feature": "tfidf:earthy",
+        "coef": -0.48592721689440793
+      },
+      {
+        "feature": "tfidf:retail locations",
+        "coef": -0.4851255359925619
+      },
+      {
+        "feature": "tfidf:roaster and",
+        "coef": -0.4788180395979111
+      },
+      {
+        "feature": "tfidf:espresso applications",
+        "coef": -0.47874047745363174
+      },
+      {
+        "feature": "tfidf:roaster visit",
+        "coef": -0.47854542453557203
+      },
+      {
+        "feature": "tfidf:the roasting",
+        "coef": -0.4596500507214248
+      },
+      {
+        "feature": "tfidf:ethiopia geisha",
+        "coef": -0.45116859268215465
+      },
+      {
+        "feature": "tfidf:com lidongcoffee",
+        "coef": -0.4504487872278519
+      },
+      {
+        "feature": "tfidf:dong",
+        "coef": -0.45044878281065864
+      },
+      {
+        "feature": "tfidf:dong coffee",
+        "coef": -0.450448778497928
+      },
+      {
+        "feature": "tfidf:lee dong",
+        "coef": -0.45044877517114357
+      },
+      {
+        "feature": "tfidf:lidongcoffee",
+        "coef": -0.4504487711578278
+      },
+      {
+        "feature": "tfidf:lidongcoffee for",
+        "coef": -0.4504487672848662
+      },
+      {
+        "feature": "tfidf:cafe",
+        "coef": -0.44489255615749856
+      },
+      {
+        "feature": "tfidf:esperanza from",
+        "coef": -0.4443697903594887
+      },
+      {
+        "feature": "tfidf:cold",
+        "coef": -0.43631534128081284
+      },
+      {
+        "feature": "tfidf:colombia geisha",
+        "coef": -0.43034154380406964
+      },
+      {
+        "feature": "tfidf:robusta species",
+        "coef": -0.4261484555023419
+      },
+      {
+        "feature": "tfidf:bargain",
+        "coef": -0.4241209214407226
+      },
+      {
+        "feature": "roaster_country=Thailand",
+        "coef": -0.4221998419311065
+      },
+      {
+        "feature": "tfidf:pre-ground",
+        "coef": -0.417677495647095
+      },
+      {
+        "feature": "tfidf:cup from",
+        "coef": -0.4171825066079869
+      },
+      {
+        "feature": "tfidf:roast the",
+        "coef": -0.41416651901045776
+      },
+      {
+        "feature": "tfidf:procure and",
+        "coef": -0.4141661127654623
+      },
+      {
+        "feature": "tfidf:jasmine and",
+        "coef": -0.41239979918832714
+      },
+      {
+        "feature": "tfidf:applications",
+        "coef": -0.407406566310164
+      },
+      {
+        "feature": "tfidf:heat coffee",
+        "coef": -0.39480929204861204
+      },
+      {
+        "feature": "tfidf:nut-driven with",
+        "coef": -0.3925028177198058
+      },
+      {
+        "feature": "tfidf:sweetness and",
+        "coef": -0.3897106464634544
+      },
+      {
+        "feature": "tfidf:per",
+        "coef": -0.38782839802386254
+      },
+      {
+        "feature": "tfidf:guatemala",
+        "coef": -0.38548377223761227
+      },
+      {
+        "feature": "tfidf:milk richly",
+        "coef": -0.3845024281873797
+      },
+      {
+        "feature": "tfidf:co for",
+        "coef": -0.3836105138714138
+      },
+      {
+        "feature": "tfidf:the robusta",
+        "coef": -0.3794051204835473
+      },
+      {
+        "feature": "tfidf:raisin",
+        "coef": -0.3786027470229206
+      },
+      {
+        "feature": "tfidf:nut-toned chocolaty",
+        "coef": -0.37332227436750987
+      },
+      {
+        "feature": "tfidf:with pleasing",
+        "coef": -0.3708733123986666
+      },
+      {
+        "feature": "roaster_country=Australia",
+        "coef": -0.37041102304594004
+      },
+      {
+        "feature": "tfidf:farmers entirely",
+        "coef": -0.36872137235694047
+      },
+      {
+        "feature": "roaster_country=Indonesia",
+        "coef": -0.3682324464284973
+      },
+      {
+        "feature": "tfidf:taiwan",
+        "coef": -0.36821909155798005
+      },
+      {
+        "feature": "tfidf:cents",
+        "coef": -0.36704991620088195
+      },
+      {
+        "feature": "tfidf:province",
+        "coef": -0.36559581314984496
+      },
+      {
+        "feature": "tfidf:affordable",
+        "coef": -0.3599297644509646
+      },
+      {
+        "feature": "tfidf:2015",
+        "coef": -0.35977822712372465
+      },
+      {
+        "feature": "tfidf:geisha from",
+        "coef": -0.35976340764573983
+      },
+      {
+        "feature": "tfidf:in the",
+        "coef": -0.3563167570931105
+      },
+      {
+        "feature": "tfidf:tw",
+        "coef": -0.35451318582900576
+      },
+      {
+        "feature": "tfidf:kakalove caf",
+        "coef": -0.35406629517398597
+      },
+      {
+        "feature": "tfidf:market",
+        "coef": -0.34891825751657324
+      },
+      {
+        "feature": "tfidf:cafe in",
+        "coef": -0.34853078860832964
+      },
+      {
+        "feature": "tfidf:cents per",
+        "coef": -0.3481289983325269
+      },
+      {
+        "feature": "tfidf:roaster in",
+        "coef": -0.3450914353584573
+      },
+      {
+        "feature": "tfidf:catua",
+        "coef": -0.34450706972370776
+      },
+      {
+        "feature": "tfidf:14",
+        "coef": -0.34380343290216303
+      },
+      {
+        "feature": "tfidf:maria",
+        "coef": -0.3436464565090534
+      },
+      {
+        "feature": "tfidf:one washed",
+        "coef": -0.34356611510640567
+      },
+      {
+        "feature": "tfidf:quickly",
+        "coef": -0.34292559151794166
+      }
+    ],
+    "top_abs": [
+      {
+        "feature": "tfidf:kona",
+        "coef": 1.4444386464412104
+      },
+      {
+        "feature": "tfidf:civet",
+        "coef": 1.193688021148395
+      },
+      {
+        "feature": "tfidf:luwak",
+        "coef": 1.0387426951931145
+      },
+      {
+        "feature": "tfidf:rare",
+        "coef": 1.0111268976368926
+      },
+      {
+        "feature": "variety=mokkita",
+        "coef": 0.9315753457597382
+      },
+      {
+        "feature": "tfidf:kopi",
+        "coef": 0.7789768355598304
+      },
+      {
+        "feature": "tfidf:kopi luwak",
+        "coef": 0.7789768302598056
+      },
+      {
+        "feature": "tfidf:civet cat",
+        "coef": 0.7575788644914881
+      },
+      {
+        "feature": "tfidf:roasting of",
+        "coef": -0.7500150834696263
+      },
+      {
+        "feature": "tfidf:cat",
+        "coef": 0.7341302217344536
+      },
+      {
+        "feature": "tfidf:tea visit",
+        "coef": -0.6988575947422143
+      },
+      {
+        "feature": "tfidf:and tea",
+        "coef": -0.6982520002722699
+      },
+      {
+        "feature": "tfidf:value",
+        "coef": -0.6907413539578269
+      },
+      {
+        "feature": "tfidf:ba",
+        "coef": -0.6827627230905897
+      },
+      {
+        "feature": "tfidf:and cafe",
+        "coef": -0.6584907536352725
+      },
+      {
+        "feature": "tfidf:robusta",
+        "coef": -0.6567374920053181
+      },
+      {
+        "feature": "origin_country=Jamaica",
+        "coef": 0.6384915570613103
+      },
+      {
+        "feature": "tfidf:kona coffee",
+        "coef": 0.6238732322732606
+      },
+      {
+        "feature": "tfidf:store",
+        "coef": -0.6211576525016445
+      },
+      {
+        "feature": "tfidf:euphora coffee",
+        "coef": -0.5942105987952516
+      },
+      {
+        "feature": "tfidf:nutella and",
+        "coef": -0.5926238606977678
+      },
+      {
+        "feature": "tfidf:located the",
+        "coef": 0.5916856350778105
+      },
+      {
+        "feature": "tfidf:competition",
+        "coef": 0.5890612629737997
+      },
+      {
+        "feature": "tfidf:ready-to-drink",
+        "coef": -0.5869680621251188
+      },
+      {
+        "feature": "tfidf:tested",
+        "coef": -0.5807589209691242
+      },
+      {
+        "feature": "tfidf:sidra",
+        "coef": 0.5781233997906675
+      },
+      {
+        "feature": "tfidf:ltd is",
+        "coef": 0.5751459882968475
+      },
+      {
+        "feature": "tfidf:finish carries",
+        "coef": 0.565194099341798
+      },
+      {
+        "feature": "tfidf:paradise prides",
+        "coef": 0.5649295089321225
+      },
+      {
+        "feature": "tfidf:first",
+        "coef": 0.5519423138775565
+      },
+      {
+        "feature": "tfidf:subtle",
+        "coef": 0.5512651799288056
+      },
+      {
+        "feature": "tfidf:yang",
+        "coef": -0.5477746024510588
+      },
+      {
+        "feature": "origin_country=Yemen",
+        "coef": 0.5446009880422621
+      },
+      {
+        "feature": "tfidf:cacao and",
+        "coef": -0.5438176765107855
+      },
+      {
+        "feature": "tfidf:and roast",
+        "coef": -0.5421603192850601
+      },
+      {
+        "feature": "tfidf:808-498-4048",
+        "coef": 0.5393621000353693
+      },
+      {
+        "feature": "tfidf:808-498-4048 for",
+        "coef": 0.5393620662800168
+      },
+      {
+        "feature": "tfidf:call 808-498-4048",
+        "coef": 0.5393620264438667
+      },
+      {
+        "feature": "tfidf:coffee tested",
+        "coef": -0.5377175173825194
+      },
+      {
+        "feature": "tfidf:island",
+        "coef": 0.5317007337609382
+      },
+      {
+        "feature": "roaster_country=Peru",
+        "coef": -0.5257411993924404
+      },
+      {
+        "feature": "tfidf:taiwan visit",
+        "coef": -0.5159922343857637
+      },
+      {
+        "feature": "tfidf:lab",
+        "coef": 0.5080416204835555
+      },
+      {
+        "feature": "tfidf:roastery is",
+        "coef": -0.507732383355554
+      },
+      {
+        "feature": "tfidf:bacteria",
+        "coef": 0.5026420756333837
+      },
+      {
+        "feature": "origin_country=Taiwan",
+        "coef": 0.5021636294025319
+      },
+      {
+        "feature": "tfidf:at beneficio",
+        "coef": -0.5019724752316584
+      },
+      {
+        "feature": "tfidf:sea island",
+        "coef": 0.49557160225372693
+      },
+      {
+        "feature": "tfidf:products",
+        "coef": -0.4946482884641518
+      },
+      {
+        "feature": "tfidf:panama geisha",
+        "coef": 0.4916067596312481
+      },
+      {
+        "feature": "tfidf:roasted",
+        "coef": -0.48659872259426734
+      },
+      {
+        "feature": "tfidf:earthy",
+        "coef": -0.48592721689440793
+      },
+      {
+        "feature": "tfidf:retail locations",
+        "coef": -0.4851255359925619
+      },
+      {
+        "feature": "tfidf:it was",
+        "coef": 0.4799989507785995
+      },
+      {
+        "feature": "tfidf:roaster and",
+        "coef": -0.4788180395979111
+      },
+      {
+        "feature": "tfidf:espresso applications",
+        "coef": -0.47874047745363174
+      },
+      {
+        "feature": "tfidf:roaster visit",
+        "coef": -0.47854542453557203
+      },
+      {
+        "feature": "tfidf:and caf",
+        "coef": 0.4777435671152026
+      },
+      {
+        "feature": "tfidf:no 11",
+        "coef": 0.4730286095278815
+      },
+      {
+        "feature": "tfidf:sweet-tart balanced",
+        "coef": 0.46968043851482205
+      },
+      {
+        "feature": "tfidf:hong",
+        "coef": 0.4677658465457924
+      },
+      {
+        "feature": "tfidf:the roasting",
+        "coef": -0.4596500507214248
+      },
+      {
+        "feature": "tfidf:famous kopi",
+        "coef": 0.45387226661998964
+      },
+      {
+        "feature": "tfidf:visit seaislandcoffee",
+        "coef": 0.4532157421881914
+      },
+      {
+        "feature": "tfidf:seaislandcoffee com",
+        "coef": 0.4532157394836816
+      },
+      {
+        "feature": "tfidf:seaislandcoffee",
+        "coef": 0.4532157368374968
+      },
+      {
+        "feature": "tfidf:rare origins",
+        "coef": 0.4532157319373372
+      },
+      {
+        "feature": "tfidf:london-based roaster",
+        "coef": 0.4532157293213342
+      },
+      {
+        "feature": "tfidf:and varieties",
+        "coef": 0.4532157273741295
+      },
+      {
+        "feature": "tfidf:london-based",
+        "coef": 0.45321572674850713
+      },
+      {
+        "feature": "tfidf:a london-based",
+        "coef": 0.4532157248594308
+      },
+      {
+        "feature": "tfidf:ethiopia geisha",
+        "coef": -0.45116859268215465
+      },
+      {
+        "feature": "tfidf:com lidongcoffee",
+        "coef": -0.4504487872278519
+      },
+      {
+        "feature": "tfidf:dong",
+        "coef": -0.45044878281065864
+      },
+      {
+        "feature": "tfidf:dong coffee",
+        "coef": -0.450448778497928
+      },
+      {
+        "feature": "tfidf:lee dong",
+        "coef": -0.45044877517114357
+      },
+      {
+        "feature": "tfidf:lidongcoffee",
+        "coef": -0.4504487711578278
+      },
+      {
+        "feature": "tfidf:lidongcoffee for",
+        "coef": -0.4504487672848662
+      },
+      {
+        "feature": "tfidf:operates",
+        "coef": 0.448385055911828
+      },
+      {
+        "feature": "tfidf:cafe",
+        "coef": -0.44489255615749856
+      }
+    ]
+  }
+}

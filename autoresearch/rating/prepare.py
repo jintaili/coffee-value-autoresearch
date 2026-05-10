@@ -4,13 +4,16 @@ from __future__ import annotations
 
 import csv
 import random
+import sys
 from collections import defaultdict
 from pathlib import Path
 
-from features import extract_rows, write_features
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+
+from coffee_value.features import extract_rows, write_features
 
 
-ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "data" / "coffee.csv"
 MODELING = ROOT / "data" / "modeling_coffee.csv"
 SPLIT_DIR = ROOT / "data" / "splits"

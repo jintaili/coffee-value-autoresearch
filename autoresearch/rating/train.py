@@ -16,15 +16,15 @@ from scipy import sparse
 from scipy.sparse.linalg import spsolve
 
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 MODELING = ROOT / "data" / "modeling_coffee.csv"
 TRAIN_SPLIT = ROOT / "data" / "splits" / "rating_train.csv"
 VALIDATION_SPLIT = ROOT / "data" / "splits" / "rating_validation.csv"
-ARTIFACT_DIR = ROOT / "artifacts" / "rating_baseline"
+ARTIFACT_DIR = ROOT / "artifacts" / "rating"
 PREDICTIONS = ARTIFACT_DIR / "validation_predictions.csv"
 REPORT = ARTIFACT_DIR / "report.json"
 MODEL = ARTIFACT_DIR / "model.pkl"
-RESULTS = ROOT / "autoresearch" / "results.tsv"
+RESULTS = ROOT / "autoresearch" / "rating" / "results.tsv"
 
 
 STRUCTURED_FIELDS = [
@@ -53,7 +53,7 @@ ENCODER_NAME = "tfidf_embed"
 EMBED_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 EMBED_TEXT_FIELDS = ["sensory_text", "producer_text"]
 EMBED_BATCH = 64
-EMBED_CACHE_DIR = ROOT / "artifacts" / "rating_baseline"
+EMBED_CACHE_DIR = ROOT / "artifacts" / "rating"
 
 
 def embed_cache_path(model_name: str) -> Path:
@@ -559,7 +559,7 @@ def worst_errors(rows: list[dict[str, str]], y_true: np.ndarray, y_pred: np.ndar
 
 def main() -> None:
     if not MODELING.exists() or not TRAIN_SPLIT.exists() or not VALIDATION_SPLIT.exists():
-        raise SystemExit("Run python3 autoresearch/prepare.py first.")
+        raise SystemExit("Run python3 autoresearch/rating/prepare.py first.")
 
     rows = read_csv(MODELING)
     train_ids = read_ids(TRAIN_SPLIT)

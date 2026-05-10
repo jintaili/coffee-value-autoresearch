@@ -311,10 +311,10 @@ Build:
 
 Suggested files:
 
-- `autoresearch/program.md`
-- `autoresearch/prepare.py`
-- `autoresearch/train.py`
-- `autoresearch/results.tsv`
+- `autoresearch/rating/program.md`
+- `autoresearch/rating/prepare.py`
+- `autoresearch/rating/train.py`
+- `autoresearch/rating/results.tsv`
 - `data/modeling_coffee.csv`
 - `data/splits/rating_train.csv`
 - `data/splits/rating_validation.csv`

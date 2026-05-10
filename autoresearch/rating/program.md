@@ -19,7 +19,7 @@ Higher is better. Equal true-rating pairs are ignored.
 Before the first experiment, run:
 
 ```bash
-python3 autoresearch/prepare.py
+python3 autoresearch/rating/prepare.py
 ```
 
 This writes:
@@ -50,20 +50,20 @@ Stay on that branch for all experiments in the run. Do not create a new branch f
 
 Repeat this loop:
 
-1. Inspect the previous report in `artifacts/rating_baseline/report.json` and prior runs in `autoresearch/results.tsv`.
+1. Inspect the previous report in `artifacts/rating/report.json` and prior runs in `autoresearch/rating/results.tsv`.
 2. Choose one hypothesis to test.
 3. Edit only the files needed for that hypothesis.
 4. Commit the experimental code before running it.
 5. Run:
 
    ```bash
-   python3 autoresearch/prepare.py
-   python3 autoresearch/train.py
+   python3 autoresearch/rating/prepare.py
+   python3 autoresearch/rating/train.py
    ```
 
 6. Compare the new `val_concordance` to the previous best.
 7. Inspect calibration diagnostics, especially rating-bucket mean error.
-8. Leave `autoresearch/results.tsv` as the running experiment ledger.
+8. Leave `autoresearch/rating/results.tsv` as the running experiment ledger.
 9. If the change improves `val_concordance` without creating severe bucket bias or overfitting, keep the commit and continue from it.
 10. If the result is worse or suspicious, reset the branch back to where it started before that experiment.
 11. Push the run branch periodically so the remote history reflects the kept experiment sequence.
@@ -82,10 +82,13 @@ Stop the autonomous run when 9 consecutive experiments fail to produce a new bes
 
 Allowed to edit:
 
-- `autoresearch/features.py`
-- `autoresearch/prepare.py`
-- `autoresearch/train.py`
-- `autoresearch/program.md`
+- `autoresearch/rating/prepare.py`
+- `autoresearch/rating/train.py`
+- `autoresearch/rating/program.md`
+
+Do not edit the locked shared extractor during ordinary rating-model autoresearch:
+
+- `coffee_value/features.py`
 
 Be careful editing `prepare.py`: the split seed and split policy are part of the validation contract. Model-selection comparisons are only meaningful when validation row IDs stay fixed.
 
@@ -135,12 +138,12 @@ For any embedding experiment, preserve offline/online parity: the exact embeddin
 
 ## Required Run Outputs
 
-Each call to `python3 autoresearch/train.py` should produce:
+Each call to `python3 autoresearch/rating/train.py` should produce:
 
-- `artifacts/rating_baseline/report.json`
-- `artifacts/rating_baseline/validation_predictions.csv`
-- `artifacts/rating_baseline/model.pkl`
-- appended row in `autoresearch/results.tsv`
+- `artifacts/rating/report.json`
+- `artifacts/rating/validation_predictions.csv`
+- `artifacts/rating/model.pkl`
+- appended row in `autoresearch/rating/results.tsv`
 
 The report must include:
 

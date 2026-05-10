@@ -1,0 +1,11 @@
+train_rmsle: 0.152937
+val_rmsle: 0.300116
+overfit_gap: 0.962351
+val_spearman: 0.766575
+val_mae: 4.620182
+val_median_ae: 1.128888
+val_p90_ae: 6.221436
+val_low_decile_rmsle: 0.396374
+val_high_decile_rmsle: 0.568740
+val_max_abs_quantile_mean_error: 28.525404
+report: artifacts/price/report.json

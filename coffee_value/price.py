@@ -204,7 +204,11 @@ def parse_package_grams(raw: str) -> tuple[float | None, float | None, str | Non
         flags=re.I,
     )
     if not candidates:
-        return None, None, None, UNSUPPORTED_UNIT
+        bare_unit = re.search(r"^\s*(kilogram|kg|pound|lb)\s*$", package, re.I)
+        if bare_unit:
+            candidates = [("1", bare_unit.group(1))]
+        else:
+            return None, None, None, UNSUPPORTED_UNIT
 
     quantity_s, unit_raw = candidates[0]
     unit = UNIT_ALIASES.get(unit_raw.lower().rstrip("."))

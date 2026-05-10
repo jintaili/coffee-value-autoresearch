@@ -33,7 +33,7 @@ TRAIN_SPLIT = SPLIT_DIR / "price_train.csv"
 VALIDATION_SPLIT = SPLIT_DIR / "price_validation.csv"
 
 
-RUN_DESCRIPTION = "ElasticNet alpha=0.0001 l1_ratio=0.1 (lower L1 to retain useful small coefs)"
+RUN_DESCRIPTION = "add package_grams log numeric feature plus tiny/small package flags to ElasticNet"
 
 SEED = 20260509
 VALIDATION_FRAC = 0.15
@@ -50,6 +50,13 @@ STRUCTURED_FIELDS = [
     "roaster_country",
 ]
 TEXT_FIELDS = ["sensory_text", "producer_text"]
+PACKAGE_FEATURE_NAMES = [
+    "package_grams_log_z",
+    "package_grams_missing",
+    "package_grams_le_20",
+    "package_grams_le_50",
+    "package_grams_le_100",
+]
 MAX_FEATURES = 24000
 MIN_DF = 5
 MAX_DF = 0.85
@@ -137,6 +144,16 @@ def ngrams(text: str, n_max: int = NGRAM_MAX) -> list[str]:
     return grams
 
 
+def package_grams(row: dict[str, str]) -> float | None:
+    try:
+        grams = float(row.get("package_grams") or "")
+    except ValueError:
+        return None
+    if grams <= 0:
+        return None
+    return grams
+
+
 class FeatureEncoder:
     def __init__(self, max_features: int = MAX_FEATURES, min_df: int = MIN_DF, max_df: float = MAX_DF):
         self.max_features = max_features
@@ -145,6 +162,8 @@ class FeatureEncoder:
         self.structured_vocab: dict[tuple[str, str], int] = {}
         self.text_vocab: dict[str, int] = {}
         self.idf: np.ndarray | None = None
+        self.package_log_mean = 0.0
+        self.package_log_std = 1.0
         self.feature_names: list[str] = []
 
     def fit(self, rows: list[dict[str, str]]) -> None:
@@ -170,16 +189,27 @@ class FeatureEncoder:
         terms = terms[: self.max_features]
         self.text_vocab = {term: i for i, (term, _) in enumerate(terms)}
         self.idf = np.array([math.log((1 + n_docs) / (1 + count)) + 1 for _, count in terms])
+        package_logs = [
+            math.log(grams)
+            for row in rows
+            if (grams := package_grams(row)) is not None
+        ]
+        if package_logs:
+            self.package_log_mean = float(np.mean(package_logs))
+            self.package_log_std = float(np.std(package_logs)) or 1.0
 
         self.feature_names = []
         for (field, value), _ in sorted(self.structured_vocab.items(), key=lambda x: x[1]):
             self.feature_names.append(f"{field}={value}")
         for term, _ in sorted(self.text_vocab.items(), key=lambda x: x[1]):
             self.feature_names.append(f"tfidf:{term}")
+        self.feature_names.extend(PACKAGE_FEATURE_NAMES)
 
     def transform(self, rows: list[dict[str, str]]) -> sparse.csr_matrix:
         assert self.idf is not None
         n_struct = len(self.structured_vocab)
+        n_text = len(self.text_vocab)
+        package_offset = n_struct + n_text
         indptr = [0]
         indices = []
         data = []
@@ -204,8 +234,27 @@ class FeatureEncoder:
             for idx, value in text_items:
                 indices.append(idx)
                 data.append(value / norm)
+
+            grams = package_grams(row)
+            if grams is None:
+                indices.append(package_offset + 1)
+                data.append(1.0)
+            else:
+                log_z = (math.log(grams) - self.package_log_mean) / self.package_log_std
+                indices.append(package_offset)
+                data.append(log_z)
+                if grams <= 20:
+                    indices.append(package_offset + 2)
+                    data.append(1.0)
+                if grams <= 50:
+                    indices.append(package_offset + 3)
+                    data.append(1.0)
+                if grams <= 100:
+                    indices.append(package_offset + 4)
+                    data.append(1.0)
             indptr.append(len(indices))
-        return sparse.csr_matrix((data, indices, indptr), shape=(len(rows), len(self.structured_vocab) + len(self.text_vocab)))
+        width = len(self.structured_vocab) + len(self.text_vocab) + len(PACKAGE_FEATURE_NAMES)
+        return sparse.csr_matrix((data, indices, indptr), shape=(len(rows), width))
 
 
 def fit_ridge(x_train: sparse.csr_matrix, y_train: np.ndarray, alpha: float) -> tuple[np.ndarray, float]:
@@ -434,6 +483,7 @@ def main() -> None:
             "ngram_max": NGRAM_MAX,
             "structured_fields": STRUCTURED_FIELDS,
             "text_fields": TEXT_FIELDS,
+            "package_features": PACKAGE_FEATURE_NAMES,
             "train_rows": len(train_rows),
             "validation_rows": len(validation_rows),
         },

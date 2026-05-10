@@ -8,6 +8,8 @@ The rating autoresearch run has concluded and is preserved as a research trace:
 - [Rating results ledger](autoresearch/rating/results.tsv)
 - [Rating summary](autoresearch/rating/notes.md)
 
+![Rating autoresearch progress](autoresearch/rating/progress.png)
+
 The reusable extraction contract lives in [coffee_value/features.py](coffee_value/features.py). That deterministic extractor is shared by rating and future price work so the two regression models use the same canonical feature representation.
 
 ## Layout

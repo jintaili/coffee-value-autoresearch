@@ -32,7 +32,7 @@ TRAIN_SPLIT = SPLIT_DIR / "price_train.csv"
 VALIDATION_SPLIT = SPLIT_DIR / "price_validation.csv"
 
 
-RUN_DESCRIPTION = "expand MAX_FEATURES 12000 -> 24000 since cap was binding"
+RUN_DESCRIPTION = "target log1p -> plain log(price), inverse expm1 -> exp"
 
 SEED = 20260509
 VALIDATION_FRAC = 0.15
@@ -238,7 +238,7 @@ def spearman(y_true: np.ndarray, y_pred: np.ndarray) -> float:
 
 
 def inverse_target(y_log: np.ndarray) -> np.ndarray:
-    return np.maximum(0.0, np.expm1(y_log))
+    return np.maximum(0.0, np.exp(y_log))
 
 
 def rmsle_from_prices(y_true: np.ndarray, y_pred: np.ndarray) -> float:
@@ -387,7 +387,7 @@ def main() -> None:
 
     y_train_price = np.array([float(row["price_usd_per_100g_real"]) for row in train_rows])
     y_validation_price = np.array([float(row["price_usd_per_100g_real"]) for row in validation_rows])
-    y_train = np.log1p(y_train_price)
+    y_train = np.log(y_train_price)
 
     encoder = FeatureEncoder()
     encoder.fit(train_rows)
@@ -409,7 +409,7 @@ def main() -> None:
     write_predictions(validation_rows, y_validation_price, y_validation_pred_price)
     report = {
         "config": {
-            "target": "log1p(price_usd_per_100g_real)",
+            "target": "log(price_usd_per_100g_real)",
             "model": "ridge",
             "alpha": RIDGE_ALPHA,
             "max_features": MAX_FEATURES,

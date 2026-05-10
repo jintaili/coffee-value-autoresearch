@@ -55,8 +55,6 @@ Locked during ordinary price autoresearch:
 
 ## Feature Contract
 
-Align the price model with the accepted rating configuration (`ship_exp15`) unless an experiment explicitly tests a change.
-
 Use production-compatible shared features:
 
 - `origin_country`
@@ -71,19 +69,25 @@ Use production-compatible shared features:
 - `sensory_text`
 - `producer_text`
 
-Do not use `rating` as an input unless explicitly requested. The rating and price heads should be independent estimates from the same webpage-compatible feature contract.
+Do not use `rating` as an input.
 
 ## Results TSV
 
-Log every experiment to `autoresearch/price/results.tsv`, tab-separated:
-
 ```text
-commit	val_rmsle	overfit_gap	status	description
+commit	val_rmsle	train_rmsle	overfit_gap	val_spearman	val_mae	val_median_ae	val_p90_ae	val_low_decile_rmsle	val_high_decile_rmsle	val_max_abs_quantile_mean_error	status	description
 ```
 
 - `commit`: short git commit hash for the experimental code.
 - `val_rmsle`: primary validation metric; use `0.000000` for crashes.
-- `overfit_gap`: `val_rmsle - train_rmsle`; use `0.000000` for crashes.
+- `train_rmsle`: training RMSLE.
+- `overfit_gap`: `(val_rmsle - train_rmsle) / train_rmsle`; use `0.000000` for crashes.
+- `val_spearman`: validation rank correlation.
+- `val_mae`: validation mean absolute error in real USD per 100g.
+- `val_median_ae`: validation median absolute error in real USD per 100g.
+- `val_p90_ae`: validation 90th percentile absolute error in real USD per 100g.
+- `val_low_decile_rmsle`: RMSLE for the cheapest validation decile.
+- `val_high_decile_rmsle`: RMSLE for the most expensive validation decile.
+- `val_max_abs_quantile_mean_error`: worst absolute mean dollar bias across validation price deciles.
 - `status`: `keep`, `discard`, or `crash`.
 - `description`: short free text description of what changed.
 
@@ -103,7 +107,7 @@ Run on a dedicated branch. Loop:
 5. Read the summary:
 
    ```bash
-   grep "^val_rmsle:\\|^train_rmsle:\\|^overfit_gap:" run.log
+   grep "^val_rmsle:\\|^train_rmsle:\\|^overfit_gap:\\|^val_spearman:\\|^val_mae:\\|^val_median_ae:\\|^val_p90_ae:" run.log
    ```
 
 6. Append the result to `autoresearch/price/results.tsv`.
@@ -119,6 +123,7 @@ Focus on:
 
 - target transform: raw, log, log1p, and others
 - output calibration
+- input feature transformation
 - model family
 - regularization
 - robust treatment of high-price outliers
@@ -127,8 +132,7 @@ Avoid:
 
 - changing price parsing
 - changing the validation split to improve score
-- using rating as an input unless explicitly requested
-- LLM extraction
+- using rating as an input
 
 ## Metrics
 
@@ -141,12 +145,17 @@ Secondary diagnostics:
 - `val_spearman`
 - MAE in USD per 100g after inverse transform
 - median absolute error in USD per 100g
+- p90 absolute error in USD per 100g
+- cheapest-decile RMSLE
+- most-expensive-decile RMSLE
+- worst absolute mean dollar bias across price deciles
 - bias by price quantile
 - `train_rmsle`
-- `overfit_gap = val_rmsle - train_rmsle`
+- `overfit_gap = (val_rmsle - train_rmsle) / train_rmsle`
 
 Guardrails:
 
-- Prefer `overfit_gap <= 0.05`.
-- Treat `overfit_gap > 0.10` as severe overfitting unless the validation improvement is large and diagnostics are sane.
+- Prefer `overfit_gap <= 0.10`.
+- Treat `0.10 < overfit_gap <= 0.20` as suspicious; keep only with clear validation improvement and sane diagnostics.
+- Treat `overfit_gap > 0.20` as severe overfitting unless the validation improvement is large and diagnostics are sane.
 - Flag candidates that improve RMSLE by collapsing predictions or badly worsening low/high price quantile bias.

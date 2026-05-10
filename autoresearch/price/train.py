@@ -248,11 +248,13 @@ def rmsle_from_prices(y_true: np.ndarray, y_pred: np.ndarray) -> float:
 
 def metrics(y_true_price: np.ndarray, y_pred_price: np.ndarray, prefix: str) -> dict[str, float]:
     err = y_pred_price - y_true_price
+    abs_err = np.abs(err)
     return {
         f"{prefix}_rmsle": rmsle_from_prices(y_true_price, y_pred_price),
         f"{prefix}_spearman": spearman(y_true_price, y_pred_price),
-        f"{prefix}_mae": float(np.mean(np.abs(err))),
-        f"{prefix}_median_ae": float(np.median(np.abs(err))),
+        f"{prefix}_mae": float(np.mean(abs_err)),
+        f"{prefix}_median_ae": float(np.median(abs_err)),
+        f"{prefix}_p90_ae": float(np.quantile(abs_err, 0.9)),
     }
 
 
@@ -280,6 +282,18 @@ def quantile_analysis(rows: list[dict[str, str]], y_true: np.ndarray, y_pred: np
             }
         )
     return out
+
+
+def validation_diagnostics(y_true: np.ndarray, y_pred: np.ndarray) -> dict[str, float]:
+    quantiles = quantile_analysis([], y_true, y_pred)
+    low = quantiles[0]
+    high = quantiles[-1]
+    max_abs_quantile_mean_error = max(abs(float(q["mean_error"])) for q in quantiles)
+    return {
+        "val_low_decile_rmsle": float(low["rmsle"]),
+        "val_high_decile_rmsle": float(high["rmsle"]),
+        "val_max_abs_quantile_mean_error": max_abs_quantile_mean_error,
+    }
 
 
 def write_predictions(rows: list[dict[str, str]], y_true: np.ndarray, y_pred: np.ndarray) -> None:
@@ -321,7 +335,21 @@ def short_commit() -> str:
 
 def append_results(metric_values: dict[str, float], status: str = "keep") -> None:
     RESULTS.parent.mkdir(parents=True, exist_ok=True)
-    fieldnames = ["commit", "val_rmsle", "overfit_gap", "status", "description"]
+    fieldnames = [
+        "commit",
+        "val_rmsle",
+        "train_rmsle",
+        "overfit_gap",
+        "val_spearman",
+        "val_mae",
+        "val_median_ae",
+        "val_p90_ae",
+        "val_low_decile_rmsle",
+        "val_high_decile_rmsle",
+        "val_max_abs_quantile_mean_error",
+        "status",
+        "description",
+    ]
     write_header = not RESULTS.exists() or RESULTS.stat().st_size == 0
     with RESULTS.open("a", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, delimiter="\t", fieldnames=fieldnames)
@@ -331,7 +359,15 @@ def append_results(metric_values: dict[str, float], status: str = "keep") -> Non
             {
                 "commit": short_commit(),
                 "val_rmsle": f"{metric_values['val_rmsle']:.6f}",
+                "train_rmsle": f"{metric_values['train_rmsle']:.6f}",
                 "overfit_gap": f"{metric_values['overfit_gap']:.6f}",
+                "val_spearman": f"{metric_values['val_spearman']:.6f}",
+                "val_mae": f"{metric_values['val_mae']:.6f}",
+                "val_median_ae": f"{metric_values['val_median_ae']:.6f}",
+                "val_p90_ae": f"{metric_values['val_p90_ae']:.6f}",
+                "val_low_decile_rmsle": f"{metric_values['val_low_decile_rmsle']:.6f}",
+                "val_high_decile_rmsle": f"{metric_values['val_high_decile_rmsle']:.6f}",
+                "val_max_abs_quantile_mean_error": f"{metric_values['val_max_abs_quantile_mean_error']:.6f}",
                 "status": status,
                 "description": RUN_DESCRIPTION,
             }
@@ -365,7 +401,9 @@ def main() -> None:
     train_metrics = metrics(y_train_price, y_train_pred_price, prefix="train")
     val_metrics = metrics(y_validation_price, y_validation_pred_price, prefix="val")
     metric_values = {**train_metrics, **val_metrics}
-    metric_values["overfit_gap"] = metric_values["val_rmsle"] - metric_values["train_rmsle"]
+    metric_values.update(validation_diagnostics(y_validation_price, y_validation_pred_price))
+    metric_values["overfit_gap"] = (metric_values["val_rmsle"] - metric_values["train_rmsle"]) / metric_values["train_rmsle"]
+    quantile_rows = quantile_analysis(validation_rows, y_validation_price, y_validation_pred_price)
 
     ARTIFACT_DIR.mkdir(parents=True, exist_ok=True)
     write_predictions(validation_rows, y_validation_price, y_validation_pred_price)
@@ -385,15 +423,29 @@ def main() -> None:
         },
         "metrics": val_metrics,
         "train_metrics": train_metrics,
-        "overfitting": {"overfit_gap": metric_values["overfit_gap"]},
-        "quantile_analysis": quantile_analysis(validation_rows, y_validation_price, y_validation_pred_price),
+        "overfitting": {
+            "overfit_gap": metric_values["overfit_gap"],
+            "definition": "(val_rmsle - train_rmsle) / train_rmsle",
+        },
+        "quantile_analysis": quantile_rows,
     }
     REPORT.write_text(json.dumps(report, indent=2), encoding="utf-8")
     with MODEL.open("wb") as f:
         pickle.dump({"encoder": encoder, "weights": weights, "intercept": intercept, "config": report["config"]}, f)
     append_results(metric_values)
 
-    for key in ["train_rmsle", "val_rmsle", "overfit_gap", "val_spearman", "val_mae", "val_median_ae"]:
+    for key in [
+        "train_rmsle",
+        "val_rmsle",
+        "overfit_gap",
+        "val_spearman",
+        "val_mae",
+        "val_median_ae",
+        "val_p90_ae",
+        "val_low_decile_rmsle",
+        "val_high_decile_rmsle",
+        "val_max_abs_quantile_mean_error",
+    ]:
         print(f"{key}: {metric_values[key]:.6f}")
     print(f"report: {REPORT.relative_to(ROOT)}")
 

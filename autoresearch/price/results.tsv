@@ -1,2 +1,2 @@
-commit	val_rmsle	overfit_gap	status	description
-65118f9	0.351530	0.016437	keep	baseline: exp15-aligned deterministic features + unigram/bigram tfidf + ridge on log1p real USD/100g
+commit	val_rmsle	train_rmsle	overfit_gap	val_spearman	val_mae	val_median_ae	val_p90_ae	val_low_decile_rmsle	val_high_decile_rmsle	val_max_abs_quantile_mean_error	status	description
+ea09396	0.351530	0.335093	0.049052	0.722726	4.996743	1.124423	6.783650	0.531905	0.744349	34.426291	keep	baseline: exp15-aligned deterministic features + unigram/bigram tfidf + ridge on log1p real USD/100g

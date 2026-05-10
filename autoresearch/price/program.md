@@ -93,7 +93,13 @@ commit	val_rmsle	train_rmsle	overfit_gap	val_spearman	val_mae	val_median_ae	val_
 
 ## Experiment Loop
 
-Run on a dedicated branch. Loop:
+Run on a dedicated branch. 
+
+```bash
+git checkout -b run/price-autoresearch-YYYYMMDD
+```
+
+Loop:
 
 1. Look at git state and the current best result in `autoresearch/price/results.tsv`.
 2. Edit `autoresearch/price/train.py` with one experimental idea.

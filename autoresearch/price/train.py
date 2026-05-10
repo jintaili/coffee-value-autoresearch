@@ -33,7 +33,7 @@ TRAIN_SPLIT = SPLIT_DIR / "price_train.csv"
 VALIDATION_SPLIT = SPLIT_DIR / "price_validation.csv"
 
 
-RUN_DESCRIPTION = "add package_grams log numeric feature plus tiny/small package flags to ElasticNet"
+RUN_DESCRIPTION = "package size features plus post-hoc log residual calibration by predicted decile"
 
 SEED = 20260509
 VALIDATION_FRAC = 0.15
@@ -66,6 +66,8 @@ ELASTICNET_ALPHA = 0.0001
 ELASTICNET_L1_RATIO = 0.1
 ELASTICNET_MAX_ITER = 5000
 ELASTICNET_TOL = 1e-4
+CALIBRATION_DECILES = 10
+CALIBRATION_SHRINKAGE = 0.75
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
@@ -295,6 +297,32 @@ def inverse_target(y_log: np.ndarray) -> np.ndarray:
     return np.maximum(0.0, np.exp(y_log))
 
 
+def fit_predicted_decile_calibration(
+    y_true_log: np.ndarray,
+    y_pred_log: np.ndarray,
+    n_bins: int = CALIBRATION_DECILES,
+    shrinkage: float = CALIBRATION_SHRINKAGE,
+) -> dict[str, object]:
+    edges = [float(np.quantile(y_pred_log, q)) for q in np.linspace(0.1, 0.9, n_bins - 1)]
+    bin_ids = np.searchsorted(edges, y_pred_log, side="right")
+    offsets = []
+    residuals = y_true_log - y_pred_log
+    for bin_id in range(n_bins):
+        mask = bin_ids == bin_id
+        if np.any(mask):
+            offsets.append(float(np.mean(residuals[mask]) * shrinkage))
+        else:
+            offsets.append(0.0)
+    return {"edges": edges, "offsets": offsets}
+
+
+def apply_predicted_decile_calibration(y_pred_log: np.ndarray, calibration: dict[str, object]) -> np.ndarray:
+    edges = calibration["edges"]
+    offsets = calibration["offsets"]
+    bin_ids = np.searchsorted(edges, y_pred_log, side="right")
+    return y_pred_log + np.array([offsets[i] for i in bin_ids], dtype=float)
+
+
 def rmsle_from_prices(y_true: np.ndarray, y_pred: np.ndarray) -> float:
     y_pred = np.maximum(0.0, y_pred)
     return float(np.sqrt(np.mean((np.log1p(y_pred) - np.log1p(y_true)) ** 2)))
@@ -459,8 +487,13 @@ def main() -> None:
     weights = model.coef_
     intercept = float(model.intercept_)
 
-    y_train_pred_price = inverse_target(model.predict(x_train))
-    y_validation_pred_price = inverse_target(model.predict(x_validation))
+    y_train_pred_log_raw = model.predict(x_train)
+    y_validation_pred_log_raw = model.predict(x_validation)
+    calibration = fit_predicted_decile_calibration(y_train, y_train_pred_log_raw)
+    y_train_pred_log = apply_predicted_decile_calibration(y_train_pred_log_raw, calibration)
+    y_validation_pred_log = apply_predicted_decile_calibration(y_validation_pred_log_raw, calibration)
+    y_train_pred_price = inverse_target(y_train_pred_log)
+    y_validation_pred_price = inverse_target(y_validation_pred_log)
 
     train_metrics = metrics(y_train_price, y_train_pred_price, prefix="train")
     val_metrics = metrics(y_validation_price, y_validation_pred_price, prefix="val")
@@ -484,6 +517,13 @@ def main() -> None:
             "structured_fields": STRUCTURED_FIELDS,
             "text_fields": TEXT_FIELDS,
             "package_features": PACKAGE_FEATURE_NAMES,
+            "calibration": {
+                "type": "predicted_decile_log_residual",
+                "n_bins": CALIBRATION_DECILES,
+                "shrinkage": CALIBRATION_SHRINKAGE,
+                "offsets": calibration["offsets"],
+                "edges": calibration["edges"],
+            },
             "train_rows": len(train_rows),
             "validation_rows": len(validation_rows),
         },

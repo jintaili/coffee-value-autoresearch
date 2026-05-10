@@ -18,6 +18,7 @@ from pathlib import Path
 import numpy as np
 from scipy import sparse
 from scipy.sparse.linalg import spsolve
+from sklearn.linear_model import ElasticNet
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -32,7 +33,7 @@ TRAIN_SPLIT = SPLIT_DIR / "price_train.csv"
 VALIDATION_SPLIT = SPLIT_DIR / "price_validation.csv"
 
 
-RUN_DESCRIPTION = "target log1p -> plain log(price), inverse expm1 -> exp"
+RUN_DESCRIPTION = "ElasticNet alpha=0.0001 l1_ratio=0.1 (lower L1 to retain useful small coefs)"
 
 SEED = 20260509
 VALIDATION_FRAC = 0.15
@@ -54,6 +55,10 @@ MIN_DF = 5
 MAX_DF = 0.85
 NGRAM_MAX = 2
 RIDGE_ALPHA = 2.0
+ELASTICNET_ALPHA = 0.0001
+ELASTICNET_L1_RATIO = 0.1
+ELASTICNET_MAX_ITER = 5000
+ELASTICNET_TOL = 1e-4
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
@@ -393,10 +398,20 @@ def main() -> None:
     encoder.fit(train_rows)
     x_train = encoder.transform(train_rows)
     x_validation = encoder.transform(validation_rows)
-    weights, intercept = fit_ridge(x_train, y_train, RIDGE_ALPHA)
+    model = ElasticNet(
+        alpha=ELASTICNET_ALPHA,
+        l1_ratio=ELASTICNET_L1_RATIO,
+        max_iter=ELASTICNET_MAX_ITER,
+        tol=ELASTICNET_TOL,
+        selection="cyclic",
+        random_state=SEED,
+    )
+    model.fit(x_train, y_train)
+    weights = model.coef_
+    intercept = float(model.intercept_)
 
-    y_train_pred_price = inverse_target(predict(x_train, weights, intercept))
-    y_validation_pred_price = inverse_target(predict(x_validation, weights, intercept))
+    y_train_pred_price = inverse_target(model.predict(x_train))
+    y_validation_pred_price = inverse_target(model.predict(x_validation))
 
     train_metrics = metrics(y_train_price, y_train_pred_price, prefix="train")
     val_metrics = metrics(y_validation_price, y_validation_pred_price, prefix="val")
@@ -410,8 +425,9 @@ def main() -> None:
     report = {
         "config": {
             "target": "log(price_usd_per_100g_real)",
-            "model": "ridge",
-            "alpha": RIDGE_ALPHA,
+            "model": "elasticnet",
+            "alpha": ELASTICNET_ALPHA,
+            "l1_ratio": ELASTICNET_L1_RATIO,
             "max_features": MAX_FEATURES,
             "min_df": MIN_DF,
             "max_df": MAX_DF,

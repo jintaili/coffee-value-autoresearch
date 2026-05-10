@@ -32,3 +32,4 @@ exp29_multihot_variety_process	split variety/process_method on '|' into multi-ho
 exp30_maxfeat4000	[reset, val regressed] max_features 6000 -> 4000 (semantic embeddings may cover low-rank TFIDF tail)	0.934286	0.893027	0.041258	0.873177	1.047251	1.558174	0.614809	0.867614
 exp31_embed_hgbt_mpnet	[reset, gap=0.124 severe overfit] mpnet embeddings (sensory) + structured (incl roaster, multihot) + HGBT	0.994091	0.870106	0.123985	0.839024	1.241260	1.919886	0.583396	0.824233
 exp32_embed_combined_text	[reset, val regressed] embed sensory+producer concatenated as one document (single 768-dim instead of two)	0.937439	0.893147	0.044291	0.873418	1.043558	1.571424	0.623037	0.871354
+ship_exp15	production config: TF-IDF (6000, bigrams) + MiniLM embeddings hybrid + ridge alpha=1; no roaster	0.939847	0.891044	0.048803	0.870150	1.049560	1.557227	0.621541	0.868362

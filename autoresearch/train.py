@@ -37,10 +37,9 @@ STRUCTURED_FIELDS = [
     "producer_or_farm_present",
     "altitude_present",
     "roaster_country",
-    "roaster",
 ]
-STRUCTURED_MIN_DF = 10  # Clip values appearing fewer than this many train rows to "unknown".
-MULTIHOT_FIELDS = {"variety", "process_method"}
+STRUCTURED_MIN_DF = 1  # Production config keeps every observed value (no clipping).
+MULTIHOT_FIELDS: set[str] = set()  # Production config does not split multi-valued labels.
 
 TEXT_FIELDS = ["sensory_text", "producer_text"]
 MAX_FEATURES = 6000
@@ -51,9 +50,9 @@ RIDGE_ALPHA = 1.0
 
 # Encoder dispatch. Supported values: "tfidf", "embed", "tfidf_embed".
 ENCODER_NAME = "tfidf_embed"
-EMBED_MODEL = "sentence-transformers/all-mpnet-base-v2"
-EMBED_TEXT_FIELDS = ["sensory_text"]
-EMBED_BATCH = 32
+EMBED_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+EMBED_TEXT_FIELDS = ["sensory_text", "producer_text"]
+EMBED_BATCH = 64
 EMBED_CACHE_DIR = ROOT / "artifacts" / "rating_baseline"
 
 
@@ -74,8 +73,8 @@ HGBT_PARAMS = {
     "random_state": 0,
 }
 
-RUN_NAME = "exp29_multihot_variety_process"
-RUN_DESCRIPTION = "split variety/process_method on '|' into multi-hot booleans"
+RUN_NAME = "ship_exp15"
+RUN_DESCRIPTION = "production config: TF-IDF (6000, bigrams) + MiniLM embeddings hybrid + ridge alpha=1; no roaster"
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:

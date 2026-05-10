@@ -33,7 +33,7 @@ TRAIN_SPLIT = SPLIT_DIR / "price_train.csv"
 VALIDATION_SPLIT = SPLIT_DIR / "price_validation.csv"
 
 
-RUN_DESCRIPTION = "add package_grams log numeric feature plus tiny/small package flags to ElasticNet"
+RUN_DESCRIPTION = "package size features plus mild high-price sample weights for ElasticNet"
 
 SEED = 20260509
 VALIDATION_FRAC = 0.15
@@ -66,6 +66,7 @@ ELASTICNET_ALPHA = 0.0001
 ELASTICNET_L1_RATIO = 0.1
 ELASTICNET_MAX_ITER = 5000
 ELASTICNET_TOL = 1e-4
+HIGH_PRICE_WEIGHT = 1.75
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
@@ -295,6 +296,13 @@ def inverse_target(y_log: np.ndarray) -> np.ndarray:
     return np.maximum(0.0, np.exp(y_log))
 
 
+def high_price_sample_weights(y_price: np.ndarray) -> np.ndarray:
+    cutoff = float(np.quantile(y_price, 0.9))
+    weights = np.ones(len(y_price), dtype=float)
+    weights[y_price >= cutoff] = HIGH_PRICE_WEIGHT
+    return weights
+
+
 def rmsle_from_prices(y_true: np.ndarray, y_pred: np.ndarray) -> float:
     y_pred = np.maximum(0.0, y_pred)
     return float(np.sqrt(np.mean((np.log1p(y_pred) - np.log1p(y_true)) ** 2)))
@@ -455,7 +463,8 @@ def main() -> None:
         selection="cyclic",
         random_state=SEED,
     )
-    model.fit(x_train, y_train)
+    sample_weights = high_price_sample_weights(y_train_price)
+    model.fit(x_train, y_train, sample_weight=sample_weights)
     weights = model.coef_
     intercept = float(model.intercept_)
 
@@ -484,6 +493,9 @@ def main() -> None:
             "structured_fields": STRUCTURED_FIELDS,
             "text_fields": TEXT_FIELDS,
             "package_features": PACKAGE_FEATURE_NAMES,
+            "high_price_weight": {
+                "top_decile_weight": HIGH_PRICE_WEIGHT,
+            },
             "train_rows": len(train_rows),
             "validation_rows": len(validation_rows),
         },

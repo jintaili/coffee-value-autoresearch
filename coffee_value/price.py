@@ -9,8 +9,11 @@ being guessed into the training target.
 from __future__ import annotations
 
 import re
+import csv
 from dataclasses import dataclass
 from datetime import datetime
+from functools import lru_cache
+from pathlib import Path
 
 
 OK = "ok"
@@ -51,6 +54,9 @@ CPI_BY_MONTH = {
     "2025-12": 1.0,
 }
 REAL_BASE_MONTH = "2025-12"
+REFERENCE_DIR = Path(__file__).resolve().parent / "reference"
+FX_REFERENCE = REFERENCE_DIR / "fx_usd_monthly.csv"
+CPI_REFERENCE = REFERENCE_DIR / "cpi_us_monthly.csv"
 
 
 CURRENCY_PATTERNS = [
@@ -161,6 +167,74 @@ def review_month(review_date: str | None) -> str | None:
     return f"{year.group(1)}-01" if year else None
 
 
+@lru_cache(maxsize=1)
+def load_fx_reference() -> dict[tuple[str, str], float]:
+    rates: dict[tuple[str, str], float] = {}
+    if FX_REFERENCE.exists():
+        with FX_REFERENCE.open(newline="", encoding="utf-8") as f:
+            for row in csv.DictReader(f):
+                try:
+                    rates[(row["month"], row["currency"])] = float(row["usd_per_currency"])
+                except (KeyError, ValueError):
+                    continue
+    return rates
+
+
+@lru_cache(maxsize=1)
+def load_cpi_reference() -> dict[str, float]:
+    cpi: dict[str, float] = {}
+    if CPI_REFERENCE.exists():
+        with CPI_REFERENCE.open(newline="", encoding="utf-8") as f:
+            for row in csv.DictReader(f):
+                try:
+                    cpi[row["month"]] = float(row["cpi"])
+                except (KeyError, ValueError):
+                    continue
+    return cpi
+
+
+def previous_month(month: str) -> str | None:
+    try:
+        dt = datetime.strptime(month, "%Y-%m")
+    except ValueError:
+        return None
+    year = dt.year
+    prev = dt.month - 1
+    if prev == 0:
+        year -= 1
+        prev = 12
+    return f"{year:04d}-{prev:02d}"
+
+
+def lookup_monthly_value(values: dict[str, float], month: str | None) -> float | None:
+    if not month:
+        return None
+    cursor = month
+    for _ in range(360):
+        if cursor in values:
+            return values[cursor]
+        cursor = previous_month(cursor)
+        if cursor is None:
+            return None
+    return None
+
+
+def usd_per_currency(currency: str, month: str | None) -> float | None:
+    if currency == "USD":
+        return 1.0
+    fx = load_fx_reference()
+    if fx and month:
+        cursor = month
+        for _ in range(360):
+            value = fx.get((cursor, currency))
+            if value is not None:
+                return value
+            cursor = previous_month(cursor)
+            if cursor is None:
+                break
+    return USD_PER_CURRENCY.get(currency)
+
+
 def parse_currency(raw: str) -> str | None:
     if KNOWN_UNSUPPORTED_CURRENCY_RE.search(raw):
         return None
@@ -222,10 +296,13 @@ def parse_package_grams(raw: str) -> tuple[float | None, float | None, str | Non
 
 
 def cpi_multiplier(month: str | None, base_month: str = REAL_BASE_MONTH) -> float:
-    if not month:
-        return 1.0
-    review_cpi = CPI_BY_MONTH.get(month)
-    base_cpi = CPI_BY_MONTH.get(base_month)
+    cpi = load_cpi_reference()
+    if cpi:
+        review_cpi = lookup_monthly_value(cpi, month)
+        base_cpi = lookup_monthly_value(cpi, base_month)
+    else:
+        review_cpi = CPI_BY_MONTH.get(month or "")
+        base_cpi = CPI_BY_MONTH.get(base_month)
     if not review_cpi or not base_cpi:
         return 1.0
     return base_cpi / review_cpi
@@ -251,9 +328,14 @@ def parse_est_price(raw_price: str | None, review_date: str | None = None) -> Pa
     if package_status != OK:
         return ParsedPrice(raw=raw, status=package_status, amount=amount, currency=currency)
 
-    usd_nominal = amount * USD_PER_CURRENCY[currency]
+    month = review_month(review_date)
+    fx = usd_per_currency(currency, month)
+    if fx is None:
+        return ParsedPrice(raw=raw, status=UNSUPPORTED_CURRENCY, amount=amount, currency=currency)
+
+    usd_nominal = amount * fx
     usd_per_100g_nominal = usd_nominal / package_grams * 100.0
-    real = usd_per_100g_nominal * cpi_multiplier(review_month(review_date))
+    real = usd_per_100g_nominal * cpi_multiplier(month)
 
     return ParsedPrice(
         raw=raw,

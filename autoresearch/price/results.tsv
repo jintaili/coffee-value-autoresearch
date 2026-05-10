@@ -5,3 +5,4 @@ ea09396	0.351530	0.335093	0.049052	0.722726	4.996743	1.124423	6.783650	0.531905	
 1b70249	0.319763	0.258243	0.238224	0.753978	4.784109	1.079305	6.221792	0.476173	0.633475	31.621476	keep	expand text vocab MAX_FEATURES 6000 -> 12000 to capture more discriminative terms
 e178524	0.319763	0.258243	0.238224	0.753978	4.784109	1.079305	6.221792	0.476173	0.633475	31.621476	discard	[reset, no change vs prior run -- MAX_FEATURES=12000 already binding, MIN_DF was not the constraint] lower MIN_DF 5 -> 3 to include rarer but meaningful terms
 c7e1f4e	0.316058	0.248659	0.271050	0.762790	4.741758	1.022547	6.000345	0.471007	0.632061	31.551108	keep	expand MAX_FEATURES 12000 -> 24000 since cap was binding
+6055602	0.319378	0.256310	0.246064	0.756803	4.770361	1.131284	5.998824	0.480196	0.634523	31.484274	discard	[reset, val_rmsle regressed 0.3161 -> 0.3194 and spearman/median_ae worsened] enable trigrams NGRAM_MAX 2 -> 3 for compound descriptors

@@ -33,7 +33,7 @@ TRAIN_SPLIT = SPLIT_DIR / "price_train.csv"
 VALIDATION_SPLIT = SPLIT_DIR / "price_validation.csv"
 
 
-RUN_DESCRIPTION = "package size features with ElasticNet alpha=0.0002 to reduce overfit"
+RUN_DESCRIPTION = "add package_grams log numeric feature plus tiny/small package flags to ElasticNet"
 
 SEED = 20260509
 VALIDATION_FRAC = 0.15
@@ -62,7 +62,7 @@ MIN_DF = 5
 MAX_DF = 0.85
 NGRAM_MAX = 2
 RIDGE_ALPHA = 2.0
-ELASTICNET_ALPHA = 0.0002
+ELASTICNET_ALPHA = 0.0001
 ELASTICNET_L1_RATIO = 0.1
 ELASTICNET_MAX_ITER = 5000
 ELASTICNET_TOL = 1e-4

@@ -32,7 +32,7 @@ TRAIN_SPLIT = SPLIT_DIR / "price_train.csv"
 VALIDATION_SPLIT = SPLIT_DIR / "price_validation.csv"
 
 
-RUN_DESCRIPTION = "lower ridge alpha 10.0 -> 2.0 to use slack from low baseline overfit_gap"
+RUN_DESCRIPTION = "expand text vocab MAX_FEATURES 6000 -> 12000 to capture more discriminative terms"
 
 SEED = 20260509
 VALIDATION_FRAC = 0.15
@@ -49,7 +49,7 @@ STRUCTURED_FIELDS = [
     "roaster_country",
 ]
 TEXT_FIELDS = ["sensory_text", "producer_text"]
-MAX_FEATURES = 6000
+MAX_FEATURES = 12000
 MIN_DF = 5
 MAX_DF = 0.85
 NGRAM_MAX = 2

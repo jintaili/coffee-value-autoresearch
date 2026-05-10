@@ -2,3 +2,4 @@ commit	val_rmsle	train_rmsle	overfit_gap	val_spearman	val_mae	val_median_ae	val_
 ea09396	0.351530	0.335093	0.049052	0.722726	4.996743	1.124423	6.783650	0.531905	0.744349	34.426291	keep	baseline: exp15-aligned deterministic features + unigram/bigram tfidf + ridge on log1p real USD/100g
 8a6b38d	0.329607	0.273507	0.205117	0.735874	4.869404	1.208588	6.430325	0.487071	0.654970	31.915028	keep	lower ridge alpha 10.0 -> 2.0 to use slack from low baseline overfit_gap
 6bd0c27	0.326580	0.246838	0.323055	0.730316	4.876905	1.271175	6.645163	0.475665	0.623942	30.895436	discard	[reset, overfit_gap 0.323 severe and val_spearman/p90_ae/median_ae regressed for trivial rmsle gain] lower ridge alpha 2.0 -> 1.0 to push capacity further
+1b70249	0.319763	0.258243	0.238224	0.753978	4.784109	1.079305	6.221792	0.476173	0.633475	31.621476	keep	expand text vocab MAX_FEATURES 6000 -> 12000 to capture more discriminative terms

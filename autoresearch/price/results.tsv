@@ -4,3 +4,4 @@ ea09396	0.351530	0.335093	0.049052	0.722726	4.996743	1.124423	6.783650	0.531905	
 6bd0c27	0.326580	0.246838	0.323055	0.730316	4.876905	1.271175	6.645163	0.475665	0.623942	30.895436	discard	[reset, overfit_gap 0.323 severe and val_spearman/p90_ae/median_ae regressed for trivial rmsle gain] lower ridge alpha 2.0 -> 1.0 to push capacity further
 1b70249	0.319763	0.258243	0.238224	0.753978	4.784109	1.079305	6.221792	0.476173	0.633475	31.621476	keep	expand text vocab MAX_FEATURES 6000 -> 12000 to capture more discriminative terms
 e178524	0.319763	0.258243	0.238224	0.753978	4.784109	1.079305	6.221792	0.476173	0.633475	31.621476	discard	[reset, no change vs prior run -- MAX_FEATURES=12000 already binding, MIN_DF was not the constraint] lower MIN_DF 5 -> 3 to include rarer but meaningful terms
+c7e1f4e	0.316058	0.248659	0.271050	0.762790	4.741758	1.022547	6.000345	0.471007	0.632061	31.551108	keep	expand MAX_FEATURES 12000 -> 24000 since cap was binding

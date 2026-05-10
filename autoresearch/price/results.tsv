@@ -1,2 +1,3 @@
 commit	val_rmsle	train_rmsle	overfit_gap	val_spearman	val_mae	val_median_ae	val_p90_ae	val_low_decile_rmsle	val_high_decile_rmsle	val_max_abs_quantile_mean_error	status	description
 ea09396	0.351530	0.335093	0.049052	0.722726	4.996743	1.124423	6.783650	0.531905	0.744349	34.426291	keep	baseline: exp15-aligned deterministic features + unigram/bigram tfidf + ridge on log1p real USD/100g
+8a6b38d	0.329607	0.273507	0.205117	0.735874	4.869404	1.208588	6.430325	0.487071	0.654970	31.915028	keep	lower ridge alpha 10.0 -> 2.0 to use slack from low baseline overfit_gap

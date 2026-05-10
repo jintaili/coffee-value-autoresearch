@@ -32,7 +32,7 @@ TRAIN_SPLIT = SPLIT_DIR / "price_train.csv"
 VALIDATION_SPLIT = SPLIT_DIR / "price_validation.csv"
 
 
-RUN_DESCRIPTION = "baseline: exp15-aligned deterministic features + unigram/bigram tfidf + ridge on log1p real USD/100g"
+RUN_DESCRIPTION = "lower ridge alpha 10.0 -> 2.0 to use slack from low baseline overfit_gap"
 
 SEED = 20260509
 VALIDATION_FRAC = 0.15
@@ -53,7 +53,7 @@ MAX_FEATURES = 6000
 MIN_DF = 5
 MAX_DF = 0.85
 NGRAM_MAX = 2
-RIDGE_ALPHA = 10.0
+RIDGE_ALPHA = 2.0
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:

@@ -84,7 +84,6 @@ Allowed to edit:
 
 - `autoresearch/rating/prepare.py`
 - `autoresearch/rating/train.py`
-- `autoresearch/rating/program.md`
 
 Do not edit the locked shared extractor during ordinary rating-model autoresearch:
 

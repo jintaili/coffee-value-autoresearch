@@ -155,7 +155,7 @@ Secondary diagnostics:
 
 Guardrails:
 
-- Prefer `overfit_gap <= 0.10`.
-- Treat `0.10 < overfit_gap <= 0.20` as suspicious; keep only with clear validation improvement and sane diagnostics.
-- Treat `overfit_gap > 0.20` as severe overfitting unless the validation improvement is large and diagnostics are sane.
+- Prefer `overfit_gap <= 0.15`.
+- Treat `0.15 < overfit_gap <= 0.30` as suspicious; keep only with clear validation improvement and sane diagnostics.
+- Treat `overfit_gap > 0.30` as severe overfitting unless the validation improvement is large and diagnostics are sane.
 - Flag candidates that improve RMSLE by collapsing predictions or badly worsening low/high price quantile bias.

@@ -1,10 +1,11 @@
 # Coffee Value Autoresearch
 
-**Coffee Value Autoresearch** is the model-development companion to `coffee-value-app`. It trains and evaluates specialty coffee rating and price predictors from production-compatible features, then records the selected model configurations and tradeoffs used by the inference app.
+**Coffee Value Autoresearch** is the model-development companion to [`coffee-value-app`](https://github.com/jintaili/coffee-value-app/). It trains and evaluates specialty coffee rating and price predictors from production-compatible features, then records the selected model configurations and tradeoffs used by the inference app.
 
-Portfolio highlights:
+Highlights:
 
 - Agentic ML experimentation loop with one focused hypothesis per run, a fixed validation split, and an append-only experiment ledger.
+- Workflow adapted from Andrej Karpathy's [autoresearch](https://github.com/karpathy/autoresearch) loop: edit, run, measure, keep or discard.
 - Shared deterministic feature contract for both rating and price models, designed to match fields extractable from real roaster product pages.
 - Separate optimization targets for quality rating and USD price per 100g, with explicit validation metrics and model-selection rationale.
 - Transparent research trace: kept and discarded experiments are preserved with metrics, caveats, and reasoning.

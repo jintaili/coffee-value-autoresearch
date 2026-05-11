@@ -8,7 +8,7 @@ Portfolio highlights:
 - Shared deterministic feature contract for both rating and price models, designed to match fields extractable from real roaster product pages.
 - Separate optimization targets for quality rating and USD price per 100g, with explicit validation metrics and model-selection rationale.
 - Transparent research trace: kept and discarded experiments are preserved with metrics, caveats, and reasoning.
-- Practical deployment awareness, including lighter TF-IDF-only candidates for memory-constrained hosting and richer hybrid models when resources allow.
+- Best-model selection grounded in validation performance, error diagnostics, and explicit overfit tradeoffs.
 
 This repo is the research and training layer. The user-facing inference app lives in the companion `coffee-value-app` repo.
 
@@ -44,7 +44,7 @@ The selected rating and price models are summarized in [MODEL_SELECTION.md](MODE
 
 ### Rating
 
-Current selected configuration: `ship_exp15` from [autoresearch/rating/results.tsv](autoresearch/rating/results.tsv).
+Best selected configuration: `exp15` from [autoresearch/rating/results.tsv](autoresearch/rating/results.tsv).
 
 - TF-IDF text features with 6000 max features and bigrams.
 - MiniLM sentence embeddings in a hybrid feature matrix.
@@ -53,17 +53,15 @@ Current selected configuration: `ship_exp15` from [autoresearch/rating/results.t
 
 Validation summary:
 
-- `val_spearman`: 0.870150
-- `val_mae`: 1.049560
-- `val_rmse`: 1.557227
-- `val_within_1`: 0.621541
-- `val_within_2`: 0.868362
-
-For memory-constrained deployment, `exp09_alpha1_bigrams` is the best lightweight fallback: TF-IDF bigrams plus structured features, with `val_spearman=0.869489` and `val_mae=1.073604`, avoiding the sentence-transformer runtime.
+- `val_spearman`: 0.870548
+- `val_mae`: 1.047700
+- `val_rmse`: 1.556474
+- `val_within_1`: 0.623785
+- `val_within_2`: 0.867614
 
 ### Price
 
-Current selected configuration: `6507aee` from [autoresearch/price/results.tsv](autoresearch/price/results.tsv).
+Best selected configuration: `6507aee` from [autoresearch/price/results.tsv](autoresearch/price/results.tsv), selected from the ElasticNet run described as `ElasticNet alpha=0.0001 l1_ratio=0.1 (lower L1 to retain useful small coefs)`.
 
 - Target: `log(price_usd_per_100g_real)`.
 - ElasticNet with `alpha=0.0001`, `l1_ratio=0.1`.

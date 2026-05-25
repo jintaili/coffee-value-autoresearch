@@ -2,7 +2,7 @@
 
 [Live app](https://coffee-value-app.onrender.com/)
 
-**Coffee Value Autoresearch** is the model-development companion to [`coffee-value-app`](https://github.com/jintaili/coffee-value-app/). It trains and evaluates the machine learning rating and price models that run in the app backend, using production-compatible features and an explicit model-selection trail.
+**Coffee Value Autoresearch** is the specialty coffee model-development companion to [`coffee-value-app`](https://github.com/jintaili/coffee-value-app/). It trains and evaluates the machine learning rating and price models that run in the app backend, using production-compatible features and an explicit model-selection trail.
 
 Highlights:
 
@@ -112,7 +112,7 @@ artifacts/
 
 ## Reproduce Selected Runs
 
-Place `coffee.csv` at `data/coffee.csv`, then run:
+The training data comes from the [Coffee Reviews dataset on Kaggle](https://www.kaggle.com/datasets/megamartzz/coffee-reviews). Place the downloaded CSV at `data/coffee.csv`, then run:
 
 ```bash
 python3 autoresearch/rating/prepare.py

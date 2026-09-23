@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JEV feature priorities for high coffee prices</title>
+  <style>
+    body { margin: 0; background: #f6f5ef; color: #26342d; font: 16px/1.55 system-ui, sans-serif; }
+    main { max-width: 940px; margin: auto; padding: 44px 24px 80px; }
+    h1 { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; margin: .3rem 0 1rem; }
+    h2 { margin-top: 2.4rem; font-size: 1.4rem; }
+    .eyebrow { color: #42705a; font-size: .8rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+    .lead { font-size: 1.12rem; }
+    .callout { background: #e8f0e9; border-left: 4px solid #52936e; padding: 18px 22px; margin: 1.5rem 0; }
+    table { border-collapse: collapse; width: 100%; background: white; }
+    th, td { text-align: left; vertical-align: top; padding: 12px; border-bottom: 1px solid #d9dfd9; }
+    th { background: #e8ede8; }
+    .small { color: #52665a; font-size: .9rem; }
+    a { color: #286849; }
+    @media (max-width: 650px) { main { padding: 30px 16px 60px; } table { display: block; overflow-x: auto; } }
+  </style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">Training-only price audit · 22 September 2026</div>
+  <h1>Which JEV claims point to a high price?</h1>
+  <p class="lead">A rare supported claim can be useful even when most rows are “not stated.” The question is whether those supported rows are disproportionately expensive and whether JEV can identify them more precisely than the existing text model.</p>
+  <div class="callout"><strong>Recommendation:</strong> prioritize an exact-lot auction claim. Test Panama × Gesha using the existing A+B JEV answers. Keep exact-lot competition as a second candidate for a targeted audit. The finish, balance, defect, and scarcity questions have weaker evidence for improving high-price prediction.</div>
+
+  <h2>Observed association in the price training set</h2>
+  <p>There are 5,661 price-training reviews. The most expensive decile starts at $18.70 in real USD per 100 g. The table uses deliberately simple keyword rules over score- and price-scrubbed review state, not JEV labels. The overall top-decile rate is 10%.</p>
+  <table>
+    <thead><tr><th>Candidate signal</th><th>Matching rows</th><th>Top-price share</th><th>Saved price model: mean actual → predicted</th><th>Reading</th></tr></thead>
+    <tbody>
+      <tr><td>Panama × Gesha, already in A+B</td><td>171</td><td>84.8%</td><td>$74.26 → $52.36</td><td>Strongest known high-price signal; no new extraction needed.</td></tr>
+      <tr><td>Strict auction-lot wording</td><td>31</td><td>54.8%</td><td>$60.81 → $40.98</td><td>Best new JEV candidate; among 20 non-Panama-Gesha matches, 35% are top-decile.</td></tr>
+      <tr><td>Cup of Excellence / Best of Panama wording</td><td>62</td><td>25.8%</td><td>$54.27 → $38.68</td><td>Worth a targeted check, but non-Panama-Gesha matches reach only 13.2% top-decile.</td></tr>
+      <tr><td>Long-finish wording</td><td>1,024</td><td>16.4%</td><td>$17.05 → $14.49</td><td>Associated with price, but the saved model largely captures it already.</td></tr>
+      <tr><td>Balance wording</td><td>1,729</td><td>11.9%</td><td>$13.47 → $11.84</td><td>Small association with expensive coffee.</td></tr>
+      <tr><td>Possible concrete quantity</td><td>13</td><td>15.4%</td><td>$21.84 → $13.65</td><td>Too few and too noisy to justify a scarcity feature yet.</td></tr>
+      <tr><td>Sweet/clean finish wording</td><td>986</td><td>8.7%</td><td>$9.75 → $9.13</td><td>Not enriched for high price.</td></tr>
+      <tr><td>Bitter/drying finish wording</td><td>884</td><td>5.3%</td><td>$8.45 → $8.02</td><td>Points away from high price.</td></tr>
+      <tr><td>Defect terms</td><td>21</td><td>0%</td><td>—</td><td>May matter for low-price errors, but not this high-price objective.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Why exact-lot wording matters</h2>
+  <p>A manual scan of the 31 strict auction matches found real lot claims, but also at least one explicit “non-auction lot,” a comparison to another record auction, and blends containing an auction component. A JEV question could exclude these cases. The broader corpus has 227 auction mentions, of which 152 contain “auction system,” often generic Kenya background. The lot-specific boundary is more important than the raw coverage rate.</p>
+  <p>Competition wording also needs a lot-specific boundary. Some Cup of Excellence mentions describe earlier wins by a farm, not this coffee. Much of the apparent price association overlaps Panama Gesha. Documented scarcity has almost no labeled support in this corpus; an explicit missing outcome is sound schema design, but it cannot create positive training examples.</p>
+
+  <h2>What this does and does not establish</h2>
+  <p>These are exploratory associations on training rows, not feature ablations or causal effects. Keyword matches are imperfect, and the saved model already has text, origin, variety, and package features. Mean underprediction for auction lots does not prove that adding a JEV auction column will improve validation RMSLE. Review prose also differs from serving product pages; comparable page coverage has not been measured.</p>
+  <p>The next compact test is one exact-lot auction JEV question on a sample enriched for auction and non-auction mentions, plus a price-only Panama × Gesha interaction using existing A+B features. Add exact-lot competition only if a targeted audit establishes clean positives beyond Panama Gesha. Defer the other new questions for this high-price objective.</p>
+  <p class="small">All price values use the repository’s real USD/100 g target. The descriptive groups use only the fixed price-training split; the existing saved price model generated the predictions. No revised eight-question TypeSafe requests were made for this analysis. See the <a href="jev-followup-experiment.html">earlier follow-up plan and extraction audit</a>.</p>
+</main>
+</body>
+</html>

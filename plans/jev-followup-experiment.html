@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JEV finish and lot-status follow-up</title>
+  <style>
+    body { margin: 0; background: #f6f5ef; color: #26342d; font: 16px/1.55 system-ui, sans-serif; }
+    main { max-width: 900px; margin: auto; padding: 44px 24px 80px; }
+    h1 { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; margin: .3rem 0 1rem; }
+    h2 { margin-top: 2.6rem; font-size: 1.45rem; }
+    .eyebrow { color: #42705a; font-size: .8rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+    .lead { font-size: 1.13rem; max-width: 72ch; }
+    .callout { background: #e8f0e9; border-left: 4px solid #52936e; padding: 18px 22px; margin: 1.6rem 0; }
+    table { border-collapse: collapse; width: 100%; background: white; }
+    th, td { text-align: left; vertical-align: top; padding: 12px; border-bottom: 1px solid #d9dfd9; }
+    th { background: #e8ede8; }
+    code { background: #e9eee9; padding: .12em .3em; border-radius: 3px; }
+    a { color: #286849; }
+    .small { color: #52665a; font-size: .9rem; }
+    @media (max-width: 650px) { main { padding: 30px 16px 60px; } table { display: block; overflow-x: auto; } }
+  </style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">Training follow-up · 21 September 2026</div>
+  <h1>Finish character and lot-specific claims</h1>
+  <p class="lead">Add eight narrow JEV questions to the frozen A+B extraction, then test whether their probabilities improve rating or price predictions. For price, test one fixed interaction layer over selected signals.</p>
+  <div class="callout"><strong>Current status:</strong> two seven-question pilot versions completed and exposed source-grounding errors. The revised eight-question contract has no extracted answers. The coverage audit now favors narrowing the full experiment; automatic approval review also requires fresh authorization for the added question.</div>
+
+  <h2>Added extraction contract</h2>
+  <p><code>coffee-finish-lot-3</code> sends the same allowlisted, score- and price-scrubbed review state used by the first experiment to <code>jev-1.13.0</code>. It requests only these additional questions. The original 38-question cache stays intact; both sets are joined by the same review row ID during evaluation.</p>
+  <table>
+    <thead><tr><th>Question</th><th>Evidence boundary</th><th>Main outcomes</th></tr></thead>
+    <tbody>
+      <tr><td>Finish length</td><td>Explicit finish or aftertaste duration for this coffee.</td><td>Long; short; other; not stated; conflicting.</td></tr>
+      <tr><td>Sweet or clean finish</td><td>These exact qualities describe the finish, not sweetness elsewhere in the cup.</td><td>Supported; explicitly negated; not stated; conflicting.</td></tr>
+      <tr><td>Bitter or drying finish</td><td>Bitter, astringent, dry, or drying explicitly describes the finish. Sharp or roast notes alone do not count.</td><td>Supported; explicitly negated; not stated; conflicting.</td></tr>
+      <tr><td>Sensory balance</td><td>Explicitly balanced or unbalanced flavor or structure; no inference from a flavor list.</td><td>Balanced; unbalanced; other; not stated; conflicting.</td></tr>
+      <tr><td>Sensory defect</td><td>Explicit off-flavor or defect in this coffee; intentional fermentation or a merely disliked roast note is not enough.</td><td>Supported; explicitly negated; not stated; conflicting.</td></tr>
+      <tr><td>Lot auction</td><td>This exact lot was offered or bought through a named coffee auction.</td><td>Supported; explicitly negated; not stated; conflicting.</td></tr>
+      <tr><td>Lot competition</td><td>This exact lot won, placed, or was selected in an independent named competition; review-site rankings do not count.</td><td>Supported; explicitly negated; not stated; conflicting.</td></tr>
+      <tr><td>Documented scarcity</td><td>Concrete lot quantity, production quantity, or numbered allocation. Generic rarity language does not count.</td><td>Supported; explicitly negated; not stated; conflicting.</td></tr>
+    </tbody>
+  </table>
+  <p class="small">The source code in <a href="../coffee_value/extraction/followup.py">followup.py</a> contains the exact question wording and option criteria. All answers are validated as complete probability distributions under the new contract hash.</p>
+
+  <h2>Coverage check before a full run</h2>
+  <p>The completed second pilot used the earlier seven-question contract on 40 development reviews. JEV selected long, short, or conflicting finish duration for 11; balanced sensory language for 13; a defect for one; and an independent lot competition for one. It selected no lot auction or concrete scarcity claim. Those counts are small-sample observations, not estimates of prediction value. The revised eight-question contract has no extracted answers yet.</p>
+  <table>
+    <thead><tr><th>Second-pilot question</th><th>Observed choices among 40 reviews</th><th>Audit reading</th></tr></thead>
+    <tbody>
+      <tr><td>Finish length</td><td>8 long; 2 short; 1 conflicting; 29 not stated</td><td>Some direct duration evidence, but a drying finish was wrongly called long and fading in milk was wrongly called a short finish.</td></tr>
+      <tr><td>Combined finish character, now replaced</td><td>18 sweet/clean; 4 bitter/drying; 6 mixed; 9 other; 3 not stated</td><td>Several positive, negative, and mixed choices lacked the required source claim.</td></tr>
+      <tr><td>Sensory balance</td><td>13 balanced; 27 not stated</td><td>Sampled balanced choices had direct balance language.</td></tr>
+      <tr><td>Sensory defect</td><td>1 supported; 39 not stated</td><td>The one positive describes an off-cup.</td></tr>
+      <tr><td>Lot auction</td><td>40 not stated</td><td>No positive pilot case to judge.</td></tr>
+      <tr><td>Lot competition</td><td>1 supported; 39 not stated</td><td>The positive names a Cup of Excellence placement.</td></tr>
+      <tr><td>Documented scarcity</td><td>40 not stated</td><td>No positive pilot case to judge.</td></tr>
+    </tbody>
+  </table>
+  <p>The model's supported probability was exactly zero for documented scarcity in all 40 pilot responses. It never chose lot auction; its highest auction-support probability was 0.19. This is little usable variation for those columns in a random pilot, even though a targeted lot sample may differ.</p>
+  <p>The earlier combined finish-character question selected a positive, negative, or mixed finish for 28 of 40, but a source audit found clear unsupported choices. For example, wildflower-honey notes in the finish were called sweet even though the finish was not described as sweet; a sharp finish was called bitter or drying; and a drying, flower-saturated finish was called mixed without an explicit positive finish quality. Finish length also has clear errors: a drying finish was labeled long and fading in milk was labeled a short finish. The revised contract separates sweet/clean from bitter/drying to make those claims easier to audit, but it has not been validated.</p>
+  <p>Across the 8,911 eligible review states, a crude text scan found finish or aftertaste mentions in 91.5%, duration terms near them in 23.7%, sweet/clean terms near them in 19.4%, bitter/drying terms near them in 16.1%, and balance language in 31.1%. Defect terms occurred in 1.8%, auction in 2.5%, competition language in 2.9%, and possible concrete quantity language in 0.4%. These keyword counts include irrelevant contexts: 152 of the 227 auction mentions contain the phrase “auction system,” often as boilerplate about Kenya. They are ceilings or rough proxies, not verified labels. Serving-page coverage has not been measured.</p>
+  <p><strong>Scope recommendation:</strong> do not run all eight for the high-price objective. A <a href="jev-price-feature-priorities.html">training-only price audit</a> points to exact-lot auction as the strongest new JEV candidate, plus Panama × Gesha using existing A+B answers. Competition merits a targeted lot-specific audit. Finish and balance language may matter for rating, but show weaker incremental price potential. Defer sensory defects and concrete scarcity for this price experiment.</p>
+
+  <h2>Price and approval boundary</h2>
+  <p>The same 40 development rows form the pilot. All 8,911 eligible rows form the full backfill, including those 40. A read-only estimate scales previously billed token counts by the ratio of the new and original request sizes, then adds a 25% margin. The revised eight-question request projects approximately <strong>$0.0050 for the pilot</strong> and <strong>$1.1245 for the full set</strong>. The two completed seven-question pilots cost an estimated $0.00731 combined, so the projected total is about $1.137. Actual token use may differ. Successful-response estimates do not capture any charges for failed or retried requests.</p>
+  <p>The approved ceiling was <strong>$1.25 in estimated successful-response charges</strong> for the earlier seven-question proposal. Fresh approval is needed for this revised eight-question contract. The backfill checks projected spend before starting, stops at its per-run cap, and writes progress to a resumable cache. A bad pilot or unexpected token use stops the full run for review.</p>
+
+  <h2>Draft comparisons if the full catalog is retained</h2>
+  <table>
+    <thead><tr><th>Run</th><th>Features</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td>Incumbent</td><td>Saved research model and fixed predictions.</td><td>Original reference.</td></tr>
+      <tr><td>Matched scrubbed-text control</td><td>Original structured, text, and package features after target-quotation scrubbing.</td><td>Controls for input cleanup.</td></tr>
+      <tr><td>Original JEV hybrid</td><td>Frozen A+B probabilities plus the same text and package features.</td><td>Matches the first JEV experiment.</td></tr>
+      <tr><td>Extended JEV hybrid</td><td>Original JEV plus eight new question distributions, text, and package features.</td><td>Isolates the new feature group.</td></tr>
+      <tr><td>Price interaction model</td><td>Extended hybrid plus Panama × Gesha and lot auction × documented scarcity probability products.</td><td>Tests one compact, regularized pairwise layer. Price only; the auction × scarcity term may be too sparse.</td></tr>
+    </tbody>
+  </table>
+  <p>All fits keep the previous train/validation IDs and model regularization fixed. The report will show rating concordance, price RMSLE and MAE, high-price-decile bias, train-versus-validation gap, interaction support counts, and examples for every new question. The old validation IDs were used repeatedly in past research, so gains will be labeled exploratory.</p>
+  <p>If documented scarcity is removed after a targeted audit, update the catalog and interaction list before any full backfill. Do not interpret a coefficient on an almost-empty pair as reliable evidence.</p>
+  <p>Nothing in this experiment changes the serving models. Review prose and live roaster pages still need a matched-page evaluation before any serving decision. The initial <a href="jev-training-results.html">JEV training report</a> remains the baseline record.</p>
+</main>
+</body>
+</html>

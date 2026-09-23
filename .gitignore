@@ -7,6 +7,11 @@ __pycache__/
 .venv/
 venv/
 
+# Local provider credentials; commit only the empty example.
+.env
+.env.*
+!.env.example
+
 # Local datasets and generated model outputs.
 data/
 artifacts/

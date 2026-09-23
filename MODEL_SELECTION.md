@@ -17,12 +17,16 @@ Configuration:
 
 Validation summary:
 
-- `val_rmse`: 0.939847
-- `train_rmse`: 0.891044
+- `train_concordance`: 0.939847
+- `val_concordance`: 0.891044
 - `overfit_gap`: 0.048803
 - `val_spearman`: 0.870150
 - `val_mae`: 1.049560
-- `val_p90_ae`: 1.557227
+- `val_rmse`: 1.557227
+
+These labels match `artifacts/rating/report.json` and the saved validation
+predictions. Concordance is the fraction of correctly ordered pairs with
+different observed ratings.
 
 This was selected over later mpnet and roaster-aware variants because those
 variants either regressed validation error or increased overfit risk without a

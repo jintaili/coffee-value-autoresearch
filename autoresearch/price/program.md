@@ -1,5 +1,11 @@
 # Coffee Price Autoresearch Program
 
+The user-authorized JEV A+B migration is a separate, bounded training comparison
+implemented in `scripts/backfill_jev.py` and `scripts/evaluate_jev.py`. Its shared
+extractor may be edited despite the older ordinary-autoresearch restriction below.
+The original validation row IDs, real USD per 100 g target, and incumbent artifacts
+stay fixed. Shared rubric development excludes the union of both validation sets.
+
 You are improving a coffee price predictor. The shared feature extractor and price normalization are locked; focus on model selection and output engineering.
 
 ## Goal

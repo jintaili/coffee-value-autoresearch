@@ -1,5 +1,11 @@
 # Coffee Rating Autoresearch Program
 
+The user-authorized JEV A+B migration is a separate, bounded training comparison
+implemented in `scripts/backfill_jev.py` and `scripts/evaluate_jev.py`. Its shared
+extractor may be edited despite the older ordinary-autoresearch restriction below.
+The original validation row IDs, rating target, and incumbent artifacts stay fixed.
+Shared rubric development excludes the union of rating and price validation IDs.
+
 You are improving a coffee rating predictor. Work like the following: make one focused change, run the fixed validation, read the diagnostics, record the result, and repeat.
 
 ## Goal

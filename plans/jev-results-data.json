@@ -1,0 +1,868 @@
+{
+  "study_date": "2026-09-22",
+  "model_validation": {
+    "base_contract": "coffee-ab-1",
+    "auction_contract": "coffee-auction-1",
+    "rating_rows": {
+      "train": 7574,
+      "validation": 1337
+    },
+    "price_rows": {
+      "train": 5661,
+      "validation": 1000
+    },
+    "split_hashes": {
+      "train": "05c8f66d83ed20cc1573dc70213482a47f29347b79d6482f1526bd92bbbaa502",
+      "validation": "c84be5872fb1c3040981fa1566728003d99b24a2aff6c7c408518bc7d5f51ae2"
+    },
+    "rating": {
+      "incumbent": {
+        "val_concordance": 0.8910441643350145,
+        "val_spearman": 0.8701495977833817,
+        "val_mae": 1.0495595461309104,
+        "val_rmse": 1.5572274101337262,
+        "val_within_1": 0.6215407629020194,
+        "val_within_2": 0.868362004487659
+      },
+      "jev_ab": {
+        "val_concordance": 0.8925284444591542,
+        "val_spearman": 0.8728008801744789,
+        "val_mae": 1.0469972699004741,
+        "val_rmse": 1.5496692726837145,
+        "val_within_1": 0.6215407629020194,
+        "val_within_2": 0.8691099476439791
+      }
+    },
+    "price": {
+      "incumbent": {
+        "val_rmsle": 0.25916607429018024,
+        "val_spearman": 0.7878334763720073,
+        "val_mae": 3.8750307247076763,
+        "val_median_ae": 0.9684717632957656,
+        "val_p90_ae": 5.098571704012126
+      },
+      "jev_ab": {
+        "val_rmsle": 0.25435372872315093,
+        "val_spearman": 0.7916876108158245,
+        "val_mae": 3.9119479089288323,
+        "val_median_ae": 0.9817385386357893,
+        "val_p90_ae": 4.965888079046384
+      },
+      "jev_panama_gesha": {
+        "val_rmsle": 0.25361038266339564,
+        "val_spearman": 0.8013771539878679,
+        "val_mae": 3.91415814871379,
+        "val_median_ae": 0.9658434478820226,
+        "val_p90_ae": 5.02224198267081
+      },
+      "jev_auction": {
+        "val_rmsle": 0.2547962835621404,
+        "val_spearman": 0.7910217660481055,
+        "val_mae": 3.9237320835887877,
+        "val_median_ae": 0.9888629451711795,
+        "val_p90_ae": 4.969239484196001
+      }
+    },
+    "exploratory_roaster_cluster_95pct_intervals": {
+      "rating_jev_ab_concordance_gain_vs_incumbent": [
+        -0.0015285572056504587,
+        0.004988349838818535
+      ],
+      "price_jev_ab_rmsle_delta_vs_incumbent": [
+        -0.010388780877078199,
+        -0.00023806284232119122
+      ],
+      "price_jev_panama_gesha_rmsle_delta_vs_incumbent": [
+        -0.012930635776119212,
+        0.002524250102136416
+      ]
+    }
+  },
+  "extraction_pilot": {
+    "summary": {
+      "snapshot_count": 8,
+      "planned_pairs": 16,
+      "contexts": [
+        {
+          "url": "https://hydrangea.coffee/products/salma-bermudez",
+          "final_url": "https://hydrangea.coffee/products/salma-bermudez",
+          "product_name": "Gesha Salma Bermudez Finca El Paraiso",
+          "context_sha256": "cff2e3e75203fe9fdfedc0d8d0a38ea3e533a881158ae64d29a1734a16724269",
+          "context_chars": 3042,
+          "captured_utc": "2026-09-23T01:13:20.274650+00:00"
+        },
+        {
+          "url": "https://hydrangea.coffee/products/gesha-washed-crd-elida-estate-centro-loma-lot",
+          "final_url": "https://hydrangea.coffee/products/gesha-washed-crd-elida-estate-centro-loma-lot",
+          "product_name": "Gesha Washed CRD Elida Estate, Centro Loma Lot",
+          "context_sha256": "6ce14c4e37d7e1d3f32321528d2074a585c104bc6c5266476c5ef7418b2327c6",
+          "context_chars": 2371,
+          "captured_utc": "2026-09-23T01:13:20.677374+00:00"
+        },
+        {
+          "url": "https://hydrangea.coffee/products/sub",
+          "final_url": "https://hydrangea.coffee/products/sub",
+          "product_name": "Hydrangea Drops",
+          "context_sha256": "947f903aa86768ca78d5df70dbe5ce063b137ef1f1e8c83a82c1529ab8e74eb7",
+          "context_chars": 5513,
+          "captured_utc": "2026-09-23T01:13:21.113588+00:00"
+        },
+        {
+          "url": "https://www.blackwhiteroasters.com/products/the-original-1",
+          "final_url": "https://www.blackwhiteroasters.com/products/the-original-1",
+          "product_name": "The Original",
+          "context_sha256": "06ed51fdc35138f500f33e0f3f6eef79b2b4561841f1c9e57891ad40fcaab80c",
+          "context_chars": 2139,
+          "captured_utc": "2026-09-23T01:13:21.682213+00:00"
+        },
+        {
+          "url": "https://www.blackwhiteroasters.com/products/r-the-new-school",
+          "final_url": "https://www.blackwhiteroasters.com/products/r-the-new-school",
+          "product_name": "The New School",
+          "context_sha256": "8c3106b8b4d9bf87be94f793ec5ff029432b1087db3b7488ef01c88729790dac",
+          "context_chars": 3210,
+          "captured_utc": "2026-09-23T01:13:22.160576+00:00"
+        },
+        {
+          "url": "https://onyxcoffeelab.com/products/geometry",
+          "final_url": "https://onyxcoffeelab.com/products/geometry",
+          "product_name": "G e o m e t r y",
+          "context_sha256": "e5b5465f7b2f0b86b88fd6cc6bb2e1be4f5b1d3183ab1f15ec27b81267626b8f",
+          "context_chars": 60047,
+          "captured_utc": "2026-09-23T01:13:23.037842+00:00"
+        },
+        {
+          "url": "https://onyxcoffeelab.com/products/roasters-choice",
+          "final_url": "https://onyxcoffeelab.com/products/roasters-choice",
+          "product_name": "Roaster's Choice",
+          "context_sha256": "bba3105f6bb1f601bb981f48c6cd16bdb5b69ed51a5a4b05c92c30589ed9fe62",
+          "context_chars": 7140,
+          "captured_utc": "2026-09-23T01:13:23.533724+00:00"
+        },
+        {
+          "url": "https://onyxcoffeelab.com/products/kenya-kamunyaka-aa",
+          "final_url": "https://onyxcoffeelab.com/products/kenya-kamunyaka-aa",
+          "product_name": "K e n y a K a m u n y a k a A A",
+          "context_sha256": "aab323cbb78041fb0ef3a697ece062fc5c6d7c1e0e1c7b3036fa25f992558f58",
+          "context_chars": 60047,
+          "captured_utc": "2026-09-23T01:13:25.105996+00:00"
+        }
+      ],
+      "providers": {
+        "openai_app": {
+          "complete": 16,
+          "failed": 0,
+          "p50_seconds": 4.805573604302481,
+          "p95_seconds": 11.496314167045057,
+          "estimated_input_cost_usd": null
+        },
+        "jev_ab": {
+          "complete": 16,
+          "failed": 0,
+          "p50_seconds": 0.4233760836068541,
+          "p95_seconds": 0.9099765829741955,
+          "estimated_input_cost_usd": 0.009304680000000001
+        }
+      },
+      "paired": {
+        "complete_pairs": 16,
+        "jev_faster_pairs": 16,
+        "median_per_pair_latency_ratio": 0.07691038111465164,
+        "median_per_pair_reduction_percent": 92.30896188853484
+      },
+      "scope": "current full app extraction call versus A+B JEV semantic model-feature call",
+      "preflight_failures_before_client_fix": 2
+    },
+    "successful_calls": [
+      {
+        "url": "https://hydrangea.coffee/products/gesha-washed-crd-elida-estate-centro-loma-lot",
+        "round": 1,
+        "provider": "jev_ab",
+        "context_sha256": "6ce14c4e37d7e1d3f32321528d2074a585c104bc6c5266476c5ef7418b2327c6",
+        "context_chars": 2371,
+        "cache_hit": false,
+        "started_utc": "2026-09-23T01:15:17.134117+00:00",
+        "status": "complete",
+        "model": "jev-1.13.0",
+        "latency_seconds": 0.3078832090832293,
+        "semantic_fields": {
+          "origin_country": "Panama",
+          "process_washed": "supported",
+          "process_natural": "supported",
+          "variety_gesha": "supported",
+          "blend": "not_stated",
+          "decaf": "not_stated",
+          "producer_identified": "supported",
+          "altitude_provided": "supported"
+        }
+      },
+      {
+        "url": "https://hydrangea.coffee/products/gesha-washed-crd-elida-estate-centro-loma-lot",
+        "round": 1,
+        "provider": "openai_app",
+        "context_sha256": "6ce14c4e37d7e1d3f32321528d2074a585c104bc6c5266476c5ef7418b2327c6",
+        "context_chars": 2371,
+        "cache_hit": false,
+        "started_utc": "2026-09-23T01:13:56.524672+00:00",
+        "status": "complete",
+        "model": "gpt-4o-mini",
+        "latency_seconds": 4.780864999629557,
+        "semantic_fields": {
+          "origin_country": "Panama",
+          "process_method": "washed",
+          "variety": "gesha",
+          "is_blend": "0",
+          "is_decaf": "0",
+          "producer_or_farm_present": "1",
+          "altitude_present": "1"
+        }
+      },
+      {
+        "url": "https://hydrangea.coffee/products/gesha-washed-crd-elida-estate-centro-loma-lot",
+        "round": 2,
+        "provider": "jev_ab",
+        "context_sha256": "6ce14c4e37d7e1d3f32321528d2074a585c104bc6c5266476c5ef7418b2327c6",
+        "context_chars": 2371,
+        "cache_hit": false,
+        "started_utc": "2026-09-23T01:16:01.720143+00:00",
+        "status": "complete",
+        "model": "jev-1.13.0",
+        "latency_seconds": 0.4831073749810457,
+        "semantic_fields": {
+          "origin_country": "Panama",
+          "process_washed": "supported",
+          "process_natural": "supported",
+          "variety_gesha": "supported",
+          "blend": "not_stated",
+          "decaf": "not_stated",
+          "producer_identified": "supported",
+          "altitude_provided": "supported"
+        }
+      },
+      {
+        "url": "https://hydrangea.coffee/products/gesha-washed-crd-elida-estate-centro-loma-lot",
+        "round": 2,
+        "provider": "openai_app",
+        "context_sha256": "6ce14c4e37d7e1d3f32321528d2074a585c104bc6c5266476c5ef7418b2327c6",
+        "context_chars": 2371,
+        "cache_hit": false,
+        "started_utc": "2026-09-23T01:15:54.793628+00:00",
+        "status": "complete",
+        "model": "gpt-4o-mini",
+        "latency_seconds": 6.925804916769266,
+        "semantic_fields": {
+          "origin_country": "Panama",
+          "process_method": "washed",
+          "variety": "gesha",
+          "is_blend": "0",
+          "is_decaf": "0",
+          "producer_or_farm_present": "1",
+          "altitude_present": "1"
+        }
+      },
+      {
+        "url": "https://hydrangea.coffee/products/salma-bermudez",
+        "round": 1,
+        "provider": "jev_ab",
+        "context_sha256": "cff2e3e75203fe9fdfedc0d8d0a38ea3e533a881158ae64d29a1734a16724269",
+        "context_chars": 3042,
+        "cache_hit": false,
+        "started_utc": "2026-09-23T01:15:16.758943+00:00",
+        "status": "complete",
+        "model": "jev-1.13.0",
+        "latency_seconds": 0.3580455002374947,
+        "semantic_fields": {
+          "origin_country": "Colombia",
+          "process_washed": "supported",
+          "process_natural": "not_stated",
+          "variety_gesha": "supported",
+          "blend": "not_stated",
+          "decaf": "not_stated",
+          "producer_identified": "supported",
+          "altitude_provided": "supported"
+        }
+      },
+      {
+        "url": "https://hydrangea.coffee/products/salma-bermudez",
+        "round": 1,
+        "provider": "openai_app",
+        "context_sha256": "cff2e3e75203fe9fdfedc0d8d0a38ea3e533a881158ae64d29a1734a16724269",
+        "context_chars": 3042,
+        "cache_hit": false,
+        "started_utc": "2026-09-23T01:13:45.027945+00:00",
+        "status": "complete",
+        "model": "gpt-4o-mini",
+        "latency_seconds": 11.496314167045057,
+        "semantic_fields": {
+          "origin_country": "Colombia",
+          "process_method": "anaerobic|washed",
+          "variety": "gesha",
+          "is_blend": "0",
+          "is_decaf": "0",
+          "producer_or_farm_present": "1",
+          "altitude_present": "1"
+        }
+      },
+      {
+        "url": "https://hydrangea.coffee/products/salma-bermudez",
+        "round": 2,
+        "provider": "jev_ab",
+        "context_sha256": "cff2e3e75203fe9fdfedc0d8d0a38ea3e533a881158ae64d29a1734a16724269",
+        "context_chars": 3042,
+        "cache_hit": false,
+        "started_utc": "2026-09-23T01:16:28.294460+00:00",
+        "status": "complete",
+        "model": "jev-1.13.0",
+        "latency_seconds": 0.5211185002699494,
+        "semantic_fields": {
+          "origin_country": "Colombia",
+          "process_washed": "supported",
+          "process_natural": "not_stated",
+          "variety_gesha": "supported",
+          "blend": "not_stated",
+          "decaf": "not_stated",
+          "producer_identified": "supported",
+          "altitude_provided": "supported"
+        }
+      },
+      {
+        "url": "https://hydrangea.coffee/products/salma-bermudez",
+        "round": 2,
+        "provider": "openai_app",
+        "context_sha256": "cff2e3e75203fe9fdfedc0d8d0a38ea3e533a881158ae64d29a1734a16724269",
+        "context_chars": 3042,
+        "cache_hit": false,
+        "started_utc": "2026-09-23T01:15:47.982698+00:00",
+        "status": "complete",
+        "model": "gpt-4o-mini",
+        "latency_seconds": 6.810771625023335,
+        "semantic_fields": {
+          "origin_country": "Colombia",
+          "process_method": "washed",
+          "variety": "gesha",
+          "is_blend": "0",
+          "is_decaf": "0",
+          "producer_or_farm_present": "1",
+          "altitude_present": "1"
+        }
+      },
+      {
+        "url": "https://hydrangea.coffee/products/sub",
+        "round": 1,
+        "provider": "jev_ab",
+        "context_sha256": "947f903aa86768ca78d5df70dbe5ce063b137ef1f1e8c83a82c1529ab8e74eb7",
+        "context_chars": 5513,
+        "cache_hit": false,
+        "started_utc": "2026-09-23T01:16:44.040115+00:00",
+        "status": "complete",
+        "model": "jev-1.13.0",
+        "latency_seconds": 0.6473406250588596,
+        "semantic_fields": {
+          "origin_country": "not_stated",
+          "process_washed": "not_stated",
+          "process_natural": "not_stated",
+          "variety_gesha": "not_stated",
+          "blend": "not_stated",
+          "decaf": "not_stated",
+          "producer_identified": "not_stated",
+          "altitude_provided": "not_stated"
+        }
+      },
+      {
+        "url": "https://hydrangea.coffee/products/sub",
+        "round": 1,
+        "provider": "openai_app",
+        "context_sha256": "947f903aa86768ca78d5df70dbe5ce063b137ef1f1e8c83a82c1529ab8e74eb7",
+        "context_chars": 5513,
+        "cache_hit": false,
+        "started_utc": "2026-09-23T01:16:58.305576+00:00",
+        "status": "complete",
+        "model": "gpt-4o-mini",
+        "latency_seconds": 4.714042374864221,
+        "semantic_fields": {
+          "origin_country": "unknown",
+          "process_method": "anaerobic|honey|lactic|natural|washed",
+          "variety": "bourbon|gesha|java|sl28|typica",
+          "is_blend": "1",
+          "is_decaf": "0",
+          "producer_or_farm_present": "1",
+          "altitude_present": "1"
+        }
+      },
+      {
+        "url": "https://hydrangea.coffee/products/sub",
+        "round": 2,
+        "provider": "jev_ab",
+        "context_sha256": "947f903aa86768ca78d5df70dbe5ce063b137ef1f1e8c83a82c1529ab8e74eb7",
+        "context_chars": 5513,
+        "cache_hit": false,
+        "started_utc": "2026-09-23T01:16:48.642639+00:00",
+        "status": "complete",
+        "model": "jev-1.13.0",
+        "latency_seconds": 0.34145891573280096,
+        "semantic_fields": {
+          "origin_country": "not_stated",
+          "process_washed": "not_stated",
+          "process_natural": "not_stated",
+          "variety_gesha": "not_stated",
+          "blend": "not_stated",
+          "decaf": "not_stated",
+          "producer_identified": "not_stated",
+          "altitude_provided": "not_stated"
+        }
+      },
+      {
+        "url": "https://hydrangea.coffee/products/sub",
+        "round": 2,
+        "provider": "openai_app",
+        "context_sha256": "947f903aa86768ca78d5df70dbe5ce063b137ef1f1e8c83a82c1529ab8e74eb7",
+        "context_chars": 5513,
+        "cache_hit": false,
+        "started_utc": "2026-09-23T01:17:03.019762+00:00",
+        "status": "complete",
+        "model": "gpt-4o-mini",
+        "latency_seconds": 3.7276644580997527,
+        "semantic_fields": {
+          "origin_country": "unknown",
+          "process_method": "unknown",
+          "variety": "unknown",
+          "is_blend": "0",
+          "is_decaf": "0",
+          "producer_or_farm_present": "1",
+          "altitude_present": "1"
+        }
+      },
+      {
+        "url": "https://onyxcoffeelab.com/products/geometry",
+        "round": 1,
+        "provider": "jev_ab",
+        "context_sha256": "e5b5465f7b2f0b86b88fd6cc6bb2e1be4f5b1d3183ab1f15ec27b81267626b8f",
+        "context_chars": 60047,
+        "cache_hit": false,
+        "started_utc": "2026-09-23T01:16:28.815792+00:00",
+        "status": "complete",
+        "model": "jev-1.13.0",
+        "latency_seconds": 0.9099765829741955,
+        "semantic_fields": {
+          "origin_country": "multiple_countries",
+          "process_washed": "supported",
+          "process_natural": "explicitly_negated",
+          "variety_gesha": "not_stated",
+          "blend": "supported",
+          "decaf": "not_stated",
+          "producer_identified": "not_stated",
+          "altitude_provided": "supported"
+        }
+      },
+      {
+        "url": "https://onyxcoffeelab.com/products/geometry",
+        "round": 1,
+        "provider": "openai_app",
+        "context_sha256": "e5b5465f7b2f0b86b88fd6cc6bb2e1be4f5b1d3183ab1f15ec27b81267626b8f",
+        "context_chars": 60047,
+        "cache_hit": false,
+        "started_utc": "2026-09-23T01:16:23.179055+00:00",
+        "status": "complete",
+        "model": "gpt-4o-mini",
+        "latency_seconds": 5.1151166670024395,
+        "semantic_fields": {
+          "origin_country": "Colombia, Ethiopia",
+          "process_method": "washed",
+          "variety": "unknown",
+          "is_blend": "1",
+          "is_decaf": "0",
+          "producer_or_farm_present": "0",
+          "altitude_present": "1"
+        }
+      },
+      {
+        "url": "https://onyxcoffeelab.com/products/geometry",
+        "round": 2,
+        "provider": "jev_ab",
+        "context_sha256": "e5b5465f7b2f0b86b88fd6cc6bb2e1be4f5b1d3183ab1f15ec27b81267626b8f",
+        "context_chars": 60047,
+        "cache_hit": false,
+        "started_utc": "2026-09-23T01:17:08.876178+00:00",
+        "status": "complete",
+        "model": "jev-1.13.0",
+        "latency_seconds": 0.673964791931212,
+        "semantic_fields": {
+          "origin_country": "multiple_countries",
+          "process_washed": "supported",
+          "process_natural": "explicitly_negated",
+          "variety_gesha": "not_stated",
+          "blend": "supported",
+          "decaf": "not_stated",
+          "producer_identified": "not_stated",
+          "altitude_provided": "supported"
+        }
+      },
+      {
+        "url": "https://onyxcoffeelab.com/products/geometry",
+        "round": 2,
+        "provider": "openai_app",
+        "context_sha256": "e5b5465f7b2f0b86b88fd6cc6bb2e1be4f5b1d3183ab1f15ec27b81267626b8f",
+        "context_chars": 60047,
+        "cache_hit": false,
+        "started_utc": "2026-09-23T01:16:53.884253+00:00",
+        "status": "complete",
+        "model": "gpt-4o-mini",
+        "latency_seconds": 4.421037999913096,
+        "semantic_fields": {
+          "origin_country": "Colombia, Ethiopia",
+          "process_method": "washed",
+          "variety": "unknown",
+          "is_blend": "1",
+          "is_decaf": "0",
+          "producer_or_farm_present": "0",
+          "altitude_present": "1"
+        }
+      },
+      {
+        "url": "https://onyxcoffeelab.com/products/kenya-kamunyaka-aa",
+        "round": 1,
+        "provider": "jev_ab",
+        "context_sha256": "aab323cbb78041fb0ef3a697ece062fc5c6d7c1e0e1c7b3036fa25f992558f58",
+        "context_chars": 60047,
+        "cache_hit": false,
+        "started_utc": "2026-09-23T01:17:07.215253+00:00",
+        "status": "complete",
+        "model": "jev-1.13.0",
+        "latency_seconds": 0.6142290839925408,
+        "semantic_fields": {
+          "origin_country": "Kenya",
+          "process_washed": "supported",
+          "process_natural": "conflicting",
+          "variety_gesha": "not_stated",
+          "blend": "not_stated",
+          "decaf": "not_stated",
+          "producer_identified": "supported",
+          "altitude_provided": "supported"
+        }
+      },
+      {
+        "url": "https://onyxcoffeelab.com/products/kenya-kamunyaka-aa",
+        "round": 1,
+        "provider": "openai_app",
+        "context_sha256": "aab323cbb78041fb0ef3a697ece062fc5c6d7c1e0e1c7b3036fa25f992558f58",
+        "context_chars": 60047,
+        "cache_hit": false,
+        "started_utc": "2026-09-23T01:16:30.036628+00:00",
+        "status": "complete",
+        "model": "gpt-4o-mini",
+        "latency_seconds": 8.935276333242655,
+        "semantic_fields": {
+          "origin_country": "Kenya",
+          "process_method": "washed",
+          "variety": "ruiru|sl28|sl34",
+          "is_blend": "0",
+          "is_decaf": "0",
+          "producer_or_farm_present": "1",
+          "altitude_present": "1"
+        }
+      },
+      {
+        "url": "https://onyxcoffeelab.com/products/kenya-kamunyaka-aa",
+        "round": 2,
+        "provider": "jev_ab",
+        "context_sha256": "aab323cbb78041fb0ef3a697ece062fc5c6d7c1e0e1c7b3036fa25f992558f58",
+        "context_chars": 60047,
+        "cache_hit": false,
+        "started_utc": "2026-09-23T01:17:07.829794+00:00",
+        "status": "complete",
+        "model": "jev-1.13.0",
+        "latency_seconds": 0.666580708231777,
+        "semantic_fields": {
+          "origin_country": "Kenya",
+          "process_washed": "supported",
+          "process_natural": "conflicting",
+          "variety_gesha": "not_stated",
+          "blend": "not_stated",
+          "decaf": "not_stated",
+          "producer_identified": "supported",
+          "altitude_provided": "supported"
+        }
+      },
+      {
+        "url": "https://onyxcoffeelab.com/products/kenya-kamunyaka-aa",
+        "round": 2,
+        "provider": "openai_app",
+        "context_sha256": "aab323cbb78041fb0ef3a697ece062fc5c6d7c1e0e1c7b3036fa25f992558f58",
+        "context_chars": 60047,
+        "cache_hit": false,
+        "started_utc": "2026-09-23T01:16:16.358314+00:00",
+        "status": "complete",
+        "model": "gpt-4o-mini",
+        "latency_seconds": 6.819427916314453,
+        "semantic_fields": {
+          "origin_country": "Kenya",
+          "process_method": "washed",
+          "variety": "ruiru|sl28|sl34",
+          "is_blend": "0",
+          "is_decaf": "0",
+          "producer_or_farm_present": "1",
+          "altitude_present": "1"
+        }
+      },
+      {
+        "url": "https://onyxcoffeelab.com/products/roasters-choice",
+        "round": 1,
+        "provider": "jev_ab",
+        "context_sha256": "bba3105f6bb1f601bb981f48c6cd16bdb5b69ed51a5a4b05c92c30589ed9fe62",
+        "context_chars": 7140,
+        "cache_hit": false,
+        "started_utc": "2026-09-23T01:16:29.725972+00:00",
+        "status": "complete",
+        "model": "jev-1.13.0",
+        "latency_seconds": 0.3104354999959469,
+        "semantic_fields": {
+          "origin_country": "multiple_countries",
+          "process_washed": "not_stated",
+          "process_natural": "not_stated",
+          "variety_gesha": "not_stated",
+          "blend": "explicitly_negated",
+          "decaf": "not_stated",
+          "producer_identified": "supported",
+          "altitude_provided": "not_stated"
+        }
+      },
+      {
+        "url": "https://onyxcoffeelab.com/products/roasters-choice",
+        "round": 1,
+        "provider": "openai_app",
+        "context_sha256": "bba3105f6bb1f601bb981f48c6cd16bdb5b69ed51a5a4b05c92c30589ed9fe62",
+        "context_chars": 7140,
+        "cache_hit": false,
+        "started_utc": "2026-09-23T01:16:02.203480+00:00",
+        "status": "complete",
+        "model": "gpt-4o-mini",
+        "latency_seconds": 4.8302822089754045,
+        "semantic_fields": {
+          "origin_country": "unknown",
+          "process_method": "unknown",
+          "variety": "unknown",
+          "is_blend": "1",
+          "is_decaf": "0",
+          "producer_or_farm_present": "1",
+          "altitude_present": "1"
+        }
+      },
+      {
+        "url": "https://onyxcoffeelab.com/products/roasters-choice",
+        "round": 2,
+        "provider": "jev_ab",
+        "context_sha256": "bba3105f6bb1f601bb981f48c6cd16bdb5b69ed51a5a4b05c92c30589ed9fe62",
+        "context_chars": 7140,
+        "cache_hit": false,
+        "started_utc": "2026-09-23T01:16:16.010372+00:00",
+        "status": "complete",
+        "model": "jev-1.13.0",
+        "latency_seconds": 0.34773829113692045,
+        "semantic_fields": {
+          "origin_country": "multiple_countries",
+          "process_washed": "not_stated",
+          "process_natural": "not_stated",
+          "variety_gesha": "not_stated",
+          "blend": "not_stated",
+          "decaf": "not_stated",
+          "producer_identified": "supported",
+          "altitude_provided": "not_stated"
+        }
+      },
+      {
+        "url": "https://onyxcoffeelab.com/products/roasters-choice",
+        "round": 2,
+        "provider": "openai_app",
+        "context_sha256": "bba3105f6bb1f601bb981f48c6cd16bdb5b69ed51a5a4b05c92c30589ed9fe62",
+        "context_chars": 7140,
+        "cache_hit": false,
+        "started_utc": "2026-09-23T01:16:38.973154+00:00",
+        "status": "complete",
+        "model": "gpt-4o-mini",
+        "latency_seconds": 4.749261250253767,
+        "semantic_fields": {
+          "origin_country": "unknown",
+          "process_method": "unknown",
+          "variety": "unknown",
+          "is_blend": "0",
+          "is_decaf": "0",
+          "producer_or_farm_present": "0",
+          "altitude_present": "0"
+        }
+      },
+      {
+        "url": "https://www.blackwhiteroasters.com/products/r-the-new-school",
+        "round": 1,
+        "provider": "jev_ab",
+        "context_sha256": "8c3106b8b4d9bf87be94f793ec5ff029432b1087db3b7488ef01c88729790dac",
+        "context_chars": 3210,
+        "cache_hit": false,
+        "started_utc": "2026-09-23T01:16:07.034018+00:00",
+        "status": "complete",
+        "model": "jev-1.13.0",
+        "latency_seconds": 0.28883299976587296,
+        "semantic_fields": {
+          "origin_country": "multiple_countries",
+          "process_washed": "supported",
+          "process_natural": "not_stated",
+          "variety_gesha": "not_stated",
+          "blend": "supported",
+          "decaf": "not_stated",
+          "producer_identified": "supported",
+          "altitude_provided": "not_stated"
+        }
+      },
+      {
+        "url": "https://www.blackwhiteroasters.com/products/r-the-new-school",
+        "round": 1,
+        "provider": "openai_app",
+        "context_sha256": "8c3106b8b4d9bf87be94f793ec5ff029432b1087db3b7488ef01c88729790dac",
+        "context_chars": 3210,
+        "cache_hit": false,
+        "started_utc": "2026-09-23T01:16:07.323082+00:00",
+        "status": "complete",
+        "model": "gpt-4o-mini",
+        "latency_seconds": 4.582117917016149,
+        "semantic_fields": {
+          "origin_country": "Ethiopia, Colombia",
+          "process_method": "washed",
+          "variety": "unknown",
+          "is_blend": "1",
+          "is_decaf": "0",
+          "producer_or_farm_present": "1",
+          "altitude_present": "0"
+        }
+      },
+      {
+        "url": "https://www.blackwhiteroasters.com/products/r-the-new-school",
+        "round": 2,
+        "provider": "jev_ab",
+        "context_sha256": "8c3106b8b4d9bf87be94f793ec5ff029432b1087db3b7488ef01c88729790dac",
+        "context_chars": 3210,
+        "cache_hit": false,
+        "started_utc": "2026-09-23T01:17:08.496557+00:00",
+        "status": "complete",
+        "model": "jev-1.13.0",
+        "latency_seconds": 0.37940929224714637,
+        "semantic_fields": {
+          "origin_country": "multiple_countries",
+          "process_washed": "supported",
+          "process_natural": "not_stated",
+          "variety_gesha": "not_stated",
+          "blend": "supported",
+          "decaf": "not_stated",
+          "producer_identified": "supported",
+          "altitude_provided": "not_stated"
+        }
+      },
+      {
+        "url": "https://www.blackwhiteroasters.com/products/r-the-new-school",
+        "round": 2,
+        "provider": "openai_app",
+        "context_sha256": "8c3106b8b4d9bf87be94f793ec5ff029432b1087db3b7488ef01c88729790dac",
+        "context_chars": 3210,
+        "cache_hit": false,
+        "started_utc": "2026-09-23T01:16:44.687681+00:00",
+        "status": "complete",
+        "model": "gpt-4o-mini",
+        "latency_seconds": 3.9538743337616324,
+        "semantic_fields": {
+          "origin_country": "Ethiopia, Colombia",
+          "process_method": "washed",
+          "variety": "unknown",
+          "is_blend": "1",
+          "is_decaf": "0",
+          "producer_or_farm_present": "1",
+          "altitude_present": "0"
+        }
+      },
+      {
+        "url": "https://www.blackwhiteroasters.com/products/the-original-1",
+        "round": 1,
+        "provider": "jev_ab",
+        "context_sha256": "06ed51fdc35138f500f33e0f3f6eef79b2b4561841f1c9e57891ad40fcaab80c",
+        "context_chars": 2139,
+        "cache_hit": false,
+        "started_utc": "2026-09-23T01:17:06.747762+00:00",
+        "status": "complete",
+        "model": "jev-1.13.0",
+        "latency_seconds": 0.4673428749665618,
+        "semantic_fields": {
+          "origin_country": "Ethiopia",
+          "process_washed": "supported",
+          "process_natural": "supported",
+          "variety_gesha": "not_stated",
+          "blend": "supported",
+          "decaf": "not_stated",
+          "producer_identified": "not_stated",
+          "altitude_provided": "supported"
+        }
+      },
+      {
+        "url": "https://www.blackwhiteroasters.com/products/the-original-1",
+        "round": 1,
+        "provider": "openai_app",
+        "context_sha256": "06ed51fdc35138f500f33e0f3f6eef79b2b4561841f1c9e57891ad40fcaab80c",
+        "context_chars": 2139,
+        "cache_hit": false,
+        "started_utc": "2026-09-23T01:16:48.984317+00:00",
+        "status": "complete",
+        "model": "gpt-4o-mini",
+        "latency_seconds": 4.899786708876491,
+        "semantic_fields": {
+          "origin_country": "Ethiopia",
+          "process_method": "washed",
+          "variety": "unknown",
+          "is_blend": "0",
+          "is_decaf": "0",
+          "producer_or_farm_present": "0",
+          "altitude_present": "1"
+        }
+      },
+      {
+        "url": "https://www.blackwhiteroasters.com/products/the-original-1",
+        "round": 2,
+        "provider": "jev_ab",
+        "context_sha256": "06ed51fdc35138f500f33e0f3f6eef79b2b4561841f1c9e57891ad40fcaab80c",
+        "context_chars": 2139,
+        "cache_hit": false,
+        "started_utc": "2026-09-23T01:16:43.722672+00:00",
+        "status": "complete",
+        "model": "jev-1.13.0",
+        "latency_seconds": 0.3172477497719228,
+        "semantic_fields": {
+          "origin_country": "Ethiopia",
+          "process_washed": "supported",
+          "process_natural": "supported",
+          "variety_gesha": "not_stated",
+          "blend": "supported",
+          "decaf": "not_stated",
+          "producer_identified": "not_stated",
+          "altitude_provided": "supported"
+        }
+      },
+      {
+        "url": "https://www.blackwhiteroasters.com/products/the-original-1",
+        "round": 2,
+        "provider": "openai_app",
+        "context_sha256": "06ed51fdc35138f500f33e0f3f6eef79b2b4561841f1c9e57891ad40fcaab80c",
+        "context_chars": 2139,
+        "cache_hit": false,
+        "started_utc": "2026-09-23T01:16:11.906365+00:00",
+        "status": "complete",
+        "model": "gpt-4o-mini",
+        "latency_seconds": 4.1037447499111295,
+        "semantic_fields": {
+          "origin_country": "Ethiopia",
+          "process_method": "washed",
+          "variety": "unknown",
+          "is_blend": "0",
+          "is_decaf": "0",
+          "producer_or_farm_present": "0",
+          "altitude_present": "1"
+        }
+      }
+    ],
+    "note": "Frozen page context text and provider credentials are not included. Product pages may change after capture."
+  }
+}

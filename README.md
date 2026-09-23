@@ -124,6 +124,122 @@ python3 autoresearch/price/analyze_selected.py
 
 The scripts write generated files under `data/`, `data/splits/`, `artifacts/rating/`, and `artifacts/price/`.
 
+## JEV training experiments
+
+The installable `coffee-value-shared` package owns the versioned 38-question
+JEV A+B catalog, the TypeSafe HTTP client, and the probability encoder. The
+training and extraction scripts import that one contract. The live app still
+uses its OpenAI extractor and incumbent artifacts; JEV is a measured research
+candidate, not its current serving path. See the
+[implementation plan](plans/jev-unified-extraction.html) and the
+[combined model and serving extraction pilot](plans/jev-results-showcase.html), plus
+the [completed training report](plans/jev-training-results.html). They preserve the existing
+split IDs and write their outputs separately under `artifacts/jev/`.
+
+Install this package in a Python environment with the dependencies for the
+training scripts before running an extraction:
+
+```bash
+python -m pip install -e .
+```
+
+The scripts read `TYPESAFE_API_KEY` from the process environment. Each person running
+extraction supplies their own key. On macOS, an existing Keychain entry can be used:
+
+```bash
+export TYPESAFE_API_KEY="$(security find-generic-password -s typesafe-ai -w)"
+```
+
+Alternatively, copy `.env.example` to `.env`, fill in your key, and load that file
+in your shell before running the scripts. `.env` is ignored by Git and is not
+loaded automatically. Only source a file you created or trust:
+
+```bash
+cp .env.example .env
+# Edit .env before the next command.
+set -a
+. ./.env
+set +a
+```
+
+Then start with the small pilot:
+
+```bash
+python3 scripts/backfill_jev.py pilot
+```
+
+This sends selected review fields to TypeSafe's System One API. Inspect the pilot's
+cached answers, errors, token usage, and cost estimate before the full run:
+
+```bash
+python3 scripts/backfill_jev.py full
+python3 scripts/evaluate_jev.py
+```
+
+The evaluator compares the incumbent with the existing architecture using JEV
+features and a JEV-only predictor. It reports incomplete cache coverage instead of
+training on a silently reduced dataset. Its generated local report is
+`artifacts/jev/summary.html`; the linked report above is a shareable snapshot of
+the first complete run. The hybrid improved rating
+concordance from 0.8910 to 0.8925 and price RMSLE from 0.2592 to 0.2544. Neither
+gain met the plan's acceptance target; the JEV-only predictors performed worse.
+These are historical validation results, not measurements of serving speed or
+performance on roaster pages. The optional `.env` file and macOS Keychain are local
+credential choices, not required repository infrastructure.
+
+The compact [finish and lot-status follow-up](plans/jev-followup-experiment.html)
+has a separate, versioned eight-question catalog and cache. Its offline cost
+estimate and evaluator can be run without a key:
+
+```bash
+python3 scripts/backfill_jev.py pilot --catalog followup --estimate-only
+python3 scripts/backfill_jev.py full --catalog followup --estimate-only
+python3 scripts/evaluate_jev_followup.py
+```
+
+The eight-question follow-up was explored separately. Its evaluator reports
+incomplete coverage rather than fitting on a partial cache.
+
+For the current price-focused follow-up, the one-question auction catalog
+reuses the original A+B cache. The targeted pilot is selected only from the
+price-development split; the full pass covers the 6,661 price-eligible rows.
+The [price feature audit](plans/jev-price-feature-priorities.html) explains why
+auction status and the existing Panama × Gesha signals were selected.
+The [completed comparison](plans/jev-auction-results.html) shows that adding the
+auction answer slightly worsened validation RMSLE versus the original JEV hybrid
+(0.25480 versus 0.25435). The Panama × Gesha interaction reached 0.25361, a
+2.14% improvement over the 0.25917 incumbent, but still above the predeclared
+price target of about 0.25139; its exploratory paired
+interval crosses zero. Four of 45 auction positives lacked an explicit
+auction claim in the supplied text. No price model was promoted for serving.
+
+```bash
+python3 scripts/select_jev_auction_pilot.py
+python3 scripts/backfill_jev.py pilot --catalog auction --task price \
+  --pilot-ids-file artifacts/jev_auction/targeted_pilot_ids.txt
+python3 scripts/backfill_jev.py full --catalog auction --task price
+python3 scripts/evaluate_jev_auction.py
+```
+
+The local serving extraction pilot freezes eight product-page contexts and runs
+the current app extractor and the A+B JEV semantic questions twice per page:
+
+```bash
+. ../coffee-value-app/.venv/bin/activate  # or another environment with the app dependencies
+python scripts/benchmark_jev_serving_extraction.py prepare
+python scripts/benchmark_jev_serving_extraction.py run
+python scripts/benchmark_jev_serving_extraction.py summary
+python scripts/build_jev_results_showcase.py
+```
+
+Its measured call medians are 4.81 seconds for the app's full OpenAI extraction
+and 0.42 seconds for JEV's 38 semantic answers. JEV does not yet supply the
+app's commerce and display fields, so this is an extraction-call pilot rather
+than an end-to-end serving speed comparison. See the combined report for p95,
+per-page results, and quality findings. The pilot also found incorrect process
+labels on two pages. Do not substitute this catalog directly for the app's
+complete extraction response.
+
 ## Research Trace
 
 - [Rating program](autoresearch/rating/program.md)

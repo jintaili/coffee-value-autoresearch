@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JEV extraction: training and serving implementation plan</title>
+  <style>
+    :root { color-scheme: light; --ink:#202c29; --muted:#5b6963; --green:#235b48; --line:#d9e2dc; --paper:#fffefa; --wash:#eff4ef; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:16px/1.65 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    main { max-width:1120px; margin:auto; padding:56px 36px 88px; }
+    header { border-bottom:3px solid var(--green); padding-bottom:28px; margin-bottom:30px; }
+    .eyebrow { color:var(--green); font-size:12px; font-weight:750; letter-spacing:.12em; text-transform:uppercase; }
+    h1 { font-size:clamp(32px,5vw,48px); line-height:1.13; letter-spacing:-.04em; margin:14px 0 20px; max-width:850px; }
+    h2 { font-size:27px; letter-spacing:-.025em; line-height:1.25; margin:0 0 20px; }
+    h3 { font-size:18px; margin:27px 0 10px; }
+    p { margin:12px 0; }
+    .lead { font-size:20px; max-width:950px; }
+    .meta,.small { font-size:13px; color:var(--muted); }
+    section { padding-top:38px; margin-top:20px; border-top:1px solid var(--line); scroll-margin-top:24px; }
+    nav { display:flex; flex-wrap:wrap; gap:8px 20px; font-size:14px; }
+    a { color:var(--green); text-underline-offset:3px; }
+    nav a { text-decoration:none; }
+    .callout { background:var(--wash); border-left:4px solid var(--green); padding:16px 21px; margin:22px 0; }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+    .card { border:1px solid var(--line); padding:20px; border-radius:8px; }
+    .card h3 { margin-top:0; }
+    .table-wrap { overflow-x:auto; margin:18px 0; }
+    table { border-collapse:collapse; width:100%; font-size:14px; line-height:1.5; }
+    th { text-align:left; background:var(--wash); color:var(--green); font-weight:700; }
+    th,td { padding:12px 13px; border-bottom:1px solid var(--line); vertical-align:top; }
+    td:first-child { font-weight:600; }
+    code { font-size:.9em; overflow-wrap:anywhere; }
+    pre { background:#172e26; color:#eff8f0; padding:22px; border-radius:7px; overflow-x:auto; font-size:13px; line-height:1.6; white-space:pre-wrap; }
+    pre code { overflow-wrap:normal; }
+    li { margin:7px 0; }
+    ul,ol { padding-left:24px; }
+    .phase { color:var(--green); font-size:13px; text-transform:uppercase; letter-spacing:.07em; }
+    footer { margin-top:50px; border-top:1px solid var(--line); padding-top:20px; }
+    @media(max-width:700px) { main { padding:30px 20px 60px; } .grid { grid-template-columns:1fr; } th,td { padding:10px; } }
+    @media print { body { font-size:11px; } main { padding:0; max-width:none; } nav { display:none; } section { break-before:auto; } h2,h3 { break-after:avoid; } tr,.card,pre { break-inside:avoid; } a { color:inherit; } }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="eyebrow">Implementation plan · 21 September 2026</div>
+    <h1>One JEV extraction contract for training and serving</h1>
+    <p class="lead">Replace the two semantic extraction paths with a shared, versioned question catalog. Retrain the rating and price predictors, then demonstrate prediction gains and faster appraisals with separate, reproducible benchmarks.</p>
+    <p class="meta">Scope: coffee-grader and the local coffee-value-app companion repository. The training experiment and a small extraction-call timing pilot are complete; see the <a href="jev-results-showcase.html">combined results report</a>. Serving integration and a full appraisal benchmark remain future work.</p>
+  </header>
+  <nav aria-label="Plan contents">
+    <a href="#decisions">Decisions</a><a href="#baseline">Baselines</a><a href="#architecture">Architecture</a><a href="#schema">Schema and rubrics</a><a href="#features">Feature candidates</a><a href="#data">Evaluation data</a><a href="#experiments">Training experiments</a><a href="#speed">Serving speed</a><a href="#delivery">Implementation sequence</a><a href="#acceptance">Acceptance</a><a href="#sources">Sources</a>
+  </nav>
+
+  <section id="decisions">
+    <h2>Recommended decisions</h2>
+    <div class="grid">
+      <div class="card"><h3>Unify semantic extraction</h3><p>Use the same JEV questions, state construction rules, probability encoding, and model version for historical reviews and product pages. Keep source-specific readers thin.</p></div>
+      <div class="card"><h3>Measure both objectives</h3><p>Prediction quality and serving latency are separate gates. Faster extraction does not establish better ratings; stronger review-validation scores do not establish faster product-page appraisals.</p></div>
+    </div>
+    <ul>
+      <li>Implement one A+B extractor and compare three configurations: the incumbent, the existing architecture with JEV features, and a JEV-only predictor. Preserve the research winner as a comparison. Further feature ablations and architecture search are optional follow-ups.</li>
+      <li>Test a semantic-feature-only model early. It offers the clearest path to eliminating generative text extraction. Retain TF-IDF or embeddings only when their measured benefit warrants their serving cost.</li>
+      <li>Keep HTML parsing, candidate construction, unit conversion, FX/CPI normalization, and exact copying in code. These operations remain useful even when JEV owns semantic interpretation.</li>
+      <li>Do not add a routine JEV verification pass. Each field's missing/conflicting outcomes, distributions, and deterministic validation handle uncertainty within extraction.</li>
+      <li>Preserve existing display functionality and product-variant behavior. Benchmark the complete response the user receives, including any remaining display extraction or fallback.</li>
+    </ul>
+    <p>Performance improvements are hypotheses until measured. If the experiments fail a gate, report the result and retain the incumbent for that component.</p>
+    <div class="callout"><strong>Keep the first pass small.</strong> A to E are tags in one question catalog, not separate pipelines. Initially implement only A+B, cache their answers once, and reuse the existing training code. No experiment framework or autonomous feature-discovery system is required. Complete training comparisons first; serving integration and production benchmarks follow.</div>
+  </section>
+
+  <section id="baseline">
+    <h2>Establish the correct baselines first</h2>
+    <p>Training currently uses regex extraction over review text. Serving uses an OpenAI structured extractor followed by regex vocabulary mapping. The application then performs optional roaster-country resolution, currency normalization, and model prediction.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Baseline</th><th>Observed local configuration</th><th>Recorded validation results</th></tr></thead>
+      <tbody>
+        <tr><td>Research rating winner</td><td>Ridge, alpha 1; TF-IDF with 6,000 maximum terms and bigrams; MiniLM embeddings.</td><td>Concordance 0.891044; MAE 1.049560; RMSE 1.557227. 7,574 training and 1,337 validation rows.</td></tr>
+        <tr><td>Serving rating artifact</td><td>Ridge, alpha 1; TF-IDF only. The local runtime explicitly requires this encoder.</td><td>Concordance 0.890018; MAE 1.074512; RMSE 1.654510. Same reported row counts.</td></tr>
+        <tr><td>Price model</td><td>ElasticNet, alpha 0.0001, L1 ratio 0.1; TF-IDF plus package features; log real USD/100g target. Local research and app model files have matching hashes.</td><td>RMSLE 0.259166; MAE 3.875031; p90 absolute error 5.098572. 5,661 training and 1,000 validation rows.</td></tr>
+        <tr><td>Serving extraction</td><td>Configured default is gpt-4o-mini, with possible environment overrides. Optional country lookup defaults to gpt-5.5.</td><td>No measured latency baseline established in this work. Record effective settings during benchmarking.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout"><strong>Baseline correction required.</strong> MODEL_SELECTION.md labels rating concordance values as RMSE and a rating RMSE value as p90 error. Use the machine-readable reports and reproduced predictions to repair this before publishing comparisons. Also distinguish the research winner from the app's local artifact; the hosted deployment has not been inspected.</div>
+    <p>Freeze both repositories' revisions, artifact hashes, dependency versions, split IDs, raw-data hashes, normalization reference versions, and effective provider settings. Recompute baseline metrics from saved predictions and, where feasible, reproduce the model runs. Preserve originals in an immutable baseline directory.</p>
+    <p class="small">Evidence: coffee_value/features.py; artifacts/rating/report.json; artifacts/price/report.json; companion src/coffee_value_app/{extractor,schemas,analysis,config,model_runtime}.py and artifacts/rating/report.json.</p>
+  </section>
+
+  <section id="architecture">
+    <h2>Shared package and execution paths</h2>
+    <pre><code>Historical review                         Roaster product page
+  CSV reader                                 HTML / embedded product data reader
+       │                                               │
+       └────────── shared evidence schema ─────────────┘
+                              │
+                target-free feature evidence
+                              │
+                shared JEV question catalog
+                              │
+             typed answers + full distributions
+                              │
+               shared numeric feature encoder
+                              │
+                rating model / price model
+
+Commerce branch: source price and variant candidates → selection → code normalization
+Display branch: metadata and selected source spans → existing response fields</code></pre>
+    <p>Package the shared implementation in this repository and install the same versioned wheel into the app. Do not copy question definitions or encoder classes into the serving repository. Pin the package, model artifact, and extraction contract as one release.</p>
+    <h3>Feature and commerce evidence stay separate</h3>
+    <p>The shared feature state excludes ratings, reviewer component scores, listed prices, price-derived values, and explicit score/price quotations. Enforce this while building the state; a prompt telling JEV to ignore fields is insufficient isolation. Retain legitimate numbers such as altitude or fermentation hours. Audit difficult cases and retain raw source snapshots outside the model state.</p>
+    <p>Package grams remains an allowed input for price and stays excluded from rating. Commerce selection receives prices and units through a separate request when needed. It can run concurrently with feature extraction. Where embedded product data already identifies the correct variant, deterministic code avoids that request entirely.</p>
+    <p>All independent feature questions run in one JEV request when request limits permit. A commerce or display question must not depend on an answer from that same request. Construct candidate variants first and select a whole offer record containing price, currency, size, purchase type, and source IDs. This avoids selecting a price from one variant and a size from another.</p>
+    <h3>Preserve exact data and existing behavior</h3>
+    <ul>
+      <li>Preserve URL-selected variants and the current default-size policy. Support one-time versus subscription prices, bundles, availability, and non-coffee pages.</li>
+      <li>Copy coffee names, producer names, raw process terms, and display text from metadata or candidate spans. JEV selects from supplied options; it does not generate arbitrary strings through Choice.</li>
+      <li>Include <code>none</code> in candidate selection. Measure candidate coverage separately from JEV selection accuracy. Missing candidates require an adapter fix or explicit fallback.</li>
+      <li>For a hybrid predictor requiring text, select sensory and producer source blocks, then copy their contents. Benchmark this extra work. A semantic-only predictor avoids that dependency.</li>
+      <li>Keep ordinary validation for units, positive package size, supported currencies, valid candidate IDs, and feature dimensions. Do not substitute a second model call for arithmetic.</li>
+    </ul>
+    <p>Typed questions and grouped evaluation follow the <a href="https://docs.typesafe.ai/api">TypeSafe API</a>. Source selection follows the <a href="https://docs.typesafe.ai/cookbooks/pre_parsed_value_extraction_cookbook">candidate extraction cookbook</a>.</p>
+  </section>
+
+  <section id="schema">
+    <h2>Contract, rubrics, and stored results</h2>
+    <p>Start with the agreed Choice templates. Each field's instructions name the target, permitted evidence, definition, exclusions, and boundary examples. Question IDs alone carry no meaning for the model.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Template</th><th>Outcomes</th><th>Encoding</th></tr></thead>
+      <tbody>
+        <tr><td>Evidence for a fact</td><td>supported; explicitly_negated; not_stated; conflicting</td><td>Fixed-order probabilities. Missing evidence remains distinct from negation.</td></tr>
+        <tr><td>Category</td><td>Field-specific options; other; not_stated; conflicting. Add multiple_countries for origin.</td><td>Fixed-order probabilities. Preserve other rather than force an unsupported label.</td></tr>
+        <tr><td>Described degree</td><td>low; medium; high; not_stated; conflicting</td><td>Probability columns initially. Do not turn not_stated into zero intensity.</td></tr>
+        <tr><td>Exact value selection</td><td>Source candidate IDs; none</td><td>Copy selected source value; normalize in code. Do not feed unstable candidate-ID probabilities to regressors.</td></tr>
+      </tbody>
+    </table></div>
+    <p><strong>Shared evidence rule:</strong> judge statements about this lot, accept clear paraphrases and listed aliases, exclude background and other products, and infer nothing from price, reputation, or origin stereotypes. Repetition and promotional emphasis do not increase a sensory degree. Conflicting means incompatible source claims, not ordinary model uncertainty.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Rubric</th><th>Low</th><th>Medium</th><th>High</th><th>Boundary</th></tr></thead>
+      <tbody>
+        <tr><td>Acidity</td><td>Explicitly soft, muted, low</td><td>Explicitly moderate</td><td>Explicitly pronounced, intense, high</td><td>Fruit names or "balanced" alone do not specify acidity intensity.</td></tr>
+        <tr><td>Sweetness</td><td>Explicitly low perceived sweetness</td><td>Explicitly moderate</td><td>Explicitly pronounced or intense</td><td>A honey note does not establish high sweetness or honey processing.</td></tr>
+        <tr><td>Body</td><td>Explicitly light or thin</td><td>Explicitly medium</td><td>Explicitly full, heavy, thick</td><td>Do not infer body from roast or brew recommendation.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Keep process and variety questions independent so multiple labels can apply. Separate Pink Bourbon from unspecified Bourbon. Treat Java's origin and cultivar meanings explicitly. "Natural sweetness" supplies no natural-processing evidence. Use a category for espresso-primary, filter-primary, both, other, missing, or conflicting.</p>
+    <h3>Proposed application types</h3>
+    <p class="small">These are application records, not a literal TypeSafe request schema.</p>
+    <pre><code>EvidenceDocument
+  target: source identifier and candidate identity
+  blocks: [{id, field_or_section, text}]
+  candidates: source-linked exact-value candidates
+
+ExtractionRecord
+  source_hash, adapter_version, feature_state_hash
+  contract_version, questions_hash, requested_model, resolved_model
+  answers: question_id → typed provider answer
+  selected_sources: field → source IDs, when selection was requested
+  status: complete | failed
+  usage, timing, attempts
+
+FeatureManifest
+  contract_version, package_version, pinned_jev_model
+  ordered_question_ids, ordered_feature_names
+  encoding_version, permitted_inputs, package_size_policy
+  text_encoder_config, if used
+
+ModelBundle
+  feature_manifest + fitted_encoder + fitted_predictor
+  target_definition + normalization_reference_versions
+  training_data_hash + split_hashes + validation_report</code></pre>
+    <p>Store the full answer distributions even if the display uses a single label. Use regularized regressors for redundant probability columns; consider dropping a reference column only as an encoding experiment. Keep provider confidence in diagnostics initially. It is not a calibrated coffee-quality interval.</p>
+    <p>Cache by canonical state, complete question content and criteria, pinned model, and adapter/contract version. Store the model version returned by the provider. A service failure must never become a valid not_stated answer. Backfills checkpoint completed rows and retry failed rows within a bounded policy.</p>
+    <p>Pin an explicit model version after the pilot. Current docs list <code>jev-1.13.0</code>; reconfirm at implementation time. A contract change or model upgrade requires a new cache namespace, evaluation, and compatible artifacts. <a href="https://docs.typesafe.ai/models">Model documentation</a>.</p>
+  </section>
+
+  <section id="features">
+    <h2>Feature catalog and expansion order</h2>
+    <p>Implement only A+B in the initial pass. The remaining groups document possible follow-ups, not required work. One catalog and one encoder handle every group; selecting cached columns makes later ablations inexpensive.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Group</th><th>Initial fields</th><th>Hypothesis and priority</th></tr></thead>
+      <tbody>
+        <tr><td>A. Existing production facts</td><td>Origin and roaster country; seven process labels; current 15-variety vocabulary; blend; brewing intent; decaf; producer identified; altitude provided.</td><td>First. Remove context errors such as honey tasting notes becoming honey processing. Preserve the baseline meaning wherever possible and record intentional changes.</td></tr>
+        <tr><td>B. Sensory description</td><td>Acidity, sweetness, body; floral, citrus, non-citrus fruit, chocolate, nut, roast/smoke character.</td><td>First. Test whether explicit semantic features transfer better than critic wording. Measure missingness and disagreements across reviews and pages.</td></tr>
+        <tr><td>C. Production details</td><td>Explicit roast category; growing altitude value/range; added-flavor processing or infusion; selected unusual processing claims.</td><td>Next. Roast and altitude add information missing from current model inputs. Extract values from candidates and normalize units. Separate ordinary fermentation from added ingredients.</td></tr>
+        <tr><td>D. Specific lot claims</td><td>Auction participation, named competition placement, limited lot, stated lot quantity, specific lot provenance.</td><td>Next, especially for price. Require evidence tied to the current lot. Report label counts and rare-case errors. Generic "premium" or "exclusive" language does not qualify.</td></tr>
+        <tr><td>E. Research-only candidates</td><td>Finish character, described defects, clarity, or complexity when explicitly supported.</td><td>Later. These may encode critic judgments unavailable in roaster copy. Keep only if matched-source evaluation supports deployment.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Do not initially add critic enthusiasm, overall excellence, inferred rarity, brand reputation, exact roaster identity, or a direct JEV estimate of rating/price. Do not use an award that merely repeats the target review score. Harvest recency stays deferred until comparable historical reference dates are available.</p>
+    <p>Group A has 29 questions, and group B adds nine. Page/commerce/display tasks add a variable number. Profile the actual catalog, options, and evidence length. Prune weak groups or individual questions using development data before freezing the final catalog.</p>
+  </section>
+
+  <section id="data">
+    <h2>Evaluation data and leakage controls</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Dataset</th><th>Proposed size and purpose</th><th>Separation rule</th></tr></thead>
+      <tbody>
+        <tr><td>Extraction audit</td><td>Start with 200 reviews and 100 product-page snapshots. Include sparse, multilingual, blended, multi-process, rare-variety, negative, and ambiguous examples. Annotate key field evidence and selected variants.</td><td>Separate rubric-development and locked extraction-evaluation examples by product/lot and preferably roaster. Annotators see source evidence, not model answers or target scores.</td></tr>
+        <tr><td>Historical prediction benchmark</td><td>Keep the current 1,337 rating and 1,000 price validation row IDs and target definitions. Re-extract every eligible train/validation row through the shared contract.</td><td>This is a repeatedly used development benchmark, not a fresh final test. No silent row removal for failed extraction.</td></tr>
+        <tr><td>Development folds</td><td>Use reproducible grouped folds within historical training rows for feature selection, tuning, and any autoresearch. Group duplicates and related lots where identity is reliable.</td><td>Feature proposers and tuning see only development errors. Report duplicate/group overlap in the old fixed split without changing its IDs.</td></tr>
+        <tr><td>Matched review/page set</td><td>Target 50 to 100 verified same-lot pairs with independent rating labels. Check harvest, processing, variety, producer, and release identity. Archive source snapshots.</td><td>Prefer new, previously unused lots. Split development and final evaluation by lot. A similar coffee name alone is not a match.</td></tr>
+        <tr><td>Serving benchmark</td><td>At least 100 representative snapshots, plus invalid/non-coffee pages, bundles, currencies, and variants. Use three timed repetitions per candidate as an initial design.</td><td>Identical snapshots for paired extraction tests. Separately run controlled live-URL trials for total latency.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Rubric tuning must not use the final extraction set. Because rating and price have different split IDs, shared feature discovery must exclude the union of both validation sets; use the intersection of eligible training IDs for joint development. Keep final evaluation lots excluded from both tasks. Historical holdouts cannot become "untouched" merely by renaming them. If fresh labeled lots cannot be obtained, publish historical improvements as provisional and identify the missing deployment-quality evidence.</p>
+    <p>On matched data, compare predictions from review evidence and page evidence against the independent rating, and measure feature agreement. Agreement alone is insufficient: consistently wrong features can agree. For price, align currency, date normalization, package variant, and purchase type before comparing. A page's own asking price is a market-price label, not independent proof of fair value.</p>
+    <p>Measure classification precision/recall, macro scores over evidence states, probability quality where labels permit it, abstention/coverage, and candidate coverage. Report these by language and source type. Do not give the model credit simply for returning not_stated on most rare fields.</p>
+    <p>Inspect source prose for explicit ratings and prices after named columns are removed. Run a facts-only versus review-text ablation to expose dependence on evaluator language. Shared extraction cannot eliminate the difference between promotional descriptions and blind assessments.</p>
+  </section>
+
+  <section id="experiments">
+    <h2>Three initial training comparisons</h2>
+    <p>Backfill a small pilot first, establish extraction quality, then backfill the full eligible dataset once per frozen contract. Reuse JEV outputs across rating and price runs. Fit text vocabularies, scaling, imputation, and other learned transforms on training folds only.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Run</th><th>Feature change</th><th>Model</th><th>Question answered</th></tr></thead>
+      <tbody>
+        <tr><td>1. Baseline</td><td>Frozen incumbent features</td><td>Research rating winner and incumbent price; app rating artifact as an additional reference</td><td>Can we reproduce the reference results?</td></tr>
+        <tr><td>2. Existing architecture + JEV</td><td>Replace custom structured features with A+B probabilities; retain existing text features and package size for price</td><td>Refit Ridge and ElasticNet; use a small development-only regularization sweep if needed</td><td>Does unified semantic extraction improve prediction with the architecture held stable?</td></tr>
+        <tr><td>3. JEV-only predictor</td><td>A+B probabilities without TF-IDF or embeddings; retain package size for price</td><td>Ridge and ElasticNet</td><td>Can a simpler predictor preserve or improve quality and simplify serving?</td></tr>
+      </tbody>
+    </table></div>
+    <p>These comparisons are the initial training deliverable. They are not sufficient shipping evidence if text preparation differs at serving time. For a selected hybrid, rebuild training text through the same source-selection implementation during serving integration and evaluate it again. If text selection requires another JEV stage, include it in the latency comparison.</p>
+    <h3>Optional follow-ups, driven by the results</h3>
+    <ul>
+      <li>Compare hard labels with probabilities or remove A/B subgroups using the cached answers when attribution would help. These are column-selection experiments, not new extraction pipelines.</li>
+      <li>Add C or D only if residual errors suggest production details or specific lot claims would help. Extract only the new questions and preserve the original run.</li>
+      <li>Try shallow boosting only if the linear models appear limited by interactions. Reuse the same frozen features.</li>
+      <li>Defer E, the large annotation program, matched-page collection, serving timing instrumentation, and production rollout until the training result establishes a useful direction. Retain a small evidence audit and existing fixed evaluation rows from day one.</li>
+    </ul>
+    <h3>When a bounded autoresearch run is worthwhile</h3>
+    <p>Use it only after the extraction contract is stable and the ablations reveal useful signal or systematic residuals. Start with at most 12 focused trials across both predictors, and stop after four consecutive trials fail to improve the predeclared development objective. Broader search is a later decision supported by measured gains, not the default migration step.</p>
+    <p>Model search reuses cached features. A feature-discovery round is a separate, budgeted experiment: propose a small group from development-only errors, audit its rubric, extract it, then evaluate its incremental value. Keep a final test set inaccessible to both the proposer and model selection. This adapts the <a href="https://docs.typesafe.ai/cookbooks/autoresearch_feature_discovery">TypeSafe feature-discovery approach</a> to this deployment problem.</p>
+    <p>Update the existing autoresearch programs before execution. Their bans on LLM extraction and edits to the shared extractor describe the previous milestone. This migration intentionally changes that contract while preserving split IDs, target definitions, and append-only result history. Do not delete discarded experiment records or unrelated working-tree changes.</p>
+    <h3>Metrics and uncertainty</h3>
+    <ul>
+      <li>Rating selection remains pairwise concordance. Also report MAE, RMSE, Spearman, within-one/two accuracy, calibration, rating-bucket bias, and train/validation gap.</li>
+      <li>Price selection remains the existing RMSLE implementation and real USD/100g target. Report p90/median error, low/high-decile RMSLE, bias, and top-decile sensitivity to the extreme outlier.</li>
+      <li>Use paired bootstrap intervals over independent product/lot groups where available. Recompute concordance in each resample; do not treat the many pairwise comparisons as independent observations.</li>
+      <li>Show development results and the frozen final evaluation separately. Confidence intervals on a repeatedly tuned validation set do not remove selection bias.</li>
+      <li>Reassess the app's displayed prediction intervals using development calibration residuals and evaluate their coverage on held-out data. Do not reuse the current fixed interval constants without checking them, or derive prediction intervals directly from JEV confidence.</li>
+    </ul>
+  </section>
+
+  <section id="speed">
+    <h2>Prove serving speed under comparable work</h2>
+    <p>Instrument page fetch, HTML/context preparation, JEV or incumbent extraction, source selection, optional country lookup, FX normalization, feature encoding, model prediction, response construction, and persistence if it is on the request path. Record wall-clock total, stage spans, retries, cache status, question count, token usage, and errors. Concurrent stage durations must not be added as if sequential.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Benchmark</th><th>Controls</th><th>Report</th></tr></thead>
+      <tbody>
+        <tr><td>Extraction-only</td><td>Same frozen HTML/context snapshots; incumbent and JEV; application cache bypassed. Randomized/interleaved execution order. Same concurrency and timeout policy.</td><td>p50/p95, paired per-page differences, success rate, extracted-field quality, request/token cost.</td></tr>
+        <tr><td>URL to complete appraisal</td><td>Same page cohort, host, region, functionality, and roaster-resolution policy. Report fetch failures and fallbacks rather than dropping them.</td><td>p50/p95 total latency, stage breakdown, throughput, timeouts, complete-response rate.</td></tr>
+        <tr><td>Warm cache</td><td>Equivalent cache policy for both paths; distinguish extraction cache, country/FX cache, and provider caching where observable.</td><td>Separate speed and hit-rate results. Do not present cached JEV versus uncached incumbent as extraction speedup.</td></tr>
+        <tr><td>Cold start / modest load</td><td>Model load measured separately; then warmed process at concurrency 1 and a representative small concurrent load.</td><td>Startup time, resident memory, prediction time, queueing and rate-limit effects.</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Optimization order</h3>
+    <ol>
+      <li>Replace the generative semantic extractor with grouped JEV questions. Reuse the connection/client and validate complete answers.</li>
+      <li>Use embedded product data for exact fields and candidate generation. Keep feature and commerce calls concurrent when both are necessary.</li>
+      <li>Remove low-value questions and unnecessary source text only after measuring their effect on extraction quality. Preserve relevant middle-of-page content rather than rely on blind head/tail truncation.</li>
+      <li>Prefer a compact JEV-only regressor if it meets quality gates. If embeddings remain useful, measure their actual loading and inference cost.</li>
+      <li>Evaluate country-resolution caching or policy changes separately. The current serial web lookup may dominate slow requests, but removing it changes available evidence and must not be credited to JEV alone.</li>
+    </ol>
+    <p>Default to one feature request and, only when needed, a separate concurrent commerce request. Large candidate sets or dependent source selection may need another stage; count these explicitly. No blanket verifier. A rare fallback may recover missing display/commerce information, but if it changes core feature semantics, route through the full compatible legacy model bundle instead of mixing contracts.</p>
+    <p>Before the full benchmark/backfill, run a 30 to 50 item pilot to estimate input tokens, success rate, latency, and total cost. Publish projected and actual costs using the applicable provider rates. Cap concurrency, attempts, and total run spend in configuration. Use fresh provider latency measurements rather than assume JEV is faster because its response is shorter.</p>
+  </section>
+
+  <section id="delivery">
+    <h2>Implementation sequence and deliverables</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Phase</th><th>Concrete work</th><th>Exit condition</th></tr></thead>
+      <tbody>
+        <tr><td>0. Training baseline</td><td>Freeze artifacts/splits, repair metric labels, audit a small review sample, and estimate extraction pilot cost. Read the local serving artifact for comparison without modifying the app.</td><td>Reproducible training baseline report with both rating references.</td></tr>
+        <tr><td>1. Shared contract</td><td>Add typed evidence/answer schemas, question catalog, deterministic feature encoder, versioned manifest, provider client, and cache.</td><td>The same recorded evidence produces identical numeric features in training and app consumers using cached answers.</td></tr>
+        <tr><td>2. Small A+B pilot</td><td>Run a small review cohort. Inspect evidence and sparse inputs; refine definitions using development examples only. Record extraction timing and cost.</td><td>The shared A+B contract is credible enough for backfill, and operational estimates are known.</td></tr>
+        <tr><td>3. Training results</td><td>Checkpoint full extraction and run the three initial comparisons. Publish results and failures. Add no new feature group or model family unless the evidence justifies it.</td><td>A clear recommendation on the existing-architecture and JEV-only candidates, with metrics and reproducible artifacts.</td></tr>
+        <tr><td>4. Serving integration</td><td>Consume the shared package, preserve response fields/variants, add the new model bundle contract and explicit legacy fallback, finish source copying.</td><td>Parity tests and snapshot integration tests pass without hidden semantic remapping.</td></tr>
+        <tr><td>5. Final benchmark</td><td>Freeze candidates, evaluate locked sets once, run interleaved latency trials, publish detailed results including failures and cost.</td><td>Accept/reject decision for each objective and a reproducible HTML showcase.</td></tr>
+        <tr><td>6. Rollout</td><td>Shadow a sampled workload, then progressively enable the selected bundle. Monitor latency, coverage, errors, missing/conflicting distributions, and fallback rate.</td><td>Stable production behavior; retain a one-setting rollback to the entire old bundle.</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Expected file changes</h3>
+    <p>Proposed new paths are implementation targets, not files already created.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Repository</th><th>Paths</th><th>Responsibility</th></tr></thead>
+      <tbody>
+        <tr><td>coffee-grader</td><td><code>pyproject.toml</code><br><code>coffee_value/extraction/{schema,questions,state,client,cache,encoding}.py</code></td><td>Installable shared package, question templates, typed records, request construction, caching, feature ordering.</td></tr>
+        <tr><td>coffee-grader</td><td><code>scripts/backfill_jev.py</code><br><code>scripts/evaluate_jev.py</code><br><code>autoresearch/{rating,price}/{prepare,train}.py</code></td><td>Resumable extraction, audit reports, new feature matrices, model experiments and artifacts.</td></tr>
+        <tr><td>coffee-grader</td><td><code>tests/</code><br><code>autoresearch/{rating,price}/program.md</code><br><code>MODEL_SELECTION.md</code></td><td>Meaningful contract tests, updated experiment policy, corrected and newly selected metrics.</td></tr>
+        <tr><td>coffee-value-app</td><td><code>pyproject.toml</code><br><code>src/coffee_value_app/{extractor,analysis,schemas,model_runtime,config}.py</code></td><td>Pinned shared dependency, provider interface, concurrent stages, model loading, response compatibility, rollout configuration.</td></tr>
+        <tr><td>coffee-value-app</td><td><code>src/coffee_value_app/{product_data,html_text}.py</code><br><code>scripts/benchmark_extraction.py</code><br><code>tests/fixtures/</code></td><td>Source candidates, page evidence, reproducible latency benchmark and regression cases.</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Tests that materially reduce migration risk</h3>
+    <ul>
+      <li>Golden cached-answer tests proving both consumers emit identical feature names, order, values, and predictions within an explicit numeric tolerance.</li>
+      <li>Contract mismatch tests that reject wrong catalog/model/encoder versions, incomplete answers, invalid distributions, and incompatible feature dimensions.</li>
+      <li>Input-state tests proving score/price fields cannot reach feature extraction, while valid altitude/processing numbers survive.</li>
+      <li>Snapshot integration tests for selected variants, subscriptions, multi-bag totals, currencies, unknown fields, conflicting evidence, non-coffee pages, long text, and provider timeouts.</li>
+      <li>Semantic examples such as honey notes, Java ambiguity, and espresso suggestions belong in the live evaluation set. Mocking the intended answer is not evidence that JEV handles them.</li>
+    </ul>
+    <p>Ordinary CI replays recorded answers and makes no paid calls. A separate integration evaluation exercises the pinned provider. Repeated live extraction of a small sample measures output stability; version pinning alone does not guarantee bit-identical provider results.</p>
+  </section>
+
+  <section id="acceptance">
+    <h2>Acceptance gates and the final showcase</h2>
+    <p>The following are proposed practical targets, not measured results. Freeze them after the baseline pilot and before candidate tuning. If the data cannot resolve a small effect, report the uncertainty rather than choose thresholds after seeing results.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Gate</th><th>Proposed target</th><th>Evidence required</th></tr></thead>
+      <tbody>
+        <tr><td>Rating improvement</td><td>At least +0.005 absolute concordance against the stronger research baseline; MAE no worse by more than 0.02 points; no important calibration deterioration.</td><td>Fixed benchmark results plus independent or explicitly qualified final evaluation, paired intervals, and matched-page results. Compare against the serving baseline too.</td></tr>
+        <tr><td>Price improvement</td><td>At least 3% lower RMSLE than 0.259166, approximately 0.25139 or below; p90 absolute error no worse by more than 5%.</td><td>Same targets and row IDs, low/high-decile diagnostics, and sensitivity to the largest-price example.</td></tr>
+        <tr><td>Extraction speed</td><td>At least 30% lower uncached extraction p50 and 20% lower p95.</td><td>Paired snapshot benchmark at comparable output completeness and accuracy, including extra selection calls and fallbacks.</td></tr>
+        <tr><td>Total appraisal speed</td><td>Target at least 20% lower uncached end-to-end p50, with no p95 regression.</td><td>Controlled live-URL trials with stage breakdown and unchanged country/FX policies. Report extraction-only wins separately if fetch dominates.</td></tr>
+        <tr><td>Extraction quality</td><td>Core field macro score no worse by more than 2 percentage points; no increase in critical price/variant pairing errors; no material loss of complete responses.</td><td>Locked annotated audit, coverage and error counts with uncertainty. A small sample cannot certify rare-error rates.</td></tr>
+        <tr><td>Parity and operations</td><td>Shared versioned package and contract; no silent schema fallback; reproducible feature vectors; safe full-bundle rollback.</td><td>Parity/integration tests, manifest checks, observed failures and fallback rate.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Rating and price may select different regressors and feature subsets while consuming the same shared extraction record. The served catalog is the union of needed questions. If one predictor fails its quality gate, do not claim both improved; retain its incumbent or report a measured non-inferiority/speed tradeoff separately. Avoid permanently running both extractors merely to keep a migration alive.</p>
+    <h3>Showcase deliverable</h3>
+    <p>Produce <code>artifacts/jev/summary.html</code> with a before/after table, paired rating and price results, feature-group ablations, extraction-quality examples, stage latency distributions, p50/p95 bars, cost per appraisal, fallback frequency, and representative failures. Label every baseline by artifact and contract version.</p>
+    <p>Publish supporting CSV/JSON predictions, timings, manifests, split hashes, extraction audit results, and a command list for reproduction. Show a few same-lot review/page comparisons to make the parity benefit concrete. Select illustrative examples after reporting aggregate results, and include a failure case rather than presenting only successes.</p>
+    <div class="callout"><strong>Initial delivery:</strong> one shared A+B extractor, cached answers, and the three training comparisons. Begin with a small pilot, then backfill if it passes the evidence audit. Report prediction results before starting serving work. The broader feature and experiment catalog remains optional.</div>
+  </section>
+
+  <section id="sources">
+    <h2>References and evidence</h2>
+    <p>Local files inspected on 21 September 2026. Recorded metrics describe local artifacts and reports, not a verified hosted deployment.</p>
+    <ul>
+      <li><a href="../coffee_value/features.py">Training feature extraction</a>, <a href="../autoresearch/rating/program.md">rating experiment policy</a>, and <a href="../autoresearch/price/program.md">price experiment policy</a>.</li>
+      <li><a href="../artifacts/rating/report.json">Research rating report</a>, <a href="../artifacts/price/report.json">price report</a>, and <a href="../artifacts/price/6507aee_analysis.md">price error diagnostics</a>.</li>
+      <li>Companion app under <code>/Users/jintaili/Development/coffee-value-app</code>: extraction, schemas, orchestration, configuration, product data, runtime validation, and artifact reports.</li>
+      <li><a href="https://docs.typesafe.ai/api">TypeSafe API contract</a>, <a href="https://docs.typesafe.ai/models">model versions and limits</a>, <a href="https://docs.typesafe.ai/primitives/choice">Choice questions</a>, <a href="https://docs.typesafe.ai/cookbooks/pre_parsed_value_extraction_cookbook">candidate selection</a>, and <a href="https://docs.typesafe.ai/cookbooks/autoresearch_feature_discovery">feature discovery</a>. Live Markdown documentation was read during planning.</li>
+    </ul>
+  </section>
+  <footer class="small">The shared A+B extractor, paid backfill, training comparison, and an eight-page extraction-call pilot are complete. Equivalent-output serving integration and end-to-end benchmarking remain future work.</footer>
+</main>
+</body>
+</html>

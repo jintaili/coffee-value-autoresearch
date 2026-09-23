@@ -128,12 +128,13 @@ The scripts write generated files under `data/`, `data/splits/`, `artifacts/rati
 
 We tested TypeSafe JEV as a shared, typed feature extractor for coffee reviews and
 product pages. One 38-question catalog processed 8,911 reviews for model training.
-On historical validation, the best price candidate reduced RMSLE from 0.25917 to
-0.25361, and rating concordance rose from 0.89104 to 0.89253. In an eight-page
-pilot, JEV's semantic call took 0.42 seconds at the median, versus 4.81 seconds
-for the app's complete extraction call. The outputs differ, and the live app
-still uses its incumbent extractor and models. The [results and limitations](plans/jev-results-showcase.html)
-include the page-level errors and benchmark method.
+On historical validation, the selected JEV-feature price model reduced RMSLE
+from 0.25917 to 0.25361, a 2.14% relative gain. The app uses that model and
+JEV extraction while keeping its lightweight rating model. In a matched
+eight-page local pilot, complete extraction took 0.423 seconds at the median
+with JEV versus 4.879 seconds with the previous extractor. Fetch and prediction
+were excluded. The [results and limitations](plans/jev-results-showcase.html)
+include the paired timings and remaining caveats.
 
 To run the initial A+B extraction and model comparison, set `TYPESAFE_API_KEY`
 in your environment, then run:

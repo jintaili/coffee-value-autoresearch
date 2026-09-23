@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>JEV validation gains and extraction-call pilot</title>
+<title>JEV price validation and complete extraction timing</title>
 <style>
 :root { color-scheme: light; }
 body { margin: 0; background: #f5f5ef; color: #21312a; font: 16px/1.55 system-ui, sans-serif; }
@@ -19,14 +19,21 @@ th { background:#ecf3ec; font-size:.86rem; } tr:last-child td { border-bottom:0;
 .note { border-left:4px solid #c6883a; background:#fff8e8; padding:.7rem 1rem; }
 .muted { color:#5b6a60; font-size:.93rem; } a { color:#176345; }
 </style></head><body><main>
-<div class="eyebrow">Coffee value · research and local extraction-call pilot · 22 September 2026</div>
-<h1>Modest validation gains; faster JEV calls in a small pilot</h1>
-<p class="lead">The best price candidate lowers historical validation RMSLE by 2.14% versus the incumbent, and the rating hybrid raises concordance by 0.00148. On eight frozen product pages, the 38-question JEV call took 0.42 seconds at the median, versus 4.81 seconds for the app’s current full extraction call. The timing paths return different amounts of information, so this is a latency observation for the calls tested.</p>
+<div class="eyebrow">Coffee value · validation and local serving pilot · 23 September 2026</div>
+<h1>JEV improves price RMSLE and speeds up extraction</h1>
+<p class="lead">The selected JEV-feature price model lowers historical validation RMSLE by 2.14% versus the incumbent. On eight public product pages, complete JEV extraction took 0.423 seconds at the median versus 4.879 seconds for the previous OpenAI extractor. The local pilot excludes page fetch and prediction, and the validation gain still needs a fresh test set.</p>
 <div class="cards">
   <div class="card"><strong>−2.14%</strong><span>price RMSLE, best JEV hybrid vs incumbent</span></div>
-  <div class="card"><strong>+0.00148</strong><span>rating concordance, JEV hybrid vs research winner</span></div>
-  <div class="card"><strong>−91.2%</strong><span>JEV semantic call vs current full app extraction call; outputs differ</span></div>
+  <div class="card"><strong>0.423 s</strong><span>median complete JEV extraction, 16 calls</span></div>
+  <div class="card"><strong>−91.3%</strong><span>complete extraction median vs previous app extractor</span></div>
 </div>
+<h2>Complete extraction timing</h2>
+<div class="table-wrap"><table><thead><tr><th>Measure</th><th>Previous OpenAI extractor</th><th>Complete JEV extractor</th></tr></thead><tbody>
+<tr><td>Median</td><td>4.879 s</td><td>0.423 s</td></tr>
+<tr><td>p95</td><td>8.061 s</td><td>0.791 s</td></tr>
+<tr><td>Successful calls</td><td>16/16</td><td>16/16</td></tr>
+</tbody></table></div>
+<p>Both paths received the same freshly fetched HTML and page context. Page fetch and prediction were excluded. Each provider ran twice on eight pages in randomized order. On the six individual coffees, both paths returned the same listed price in all 12 pairs and package weights differed by less than 0.001 g. JEV declined both rotating subscriptions in both rounds; the previous extractor appraised them as individual coffees. This small local sample does not establish production end-to-end latency or general extraction accuracy. <a href="jev-complete-extraction-data.json">Inspect the paired timings and field outcomes</a>.</p>
 <h2>Prediction performance</h2>
 <div class="table-wrap"><table><thead><tr><th>Task and metric</th><th>Incumbent</th><th>JEV A+B hybrid</th><th>Best tested follow-up</th><th>Interpretation</th></tr></thead><tbody>
 <tr><td>Rating concordance ↑</td><td>0.891044</td><td>0.892528</td><td>—</td><td>+0.001484; below the proposed +0.005 target</td></tr>
@@ -35,7 +42,7 @@ th { background:#ecf3ec; font-size:.86rem; } tr:last-child td { border-bottom:0;
 <tr><td>Price MAE, USD/100 g ↓</td><td>3.875</td><td>3.912</td><td>3.914</td><td>MAE rises by about 1%</td></tr>
 </tbody></table></div>
 <p>The added exact-lot auction question yielded RMSLE 0.254796, slightly worse than the original JEV hybrid’s 0.254354. The Panama × Gesha term uses two existing JEV answers and requires no extra provider question. The most expensive price decile remains strongly underpredicted. Exploratory paired intervals cross zero for the rating gain [-0.0015, +0.0050] and the best price candidate’s RMSLE change [-0.0129, +0.0025]. These historical validation rows were repeatedly used during research, so the gains need a fresh evaluation. See the <a href="jev-training-results.html">rating and original JEV report</a> and <a href="jev-auction-results.html">price follow-up detail</a>.</p>
-<h2>Extraction-call latency on frozen pages</h2>
+<h2>Earlier semantic-call pilot</h2>
 <div class="table-wrap"><table><thead><tr><th>Measure</th><th>Current app extractor<br>gpt-4o-mini</th><th>JEV A+B<br>jev-1.13.0</th><th>Observed reduction</th></tr></thead><tbody>
 <tr><td>p50</td><td>4.81 s</td><td>0.42 s</td><td>91.2%</td></tr>
 <tr><td>p95</td><td>11.50 s</td><td>0.91 s</td><td>92.1%</td></tr>
@@ -43,9 +50,9 @@ th { background:#ecf3ec; font-size:.86rem; } tr:last-child td { border-bottom:0;
 </tbody></table></div>
 <p class="muted">Eight product pages across three roasters, two uncached calls per provider per frozen page context, one call at a time in randomized order on the same local host. The page fetch and context construction were done once before timing. p95 is the maximum of only 16 observations and is unstable. The JEV input-token charge estimate was $0.0093 for 16 successful calls; OpenAI usage was not recorded, so no cost comparison is claimed.</p>
 <div class="table-wrap"><table><thead><tr><th>Frozen page</th><th>Context characters</th><th>App median, s</th><th>JEV median, s</th></tr></thead><tbody><tr><td><a href="https://hydrangea.coffee/products/salma-bermudez">Gesha Salma Bermudez Finca El Paraiso</a><small>hydrangea.coffee</small></td><td>3,042</td><td>9.15</td><td>0.44</td></tr><tr><td><a href="https://hydrangea.coffee/products/gesha-washed-crd-elida-estate-centro-loma-lot">Gesha Washed CRD Elida Estate, Centro Loma Lot</a><small>hydrangea.coffee</small></td><td>2,371</td><td>5.85</td><td>0.40</td></tr><tr><td><a href="https://hydrangea.coffee/products/sub">Hydrangea Drops</a><small>hydrangea.coffee</small></td><td>5,513</td><td>4.22</td><td>0.49</td></tr><tr><td><a href="https://www.blackwhiteroasters.com/products/the-original-1">The Original</a><small>blackwhiteroasters.com</small></td><td>2,139</td><td>4.50</td><td>0.39</td></tr><tr><td><a href="https://www.blackwhiteroasters.com/products/r-the-new-school">The New School</a><small>blackwhiteroasters.com</small></td><td>3,210</td><td>4.27</td><td>0.33</td></tr><tr><td><a href="https://onyxcoffeelab.com/products/geometry">G e o m e t r y</a><small>onyxcoffeelab.com</small></td><td>60,047</td><td>4.77</td><td>0.79</td></tr><tr><td><a href="https://onyxcoffeelab.com/products/roasters-choice">Roaster&#x27;s Choice</a><small>onyxcoffeelab.com</small></td><td>7,140</td><td>4.79</td><td>0.33</td></tr><tr><td><a href="https://onyxcoffeelab.com/products/kenya-kamunyaka-aa">K e n y a K a m u n y a k a A A</a><small>onyxcoffeelab.com</small></td><td>60,047</td><td>7.88</td><td>0.64</td></tr></tbody></table></div>
-<p class="note"><strong>Scope of the timing:</strong> the app’s existing call returns a full PageExtraction, including price, package size, display tasting notes, and page classification. The JEV call returns 38 typed semantic answers for model features. Both saw the same saved page context, but JEV does not yet provide the complete response the app needs. These measurements establish the latency of the semantic call, not an end-to-end serving speedup.</p>
+<p class="note"><strong>Scope of the timing:</strong> the app’s existing call returns a full PageExtraction, including price, package size, display tasting notes, and page classification. The JEV call returns 38 typed semantic answers for model features. Both saw the same saved page context, but These measurements predate the complete JEV app path. They establish semantic-call latency, not an end-to-end serving speedup.</p>
 <h2>Extraction quality and serving decision</h2>
-<p>All final benchmark calls completed after the shared TypeSafe client was given an application User-Agent. Two TypeSafe preflight calls received HTTP 403 before that fix and are excluded from latency statistics. On two pages whose saved contexts contain no “natural” process claim, JEV nevertheless marked natural processing supported in both rounds. A rotating subscription page also drew inconsistent attributes from historical offerings in the app extractor. Product identity and evidence selection need a matched-page quality check before changing the serving path.</p>
-<p>The observed call-latency reductions exceed the numerical extraction targets, but this pilot does not meet the targets' equivalent-output condition. The next serving measurement should run a JEV-based path that also supplies the required commerce and display fields, then time the full appraisal with the same URLs and completeness rules. The price and rating models remain research candidates because their gains miss the proposed prediction targets and no fresh product-page prediction set has been evaluated.</p>
+<p>All final benchmark calls completed after the shared TypeSafe client was given an application User-Agent. Two TypeSafe preflight calls received HTTP 403 before that fix and are excluded from latency statistics. On two pages whose saved contexts contain no “natural” process claim, JEV nevertheless marked natural processing supported in both rounds. A rotating subscription page also drew inconsistent attributes from historical offerings in the app extractor. The new complete extraction comparison above addresses product identity on this small page set; conflicting process claims still need review.</p>
+<p>The earlier semantic-call pilot returned fewer fields than the app. The complete-extraction comparison above is the relevant serving-component measurement. A fresh price-model test and production end-to-end latency comparison remain outstanding. The lightweight rating model is unchanged.</p>
 <p class="muted">Inspect the <a href="jev-results-data.json">public evidence file</a> for the aggregate model metrics, page-context hashes, and individual call timings and semantic outputs. It excludes the third-party page text and credentials. The frozen contexts and full research artifacts remain local, so an exact replay requires those files; refetching a page can produce different content. The local harness is <code>scripts/benchmark_jev_serving_extraction.py</code>.</p>
 </main></body></html>
